@@ -1,0 +1,46 @@
+<div class="modal-form-wrapper">
+  <div class="modal-form-header">
+    <div class="modal-form-header-title" ng-bind="::('COMMON.ADD_TO_CONTACT.TITLE' | translate)"></div>
+    <div class="modal-form-header-close">
+      <button type="button" ng-click="close()"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form name="selectContactForm" class="general-form">
+      <div class="select-contact-options">
+        <div ng-show="settings.contact_groups.length > 0" class="select-contact-groups">
+          <div class="groups-btn">
+            <select selectpicker class="general-select show-tick dropdown-animation" data-ng-model="selectedGroup"
+                    title="{{::('COMMON.ALL_GROUPS' | translate)}}" ng-change="filterChange()"
+                    ng-options="group as group.name for group in localContactGroups">
+            </select>
+          </div>
+        </div>
+        <div  class="select-contact-search" ng-style="{'width': (settings.contact_groups.length > 0) ? '50rem' : '100%'}">
+          <i class="base-icon search-icon" data-icon="G"></i>
+          <input type="search" class="search-input contextMenuButton" ng-change="filterChange()" ng-model="keywords" placeholder="{{'COMMON.SEARCH_TEXT'|translate}}"/>
+        </div>
+      </div>
+      <div class="select-contact-list base-scroll dark-scroll">
+        <div class="select-contact-item" ng-class="{'active-contact': (selectedContact == contact)}"
+             ng-repeat="contact in localContacts track by $index" ng-click="chooseContact(contact);">
+          <div  class="contact-name">
+            <i data-icon="3" class="base-icon"></i><span ng-bind="contact.name"></span>
+          </div>
+          <div class="contact-address">
+            <span ng-bind="contact.location.city"></span>
+            <span ng-if="contact.location.country" ng-bind="', ' + contact.location.country"></span>
+          </div>
+        </div>
+        <div ng-if="localContacts.length==0" class="empty-contacts-groups">
+          <i data-icon="0" class="base-icon empty-contacts-groups-icon"></i>
+          <span class="empty-contacts-groups-text" ng-bind="::('CONTACTS.GROUPS_EMPTY' | translate)"></span>
+        </div>
+      </div>
+      <div class="general-form-control-buttons">
+        <button class="control-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+        <button class="control-button" ng-click="save(selectedContact);" data-ng-disabled="!selectedContact" ng-bind="::('COMMON.ACTIONS.SAVE' | translate)"></button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('MASTER_PASS.BLOCK' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon="g" class="base-icon wider-icon"></i></div>
+    </div>
+    <div class="modal-form-body">
+        <form name="masterPassForm" class="general-form" ng-submit="submit(pass);" novalidate>
+            <div class="general-form-field-group field-group-vertical">
+                <label class="field-group-label" ng-bind="::('MASTER_PASS.ENTER' | translate)"></label>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" name="appPass" class="general-input need-to-focus contextMenuButton" ng-model="pass"
+                           contextMenuEnabledItems="paste" contextMenuCopyText="{{item}}" placeholder="{{::('MASTER_PASS.PASSWORD_PLACEHOLDER' | translate)}}" required autofocus>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="submit" class="control-button extra-large-button" data-ng-disabled="!masterPassForm.appPass.$valid" ng-bind="::('MESSAGE.UNLOCK' | translate)"></button>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button extra-large-button" ng-if="canCancel"  ng-click="cancelOff();" ng-bind="::('MASTER_PASS.NOT_USE' | translate)"></button>
+                <button type="button" class="control-button extra-large-button" ng-if="!canCancel" ng-click="cancelOffCloseSafes();" ng-bind="::('MASTER_PASS.CLOSE_ALL_SAFES' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

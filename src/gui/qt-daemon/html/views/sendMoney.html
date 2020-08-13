@@ -1,0 +1,181 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('SEND_MONEY.TITLE' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon="o" class="base-icon"></i></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form class="general-form" name="sendMoneyForm" ng-submit="send(transaction);" novalidate>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('SEND_MONEY.SOURCE_ACCOUNT' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <select selectpicker name="from" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="transaction.from" data-ng-change="calcMoneyFrom();"
+                            data-nameoptions="safesList" ng-options="safe.wallet_id as safe.name + ' (' + (moneyParse(safe.unlocked_balance)) + ')' for safe in safesList"
+                            data-ng-disabled="safes.length == 0" required>
+                    </select>
+                    <span class="field-group-error" ng-show="sendMoneyForm.$submitted && sendMoneyForm.from.$error.required" ng-bind="::('COMMON.ERROR.REQUIRED_FIELD' | translate)"></span>
+                    <span class="field-group-error" ng-show="equalSafesError" ng-bind="::('SEND_MONEY.ERROR.EQUAL_SAFES' | translate)"></span>
+                    <span class="field-group-error" ng-show="errorEmptySafe" ng-bind="::('COMMON.ERROR.SAFE_BALANCE' | translate)"></span>
+                    <span class="field-group-error" ng-show="balanceErrorSync" ng-bind="::('COMMON.ERROR.SAFE_SYNC' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal field-group-checkbox-wrapper">
+                <div class="general-checkbox" ng-class="{'active': !settings.security.is_hide_sender}" ng-click="settings.security.is_hide_sender = !settings.security.is_hide_sender">
+                    <div class="check-border"><i data-icon="v" class="base-icon"></i></div>
+                    <i data-icon="j" class="base-icon additional-icon"></i>
+                    <span class="general-checkbox-text" ng-bind="::('SEND_MONEY.HIDE_ADDRESS_ACCOUNT' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-extra-icons">
+                <div class="extra-icon-wrapper" ng-class="{'active': safesSource == 0}" ng-click="(safesSource == 0) ? changeSafeItems(1) : changeSafeItems(0)">
+                    <i data-icon="w" class="base-icon" uib-tooltip="{{::('SEND_MONEY.MY_SAFES' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('SEND_MONEY.RECIPIENT') | translate"></label>
+                <div class="field-group-error-wrapper">
+                    <div ng-show="safesSource == 0">
+                        <select selectpicker id="selectRecipient" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="transaction.to1"
+                                data-ng-change="setTo(transaction.to1);" data-nameoptions="safesList"
+                                ng-options="safe.address as safe.name + ' (' + (moneyParse(safe.balance)) + ')' for safe in safesList">
+                        </select>
+                    </div>
+                    <div class="general-input-wrapper" ng-show="safesSource != 0">
+                        <angucomplete-alt id="addressInput" class="alias-autocomplete" placeholder="{{::('SEND_MONEY.RECIPIENT.PLACEHOLDER' | translate)}}" pause="100"
+                            selected-object="selectAlias" local-data="aliases" search-fields="name" title-field="name"
+                            description-field="comment" minlength="1" input-class="general-input need-to-focus contextMenuButton"
+                            match-class="highlight" input-changed="inputChanged" limit="100"
+                            initial-value="transaction.to3" text-no-results="false">
+                        </angucomplete-alt>
+                        <i data-icon="A" class="base-icon success-icon" ng-if="!errorRecipient && transaction.to.length"></i>
+                        <i data-icon="B" class="base-icon error-icon" ng-if="errorRecipient && transaction.to.length == 0 && transaction.to3.length" ng-click="clearTrTo();"
+                           uib-tooltip="{{::('COMMON.WRONG_ADDRESS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        </i>
+                    </div>
+                    <span class="field-group-error" ng-show="equalSafesError" ng-bind="::('SEND_MONEY.ERROR.EQUAL_SAFES' | translate)"></span>
+                    <span class="field-group-error" ng-show="sendMoneyForm.$submitted && errorRecipient" ng-bind="::('INFORMER.SAME_SAFE_WRONG_ADR' | translate)"></span>
+                </div>
+            </div>
+            <div class="safe-alias-modal-wrapper slideAnimation" ng-if="alias.name">
+                <div class="safe-alias-modal" ng-class="{'safe-alias-modal-no-comment': !alias.comment.trim().length}">
+                    <div class="safe-alias-modal-name contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{alias.name}}" ng-bind="alias.name"></div>
+                    <div class="safe-alias-modal-comment" ng-if="alias.comment.trim().length">
+                        <span ng-bind="alias.comment"></span><i data-icon="&#xe001;" class="base-icon safe-alias-modal-copy" ng-click="setClipboard(alias.comment);"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal field-group-buttons-wrapper">
+                <div class="field-group-dropdown" ng-class="{'open': settings.app_interface.on_transfer.show_recipient_tx_history}">
+                    <button type="button" ng-click="settings.app_interface.on_transfer.show_recipient_tx_history = !settings.app_interface.on_transfer.show_recipient_tx_history">
+                        <i data-icon="l" class="base-icon dropdown-clock-icon"></i>
+                        <i data-icon="a" class="base-icon dropdown-arrow-icon"></i>
+                    </button>
+                </div>
+                <div class="field-group-dropdown" uib-dropdown>
+                    <button type="button" uib-dropdown-toggle uib-tooltip="{{::('COMMON.CONTACTS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        <i data-icon="1" class="base-icon dropdown-contact-icon"></i>
+                        <i data-icon="a" class="base-icon dropdown-arrow-icon"></i>
+                    </button>
+                    <ul class="dropdown-menu uib-dropdown-animation" uib-dropdown-menu>
+                        <li>
+                            <button type="button" ng-click="selectContact();" ng-bind="::('COMMON.SELECT_CONTACT' | translate)"></button>
+                        </li>
+                        <li>
+                            <button type="button" ng-click="addNewContact();" ng-bind="::('COMMON.ADD_NEW_CONTACT' | translate)"></button>
+                        </li>
+                        <li>
+                            <button type="button" ng-click="addToExist();" ng-bind="::('COMMON.ADD_TO_CONTACT' | translate)"></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal recent-transaction-table-wrapper no-hover slideAnimation ng-hide" ng-hide="!settings.app_interface.on_transfer.show_recipient_tx_history">
+                <label class="field-group-label bolder-label" ng-bind="::('SEND_MONEY.LAST_TRANSACTIONS' | translate)"></label>
+                <div class="recent-transactions-table base-scroll dark-scroll" ng-if="transaction.to && (items = (txHistory | filter : {remote_addresses: transaction.to, tx_type: 0} : true)).length">
+                    <table>
+                        <tbody>
+                            <tr ng-repeat="item in items track by $index">
+                                <td>
+                                    <div class="transaction-status-indicator">
+                                        <circle-show item="item" height="appHeight"></circle-show>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span ng-bind="(item.timestamp | intToDate | date :'dd.MM.yy&nbsp;&nbsp;HH:mm')"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="moneyParse(item.amount)"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="recent-transactions-table" ng-if="(transaction.to && items.length == 0) || !transaction.to">
+                    <span class="no-recent-transactions" ng-bind="::('SEND_MONEY.NOT_LAST_TRANSACTIONS' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label label-hint">
+                    <span ng-bind="::('SEND_MONEY.PAYMENT_ID' | translate)"></span>
+                    <i data-icon="P" class="base-icon label-hint-icon"
+                       uib-tooltip-html="'{{::('SEND_MONEY.PAYMENT_ID.HINT' | translate)}}'" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                    </i>
+                </label>
+                <div class="field-group-error-wrapper" ng-if="transaction.payment_id_integrated.length > 0">
+                    <input type="text" class="general-input need-to-focus" ng-model="transaction.payment_id_integrated" readonly/>
+                </div>
+                <div class="field-group-error-wrapper" ng-if="transaction.payment_id_integrated.length == 0">
+                    <input type="text" class="general-input need-to-focus contextMenuButton" name="payment" ng-model="transaction.payment_id" maxlength="100"/>
+                    <span class="field-group-error" ng-if="transaction.payment_id.length >= 100" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal no-hover">
+                <div class="send-money-subgroup-left need-to-focus-field">
+                    <label class="field-group-label bolder-label label-hint">
+                        <span ng-bind="::('SEND_MONEY.AMOUNT' | translate)"></span>
+                        <i data-icon="P" class="base-icon label-hint-icon"
+                           uib-tooltip="{{::('SEND_MONEY.AMOUNT.HINT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        </i>
+                    </label>
+                    <div class="field-group-error-wrapper">
+                        <div class="general-input-wrapper">
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" name="amount"
+                                   ng-model="transaction.amount" ng-change="calcMoneyAmount()"
+                                   placeholder="{{::('SEND_MONEY.AMOUNT.PLACEHOLDER' | translate)}}" required/>
+                            <span class="input-addon post-input">{{currencySymbol}}</span>
+                        </div>
+                        <span class="field-group-error" ng-show="sendMoneyForm.$submitted && sendMoneyForm.amount.$error.required" ng-bind="::('COMMON.ERROR.REQUIRED_FIELD' | translate)"></span>
+                        <span class="field-group-error" ng-show="sendMoneyForm.$submitted && transaction.amount == 0" ng-bind="::('SEND_MONEY.ERROR.INCORRECT_DATA' | translate)"></span>
+                    </div>
+                </div>
+                <div class="field-group-error-wrapper">
+                    <div class="send-money-subgroup-right need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('SEND_MONEY.COMMISSION' | translate)"></label>
+                        <div class="general-input-wrapper">
+                            <input type="text" class="general-input need-to-focus input_replace" data-min-count-replace="{{config.standardFeeDecimal}}" name="fee"
+                                   ng-model="transaction.fee" placeholder="{{::('SEND_MONEY.COMMISSION.PLACEHOLDER' | translate)}}" required/>
+                            <span class="input-addon post-input" ng-bind="currencySymbol"></span>
+                        </div>
+                    </div>
+                    <span class="field-group-error" ng-show="sendMoneyForm.$submitted && (transaction.fee | moneyToInt) < (config.standardFee | moneyToInt)"
+                          data-translate="SEND_MONEY.ERROR.MIN_COMMISSION" data-translate-values="{fee: config.standardFee}" style="text-align: right"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('SEND_MONEY.COMMENT' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <textarea elastic class="general-textarea need-to-focus textarea_count_rows contextMenuButton" data-ng-model="transaction.comment"
+                              rows="1" max-length-field="500" data-ng-trim="false" placeholder="{{::('SEND_MONEY.COMMENT.PLACEHOLDER' | translate)}}">
+                    </textarea>
+                    <span class="field-group-error" ng-show="transaction.comment.length >= 500" ng-bind="::('COMMON.MAX_LENGTH_COMMENT' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button larger-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="submit" class="control-button larger-button" ng-bind="::('COMMON.ACTIONS.SEND' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

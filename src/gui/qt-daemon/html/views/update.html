@@ -1,0 +1,23 @@
+<div class="modal-form-wrapper" ng-class="type">
+  <div class="modal-form-header">
+    <div class="modal-form-header-title" ng-if="displaymode == 2" ng-bind="::('UPDATE.TITLE' | translate)"></div>
+    <div class="modal-form-header-title" ng-if="displaymode == 3" ng-bind="::('UPDATE.TITLE2' | translate)"></div>
+    <div class="modal-form-header-title" ng-if="displaymode == 4" ng-bind="::('UPDATE.TITLE3' | translate)"></div>
+    <div class="modal-form-header-icon"><i data-icon="]" class="base-icon"></i></div>
+    <div class="modal-form-header-close" ng-if="displaymode == 2">
+      <button ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="general-form-field-group field-group-vertical">
+        <label class="field-group-label" ng-if="displaymode == 2" ng-bind="::('UPDATE.DESC' | translate)"></label>
+        <label class="field-group-label" ng-if="displaymode == 3" ng-bind="::('UPDATE.DESC2' | translate)"></label>
+        <label class="field-group-label" ng-if="displaymode == 4" ng-bind="::('UPDATE.DESC3' | translate)"></label>
+      </div>
+      <div class="general-form-control-buttons">
+        <button type="button" class="control-button" ng-click="openUrlInBrowser();" ng-bind="::('UPDATE.DOWNLOAD' | translate)"></button>
+      </div>
+    </form>
+  </div>
+</div>

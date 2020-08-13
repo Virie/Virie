@@ -1,0 +1,12 @@
+<div ng-if="alias" class="safe-alias contextMenuButton" ng-class="{'safe-alias-without-comment': !alias.comment.length}" contextMenuEnabledItems='copy' contextMenuCopyText="{{alias.name}}">
+    <button ng-if="!longName" class="safe-alias-btn safe-alias-name">
+        <span ng-style="firstHide" ng-bind="alias.name"></span>
+    </button>
+    <button ng-if="longName" class="safe-alias-btn safe-alias-name safe-alias-long-name" uib-tooltip="{{alias.name}}"
+            data-tooltip-class="general-tooltip" data-tooltip-placement="bottom" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true">
+        <span class="safe-alias-text" ng-bind="alias.name"></span><i data-icon="e" class="base-icon"></i>
+    </button>
+    <button class="safe-alias-btn safe-alias-comment" ng-if="alias.comment.length" style="overflow: hidden">
+        <i data-icon="y" class="base-icon" uib-tooltip="{{alias.comment}}" data-tooltip-class="safe-alias-tooltip" data-tooltip-placement="top-right" data-tooltip-append-to-body="true"></i>
+    </button>
+</div>

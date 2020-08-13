@@ -1,0 +1,107 @@
+<div class="dashboard-slider-wrapper">
+    <div class="dashboard-slider">
+        <div class="dashboard-slider-item" ng-repeat="item in items track by item.address" on-finish-render>
+            <div class="safe-block-wrapper">
+                <div class="safe-block" ng-if="!(!item.loaded && daemonState.daemon_network_state == 2)">
+                    <div class="safe-block-header">
+                        <span class="safe-block-title" ng-click="$root.goToPage('/safe/'+ item.wallet_id + '/false/-1')" ng-bind="item.name"></span>
+                        <alias-display ng-if="item.alias.name" alias="item.alias"></alias-display>
+                        <safe-address-copy ng-if="!item.alias.name" address="item.address"></safe-address-copy>
+                        <span class="safe-mined" ng-if="item.is_mining"><i data-icon="&#xe008;" class="base-icon"></i></span>
+                    </div>
+                    <div class="safe-block-body">
+                        <div class="safe-block-balance" ng-style="$root.calculateMoneyFontSize($root.moneyParse(item.unlocked_balance).length + $root.moneyParse(item.balance).length)">
+                            <div class="unlocked-balance-value">
+                                <span uib-tooltip="{{::('SAFE_BLOCK.AVAILABLE_PAYMENTS.HINT' | translate)}}" data-tooltip-class="general-tooltip" ng-bind="$root.moneyParse(item.unlocked_balance)"></span>
+                            </div>
+                            <div class="balance-value">
+                                <span>&nbsp;/&nbsp;</span>
+                                <span uib-tooltip="{{::('SAFE_BLOCK.BALANCE.HINT' | translate)}}" data-tooltip-class="general-tooltip" ng-bind="$root.moneyParse(item.balance)"></span>
+                            </div>
+                        </div>
+                        <div class="safe-block-status">
+                            <animate-transaction history="item.history" mining="item.is_mining" height="height" type="'small'"></animate-transaction>
+                        </div>
+                        <div class="safe-block-buttons">
+                            <div class="safe-block-btn-wrapper">
+                                <button type="button" class="safe-block-btn general-button" ng-click="openSendMoneyModal(item.wallet_id);" ng-bind="::(('COMMON.ACTIONS.SEND' | translate) + ' ' + currencySymbol)"></button>
+                            </div>
+                            <div class="safe-block-btn-wrapper dropdown-animation" uib-dropdown dropdown-append-to="'#dashboard'" is-open="dropdownOpen[$index]">
+                                <button type="button" class="safe-block-btn general-button" uib-dropdown-toggle ng-bind="::('SAFE.ACTIONS' | translate)"></button>
+                                <ul class="dropdown-menu uib-dropdown-animation safe-block-menu" uib-dropdown-menu ng-class="{'open-slider-dropdown': dropdownOpen[$index]}">
+                                    <li class="safes-menu-item">
+                                        <button type="button" ng-if="!!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1)"
+                                                disabled ng-bind="::('SAFE.ACTIONS.SEND_MONEY' | translate)">
+                                        </button>
+                                        <button type="button" ng-if="!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1)"
+                                                ng-click="openSendMoneyModal(item.wallet_id);" ng-bind="::('SAFE.ACTIONS.SEND_MONEY' | translate)">
+                                        </button>
+                                    </li>
+                                    <li class="safes-menu-item" ng-if="!item.is_mining" >
+                                        <button type="button" ng-if="!!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1) || !checkAvailableMining(item.wallet_id)"
+                                                disabled ng-bind="::('SAFE.ACTIONS.START_MINING' | translate)">
+                                        </button>
+                                        <button type="button" ng-if="!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1) && checkAvailableMining(item.wallet_id)"
+                                                ng-click="startMining(item.wallet_id);" ng-bind="::('SAFE.ACTIONS.START_MINING' | translate)">
+                                        </button>
+                                    </li>
+                                    <li class="safes-menu-item" ng-if="item.is_mining" >
+                                        <button type="button" ng-if="!!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1)"
+                                                disabled ng-bind="::('SAFE.ACTIONS.STOP_MINING' | translate)">
+                                        </button>
+                                        <button type="button" ng-if="!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1)"
+                                                ng-click="stopMining(item.wallet_id);" ng-bind="::('SAFE.ACTIONS.STOP_MINING' | translate)">
+                                        </button>
+                                    </li>
+                                    <li class="safes-menu-item">
+                                        <button type="button" ng-if="!!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1) || item.alias.name || !item.alias_available"
+                                                disabled ng-bind="::('SAFE.ACTIONS.ADD_ALIAS' | translate)">
+                                        </button>
+                                        <button type="button" ng-if="!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1) && !item.alias.name && item.alias_available"
+                                                ng-click="registerAlias(item);" ng-bind="::('SAFE.ACTIONS.ADD_ALIAS' | translate)">
+                                        </button>
+                                    </li>
+                                    <li class="safes-menu-item">
+                                        <button type="button" ng-click="safeBackup(item)" ng-bind="::('SAFE.ACTIONS.CREATE_BACKUP' | translate)"></button>
+                                    </li>
+                                    <li ng-if="devOptions.use_debug_mode" class="safes-menu-item">
+                                        <button type="button" ng-if="!!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1)"
+                                                disabled ng-bind="::('SAFE.ACTIONS.SYNC' | translate)">
+                                        </button>
+                                        <button type="button" ng-if="!(!item.loaded || $root.daemonState.daemon_network_state == 0 || $root.daemonState.daemon_network_state == 1)"
+                                                ng-click="syncWallet(item.wallet_id);" ng-bind="::('SAFE.ACTIONS.SYNC' | translate)">
+                                        </button>
+                                    </li>
+                                    <li class="safes-menu-item">
+                                        <button type="button" ng-click="confirmOff(item.wallet_id);" ng-bind="::('SAFE.ACTIONS.OFF_SAFE' | translate)"></button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="safe-block-offline" ng-if="daemonState.daemon_network_state == 0 || daemonState.daemon_network_state == 1">
+                            <span ng-bind="::('STATUS.OFFLINE' | translate)"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="safe-sync" ng-if="!item.loaded && daemonState.daemon_network_state == 2">
+                    <div class="safe-sync-text" ng-bind="('SAFE_BLOCK.SYNCHRONIZATION' | translate) + ' ' + (item.progress || 0) + '%'"></div>
+                    <progress max="100" value="{{item.progress}}"></progress>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-slider-item" ng-if="items.length < 2" safes-empty-slide></div>
+    </div>
+</div>
+<div class="slider-control-wrapper" ng-show="items_count > 2">
+    <button class="slider-control-btn prev-btn" ng-click="prevItem();">
+        <i data-icon="f" class="base-icon"></i>
+    </button>
+    <ul class="slider-status-wrapper">
+        <li class="{{point}}" ng-repeat="point in carouselPoints track by $index">
+            <button type="button" class="slider-status-btn" ng-click="goToPage($index)"></button>
+        </li>
+    </ul>
+    <button class="slider-control-btn next-btn" ng-click="nextItem();">
+        <i data-icon="f" class="base-icon"></i>
+    </button>
+</div>

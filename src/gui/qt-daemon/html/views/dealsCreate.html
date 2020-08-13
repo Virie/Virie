@@ -1,0 +1,176 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('DEALS.CREATE_NEW_CONTRACT' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon="D" class="base-icon wider-icon"></i></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form name="dealsCreateForm" class="general-form noEnterSubmit" ng-submit="createNewDealsSubmit();" novalidate>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('DEALS.CONTRACT_DESC' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <input type="text" name="t" id="sb-name" class="general-input need-to-focus contextMenuButton" ng-model="dep.t"
+                           maxlength="100" data-ng-trim="false" placeholder="{{::('COMMON.ACTIONS.ENTER.NAME' | translate)}}" required/>
+                    <span class="field-group-error" ng-show="dealsCreateForm.$submitted && dealsCreateForm.t.$error.required" ng-bind="::('COMMON.ERROR.REQUIRED_FIELD' | translate)"></span>
+                    <span class="field-group-error" ng-show="dep.t.length >= 100" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('DEALS.SELLER' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <div class="general-input-wrapper">
+                        <angucomplete-alt class="alias-autocomplete" placeholder="{{::('DEALS.SELLER.PLACEHOLDER' | translate)}}" pause="100" id="angucomplete_safe_address"
+                                          selected-object="selectAlias" local-data="aliases" search-fields="name" title-field="name" limit="100"
+                                          description-field="comment" minlength="1" input-class="general-input need-to-focus contextMenuButton"
+                                          match-class="highlight" input-changed="inputChanged" input-name="safeAddress"
+                                          initial-value="dep.b_addr" text-no-results="false">
+                        </angucomplete-alt>
+                        <i data-icon="A" class="base-icon success-icon" ng-if="isAddressValid && dep.b_addr.length > 0"></i>
+                        <i data-icon="B" class="base-icon error-icon" ng-if="!isAddressValid && dep.b_addr.length>0" ng-click="clearAddress();"
+                           uib-tooltip="{{::('COMMON.WRONG_ADDRESS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        </i>
+                    </div>
+                    <span class="field-group-error" ng-show="dealsCreateForm.$submitted && dep.b_addr.length == 0" ng-bind="::('COMMON.ERROR.REQUIRED_FIELD' | translate)"></span>
+                    <span class="field-group-error" ng-show="dealsCreateForm.$submitted && dep.b_addr.length > 0 && !isAddressValid" ng-bind="::('INFORMER.SAME_SAFE_WRONG_ADR' | translate)"></span>
+                    <span class="field-group-error" ng-show="dep.a_addr.length && dep.a_addr == dep.b_addr" ng-bind="::('DEALS.ERROR.DUPLICATE_ADDRESSES' | translate)"></span>
+                </div>
+            </div>
+            <div class="safe-alias-modal-wrapper slideAnimation" ng-if="alias.name">
+                <div class="safe-alias-modal" ng-class="{'safe-alias-modal-no-comment': !alias.comment.trim().length}">
+                    <div class="safe-alias-modal-name contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{alias.name}}" ng-bind="alias.name"></div>
+                    <div class="safe-alias-modal-comment" ng-if="alias.comment.trim().length">
+                        <span ng-bind="alias.comment"></span><i data-icon="&#xe001;" class="base-icon safe-alias-modal-copy" ng-click="setClipboard(alias.comment);"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal field-group-buttons-wrapper">
+                <div class="field-group-dropdown" uib-dropdown>
+                    <button type="button" uib-dropdown-toggle uib-tooltip="{{::('COMMON.CONTACTS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        <i data-icon="1" class="base-icon dropdown-contact-icon"></i>
+                        <i data-icon="a" class="base-icon dropdown-arrow-icon"></i>
+                    </button>
+                    <ul class="dropdown-menu uib-dropdown-animation" uib-dropdown-menu>
+                        <li>
+                            <button type="button" ng-click="selectContact();" ng-bind="::('COMMON.SELECT_CONTACT' | translate)"></button>
+                        </li>
+                        <li>
+                            <button type="button" ng-click="addNewContact();" ng-bind="::('COMMON.ADD_NEW_CONTACT' | translate)"></button>
+                        </li>
+                        <li>
+                            <button type="button" ng-click="addToExist();" ng-bind="::('COMMON.ADD_TO_CONTACT' | translate)"></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" uib-tooltip="{{::('DEALS.CONTRACT_FULL_PRICE.HINT' | translate)}}" data-tooltip-class="general-tooltip" ng-bind="::('DEALS.CONTRACT_FULL_PRICE' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <div class="general-input-wrapper">
+                        <input type="text" name="to_pay" id="sb-price" class="general-input need-to-focus input_replace contextMenuButton" ng-model="dep.to_pay" ng-model-options="{debounce: 300}"
+                               ng-change="recountSize();" placeholder="{{::('DEALS.CONTRACT_FULL_PRICE.PLACEHOLDER' | translate)}}" required/>
+                        <span class="input-addon post-input" ng-bind="::currencySymbol"></span>
+                    </div>
+                    <span class="field-group-error" ng-show="dealsCreateForm.$submitted && dealsCreateForm.to_pay.$error.required" ng-bind="::('COMMON.ERROR.REQUIRED_FIELD' | translate)"></span>
+                    <span class="field-group-error" ng-show="dealsCreateForm.$submitted && !dealsCreateForm.to_pay.$error.required && dep.to_pay == 0" ng-bind="::('DEALS.ERROR.ZERO_TO_PAY' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-extra-icons">
+                <div class="extra-icon-wrapper">
+                    <i data-icon="E" class="base-icon" ng-click="dealsCreateSize();" uib-tooltip="{{::('DEALS.CHANGE_PLEDGE' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal no-hover">
+                <div class="create-purchase-subgroup-left no-hover">
+                    <label class="field-group-label bolder-label label-hint">
+                        <span ng-bind="::('DEALS.YOUR_PLEDGE' | translate)"></span>
+                        <i data-icon="P" class="base-icon label-hint-icon"
+                           uib-tooltip="{{::('DEALS.YOUR_PLEDGE.HINT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        </i>
+                    </label>
+                    <div class="general-input-wrapper no-hover">
+                        <input type="text" class="general-input no-hover" ng-model="dep.a_pledge" disabled/>
+                        <span class="input-addon post-input" ng-bind="::currencySymbol"></span>
+                    </div>
+                </div>
+                <div class="create-purchase-subgroup-right no-hover">
+                    <label class="field-group-label bolder-label" ng-bind="::('DEALS.SELLER_PLEDGE' | translate)"></label>
+                    <div class="general-input-wrapper no-hover">
+                        <input class="general-input no-hover" type="text" disabled ng-model="dep.b_pledge"/>
+                        <span class="input-addon post-input" ng-bind="::currencySymbol"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('DEALS.MSG_TO_SELLER' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <textarea elastic class="general-textarea need-to-focus textarea_count_rows contextMenuButton" data-ng-model="dep.c"
+                              rows="1" max-length-field="500" data-ng-trim="false" placeholder="{{::('DEALS.MSG_TO_SELLER.PLACEHOLDER' | translate)}}"></textarea>
+                    <span class="field-group-error" ng-show="dep.c.length >= 500" ng-bind="::('COMMON.MAX_LENGTH_COMMENT' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                <label class="field-group-label bolder-label" ng-bind="::('DEALS.WHAT_SAFE' | translate)"></label>
+                <div class="field-group-error-wrapper">
+                    <select selectpicker class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="dep.wallet_id"
+                            data-ng-change="balanceError = false; setCustomerAddress(); checkAvailableSources()" data-nameoptions="safesList"
+                            ng-options="safe.walletId as safe.name + ' (' + (moneyParse(safe.unlockedBalance)) + ')' for safe in safesList | orderBy : 'balance' : true"></select>
+                    <span class="field-group-error" ng-repeat="s in safes | filter : {wallet_id: dep.wallet_id} : true track by s.wallet_id"
+                          ng-if="(((dep.a_pledge | moneyToInt) + (config.standardFee | moneyToInt) > s.unlocked_balance) && dep.to_pay.length)"
+                          ng-bind="::('DEALS.ERROR.NO_MONEY' | translate)">
+                    </span>
+                    <span class="field-group-error" ng-repeat="s in safes | filter : {wallet_id: dep.wallet_id} : true track by s.wallet_id"
+                          ng-if="!(((dep.a_pledge | moneyToInt) + (config.standardFee | moneyToInt) > s.unlocked_balance) && dep.to_pay.length) && availableSourcesError"
+                          data-translate="DEALS.ERROR.NO_SOURCES" data-translate-values="{fee: config.standardFee, currency: currencySymbol}">
+                    </span>
+                    <span class="field-group-error" ng-show="dep.a_addr.length && dep.a_addr == dep.b_addr" ng-bind="::('DEALS.ERROR.DUPLICATE_ADDRESSES' | translate)"></span>
+                    <span class="field-group-error" ng-show="balanceErrorSync" ng-bind="::('COMMON.ERROR.SAFE_SYNC' | translate)"></span>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal no-hover">
+                <div class="create-purchase-subgroup-left no-hover">
+                    <label class="field-group-label bolder-label" ng-bind="::('DEALS.COMMISSION' | translate)"></label>
+                    <div class="general-input-wrapper no-hover">
+                        <input type="text" class="general-input no-hover" value="{{config.standardFee}}" readonly/>
+                        <span class="input-addon post-input" ng-bind="::currencySymbol"></span>
+                    </div>
+                </div>
+                <div class="create-purchase-subgroup-right need-to-focus-field">
+                    <label class="field-group-label bolder-label label-hint">
+                        <span ng-bind="::('SEND_MONEY.PAYMENT_ID' | translate)"></span>
+                        <i data-icon="P" class="base-icon label-hint-icon"
+                           uib-tooltip-html="'{{::('SEND_MONEY.PAYMENT_ID.HINT' | translate)}}'" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                        </i>
+                    </label>
+                    <div class="field-group-error-wrapper" ng-if="dep.payment_id_integrated.length > 0">
+                        <input type="text" class="general-input need-to-focus" ng-model="dep.payment_id_integrated" readonly/>
+                    </div>
+                    <div class="field-group-error-wrapper" ng-if="dep.payment_id_integrated.length == 0">
+                        <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="dep.payment_id" maxlength="100"/>
+                        <span class="field-group-error" ng-if="dep.payment_id.length >= 100" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-horizontal field-group-range-wrapper no-hover">
+                <label class="field-group-label bolder-label" ng-bind="::('DEALS.WAITING_TIME' | translate)"></label>
+                <div class="general-range-wrapper">
+                    <div class="general-range-value">
+                        <output ng-bind="dep.time + ('DEALS.TIME' | translate)"></output>
+                    </div>
+                    <input type="range" id="waitAnswer" class="general-range" ng-model="dep.time" min="1" max="24" step="1" list="wait-answer-list"/>
+                    <div class="general-range-selected"></div>
+                    <datalist class="general-range-list" id="wait-answer-list">
+                        <option ng-bind="::('1' + ('DEALS.TIME' | translate))"></option>
+                        <option ng-bind="::('12' + ('DEALS.TIME' | translate))"></option>
+                        <option ng-bind="::('24' + ('DEALS.TIME' | translate))"></option>
+                    </datalist>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button large-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="submit" class="control-button large-button" onclick="dealsCreateConfirm();" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)" data-ng-disabled="availableSourcesError"></button>
+            </div>
+        </form>
+    </div>
+</div>

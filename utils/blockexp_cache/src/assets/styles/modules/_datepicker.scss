@@ -1,0 +1,56 @@
+air-datepicker {
+  z-index: 10;
+}
+.datepicker{
+  border-radius: 10px !important;
+  box-shadow: 0 2px 6px rgba(#000, .25) !important;
+  font-family: $font !important;
+  width: 230px !important;
+  padding: 7px 18px 18px 18px;
+
+  .datepicker--nav {
+    border-bottom: none !important;
+  }
+  .datepicker--content {
+    padding: 0 !important;
+  }
+}
+.datepicker--nav-title, .datepicker--nav-title i {
+  color: #142839 !important;
+  font-size: 16px !important;
+  text-transform: uppercase !important;
+}
+.datepicker--nav-title:hover {
+  background: transparent !important;
+}
+.datepicker--day-name {
+  font-size: 13px !important;
+  color: #a8b2b9 !important;
+  font-weight: 400 !important;
+  margin: 8px 0 8px !important;
+}
+.datepicker--days-names {
+  margin: 6px 0 1px !important;
+}
+.datepicker--cell-day {
+  font-size: 13px !important;
+  color: #004d73 !important;
+  border-radius: 50% !important;
+  overflow: hidden;
+  &.-other-month- {
+    color: rgba(#5888a1, .6)!important;
+    border-radius: 50% !important;
+  }
+  &.-focus- {
+    background: #fff !important;
+    border: 1px solid rgba(#83a7b9, .5)!important;
+    border-radius: 50% !important;
+  }
+  &.-selected- {
+    background-color: #d5e6f0 !important;
+    border-radius: 50% !important;
+    &.-focus- {
+      border: none!important;
+    }
+  }
+}

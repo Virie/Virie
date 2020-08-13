@@ -1,0 +1,133 @@
+<div id="escrow" class="content-section" ng-controller="dealsController" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+    <div class="main-options-wrapper">
+        <div class="escrow-options">
+            <div class="page-title-wrapper">
+                <h1 class="page-title" ng-bind="::('DEALS.TITLE' | translate)" ng-show="$root.contracts.length != 0"></h1>
+            </div>
+            <div class="escrow-btn-wrapper">
+                <button type="button" class="main-options-btn" ng-click="createNewDeals();"
+                        ng-if="!(daemonState.daemon_network_state != 2 || safes.length == 0)" ng-bind="::('DEALS.START_BUY' | translate)">
+                </button>
+                <button type="button" class="main-options-btn disabled" uib-tooltip-html="'{{::('DEALS.START_BUY.RECOMMENDATION' | translate)}}'"
+                        data-tooltip-class="general-tooltip market-tooltip" data-tooltip-append-to-body="true"
+                        ng-if="daemonState.daemon_network_state != 2 || safes.length == 0" ng-bind="::('DEALS.START_BUY' | translate)">
+                </button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="$root.contracts.length == 0" class="page-empty">
+        <div class="one-block">
+            <img src="assets/img/escrow.svg">
+            <h1 ng-bind="::('DEALS.EMPTY.TITLE' | translate)"></h1>
+            <span ng-bind="::('DEALS.EMPTY.DESCRIPTION' | translate)"></span>
+        </div>
+    </div>
+    <div ng-show="$root.contracts.length > 0">
+        <ul class="general-tabs">
+            <li class="general-tab" ng-class="{'tab-active': userIsCustomer}">
+                <button type="button" ng-click="changeTable('customer');">
+                    <i data-icon="D" class="base-icon"></i><span ng-bind="::('DEALS.I_BUYING' | translate)"></span>
+                    <span class="indicator-number" ng-show="newCustomerContractsCount > 0" ng-bind="newCustomerContractsCount"></span>
+                </button>
+            </li>
+            <li class="general-tab" ng-class="{'tab-active': userIsSeller}">
+                <button type="button" ng-click="changeTable('seller');">
+                    <i data-icon="H" class="base-icon wider-icon"></i><span ng-bind="::('DEALS.I_SELL' | translate)"></span>
+                    <span class="indicator-number" ng-show="newSellerContractsCount > 0" ng-bind="newSellerContractsCount"></span>
+                </button>
+            </li>
+        </ul>
+        <div class="table-wrapper escrow-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        <span ng-bind="::('DEALS.CONTRACT_DATE' | translate)"></span>
+                    </th>
+                    <th>
+                        <span ng-bind="::('DEALS.CONTRACT_NAME.STATUS' | translate)"></span>
+                    </th>
+                    <th>
+                        <span ng-bind="::('DEALS.YOUR_PLEDGE' | translate)"></span>
+                    </th>
+                    <th>
+                        <span ng-if="userIsCustomer" ng-bind="::('DEALS.SELLER_PLEDGE' | translate)"></span>
+                        <span ng-if="userIsSeller" ng-bind="::('DEALS.CUSTOMER_PLEDGE' | translate)"></span>
+                    </th>
+                    <th>
+                        <span ng-bind="::('DEALS.CONTRACT_PRICE' | translate)"></span>
+                    </th>
+                    <th>
+                        <span ng-if="userIsCustomer" ng-bind="::('DEALS.SELLER' | translate)"></span>
+                        <span ng-if="userIsSeller" ng-bind="::('DEALS.CUSTOMER' | translate)"></span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="contract in contracts">
+                    <td ng-class="{'escrow-marker': contract.isNew}">
+                        <div class="escrow-deal-date" ng-if="contract.timestamp > 0">
+                            <span class="time">{{ contract.timestamp*1000 | date : "HH:mm" }}</span>
+                            <span class="date">{{ contract.timestamp*1000 | date : "dd.MM.yy" }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="escrow-transaction" ng-click="showDealInfo(contract);">
+                            <span class="transaction-name" ng-bind="::contract.private_details.t"></span>
+                            <state-status mainstate="contract.state" customer="contract.is_a"></state-status>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-bind="::( (contract.is_a) ? moneyParse(contract.private_details.a_pledge) : moneyParse(contract.private_details.b_pledge) )"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="::( (!contract.is_a) ? moneyParse(contract.private_details.a_pledge) : moneyParse(contract.private_details.b_pledge) )"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="::moneyParse(contract.private_details.to_pay)"></span>
+                    </td>
+                    <td>
+                        <div class="escrow-buyer-account">
+                            <safe-address-copy ng-if="contract.is_a" address="contract.private_details.b_addr"></safe-address-copy>
+                            <safe-address-copy ng-if="!contract.is_a" address="contract.private_details.a_addr"></safe-address-copy>
+                            <alias-display ng-if="contract.alias.name" alias="contract.alias"></alias-display>
+                            <contact-display contact="contract.contact"></contact-display>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="!contracts.length">
+                    <td colspan="6">
+                        <div class="text-center">
+                            <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-wrapper">
+            <div class="display" ng-show="paginator.totalCount > 20">
+                <span class="display-text" ng-bind="::('COMMON.SHOW_BY_PAGE_LIMIT' | translate)"></span>
+                <ul class="display-values">
+                    <li ng-class="{'active': paginator.inPage == 20}" ng-click="paginator.changeLimit(20);"><span>20</span></li>
+                    <li ng-class="{'active': paginator.inPage == 35}" ng-click="paginator.changeLimit(35);"><span>35</span></li>
+                    <li ng-class="{'active': paginator.inPage == 50}" ng-click="paginator.changeLimit(50);"><span>50</span></li>
+                </ul>
+            </div>
+            <div class="show-all" ng-click="paginator.viewAll(true);" ng-show="paginator.pagesCount > 1 && !paginator.showAll">
+                <i data-icon="+" class="base-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.DEALS.SHOW_ALL' | translate)"></span>
+            </div>
+            <div class="show-all" ng-click="paginator.viewAll();" ng-show="paginator.pagesCount > 1 && paginator.showAll">
+                <i data-icon="+" class="base-icon rotate-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.DEALS.SHOW_BY_PAGE' | translate)"></span>
+            </div>
+            <paginator model="paginator"></paginator>
+        </div>
+    </div>
+</div>
+<!--<div id="escrow" class="content-section" ng-controller="dealsController">
+    <div class="page-empty">
+        <div class="one-block">
+            <h1 ng-bind="::('COMMON.SOON' | translate)"></h1>
+        </div>
+    </div>
+</div>-->

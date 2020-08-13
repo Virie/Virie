@@ -1,0 +1,34 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::(comment ? 'ALIAS.EDIT.COMMENT' : 'ALIAS.CREATE.COMMENT' | translate)"></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form name="changeComment" class="general-form" novalidate>
+            <div class="general-form-field-group field-group-vertical">
+                <label class="field-group-label bolder-label" ng-bind="::(comment ? 'ALIAS.SAFE.EDIT_COMMENT' : 'ALIAS.SAFE.NEW_COMMENT' | translate)"></label>
+                <textarea elastic class="general-textarea textarea_count_rows contextMenuButton" data-ng-model="comment" rows="1"
+                          maxlength="150" data-ng-trim="false" placeholder="{{::('ALIAS.EDIT.COMMENT.HINT' | translate)}}">
+                </textarea>
+                <span class="field-group-error" ng-style="{'visibility': (comment.length >= 150) ? 'visible' : 'hidden'}" ng-bind="::('COMMON.MAX_LENGTH_COMMENT' | translate)"></span>
+            </div>
+            <div class="general-form-price-description">
+                <span class="price-text">{{::('COMMON.COMMISSION' | translate)}} {{changeCommentCost}} {{currencySymbol}}</span>
+                <span class="price-error" ng-if="notEnoughMoney == true" ng-bind="::('ALIAS.ERROR.NO_MONEY_TO_EDIT' | translate)"></span>
+            </div>
+            <div class="general-form-field-group need-master-password" ng-show="needPass">
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="appPass"
+                           contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}"/>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button" ng-click="confirm();" data-ng-disabled="notEnoughMoney || (originalComment == comment)" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

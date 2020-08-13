@@ -1,0 +1,898 @@
+<div id="dashboard" class="content-section" ng-controller="dashboardController" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+
+    <div class="page-empty dashboard-empty" ng-if="!safes.length && safeLoadedEnd" ng-controller="safeModals" ng-mouseleave="secondSection = false">
+        <div class="main-block">
+            <div class="main-block-row" ng-class="{'slide-up': secondSection}">
+                <div class="main-block-col" role="button" ng-click="openSafeForm();">
+                    <div class="main-block-icon dashboard-create-safe"></div>
+                    <span class="main-block-title" ng-bind="::('DASHBOARD.SAFES.CREATE' | translate)"></span>
+                </div>
+                <div class="main-block-col" role="button" ng-click="secondSection = true">
+                    <div class="main-block-icon dashboard-open-safe"></div>
+                    <span class="main-block-title" ng-bind="::('COMMON.ACTIONS.OPEN.SAFE' | translate)"></span>
+                </div>
+            </div>
+            <div class="main-block-row" ng-class="{'slide-up': secondSection}">
+                <div class="main-block-col" role="button" ng-click="openFileDialog();">
+                    <div class="main-block-icon dashboard-open-file-safe"></div>
+                    <span class="main-block-title smaller-size" ng-bind="::('DASHBOARD.SAFES.OPEN' | translate)"></span>
+                </div>
+                <div class="main-block-col" role="button" ng-click="openSmartSafeRestoreForm();">
+                    <div class="main-block-icon dashboard-open-smartsafe"></div>
+                    <span class="main-block-title smaller-size" ng-bind="::('DASHBOARD.SAFES.OPEN_SMART' | translate)"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="safes.length > 0">
+        <div class="main-options-wrapper">
+            <div class="dashboard-options">
+                <ul class="nav top-options-list">
+                    <li class="top-options-item safes-item">
+                        <div class="top-options-link" ng-click="goToPage('/safes')" uib-tooltip="{{::('DASHBOARD.STATS.SAFES' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                            <i data-icon="\" class="base-icon"></i><span class="top-options-number" ng-bind="safes.length"></span>
+                        </div>
+                    </li>
+                    <li class="top-options-item payments-item">
+                        <div class="top-options-link" ng-click="goToPage('/history')" uib-tooltip="{{::('DASHBOARD.STATS.PAYMENTS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                            <i data-icon="~" class="base-icon"></i><span class="top-options-number" ng-bind="txCount"></span>
+                        </div>
+                    </li>
+                    <li class="top-options-item balance-item">
+                        <div class="top-options-link" ng-click="goToPage('/safes')" uib-tooltip="{{::('DASHBOARD.STATS.BALANCE' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                            <i data-icon="}" class="base-icon"></i><span class="top-options-number" ng-bind="moneyParse(totalBalance, false)"></span>
+                        </div>
+                    </li>
+                    <li class="top-options-item application-item">
+                        <div class="top-options-link" ng-click="goToPage('market/myOffers')" uib-tooltip="{{::('DASHBOARD.STATS.APPLICATIONS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                            <i data-icon="|" class="base-icon"></i><span class="top-options-number" ng-bind="offersCount"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="dashboard-options" style="justify-content: flex-end;">
+                <!--<div class="page-title-wrapper">
+                    <h1 class="page-title" ng-bind="::('SIDEBAR.DASHBOARD' | translate)"></h1>
+                </div>-->
+                <div class="dashboard-buttons">
+                    <div class="main-options-btn-group" ng-controller="safeModals">
+                        <button type="button" class="main-options-btn button-in-group" ng-click="openSafeForm();" ng-bind="::('DASHBOARD.SAFES.CREATE' | translate)"></button>
+                        <div class="dropdown-animation" uib-dropdown>
+                            <button type="button" class="main-options-btn button-in-dropdown" uib-dropdown-toggle>
+                                <span ng-bind="::('DASHBOARD.OPEN_S' | translate)"></span><i data-icon="a" class="base-icon"></i>
+                            </button>
+                            <ul class="dropdown-menu" uib-dropdown-menu>
+                                <li>
+                                    <button type="button" ng-click="openFileDialog();" ng-bind="::('DASHBOARD.SAFES.OPEN' | translate)"></button>
+                                </li>
+                                <li>
+                                    <button type="button" ng-click="openSmartSafeRestoreForm();" ng-bind="::('DASHBOARD.SAFES.RESTORE_SMART' | translate)"></button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div dashboard-carousel data-items="safes" data-height="appHeight"></div>
+        <div class="widgets" ng-if="dashboardLoaded">
+            <div class="widget-wrapper dragBlock" ng-class="{'widget-big': col.extra_width, 'widget-small': !col.extra_width}" ng-repeat="col in settings.widgets track by col.id"
+                 ng-drop="true" data-ng-drag-scroll-block=".content-wrapper" ng-drag-one-rem="{{settings.app_interface.general.font_size}}" data-ng-drop-success="onDropComplete($index, $data, $event)" ng-drag="true" data-ng-drag-data="col" data-index="{{col.id}}">
+                 <div class="widget-block">
+                     <div class="widget-header">
+                         <h3 ng-class="{'widget-select-wrapper': col.type == 'activeMining'}">
+                             <span ng-bind="col.name | translate"></span>
+                             <div class="widget-select" ng-if="col.type == 'activeMining'">
+                                 <select selectpicker class="general-select show-tick dropdown-animation" data-ng-model="$root.dashboardActiveMining"
+                                         data-nameoptions="safes" ng-options="safe.wallet_id as safe.name for safe in safes">
+                                 </select>
+                             </div>
+                         </h3>
+                         <div class="widget-menu dropdown-animation">
+                             <button type="button" class="widget-menu-btn" data-toggle="dropdown"><i data-icon="k" class="base-icon"></i></button>
+                             <ul class="dropdown-menu nav widget-menu-list">
+                                 <li ng-repeat="(key, widget) in widgets track by $index" ng-if="!widget.exists">
+                                     <button type="button" ng-click="changeWidget(col.id, key);" ng-bind="::(widget.name | translate)"></button>
+                                 </li>
+                                 <li>
+                                     <button type="button" ng-click="removeWidget(col.id);" ng-bind="::('DASHBOARD.WIDGET.REMOVE' | translate)"></button>
+                                 </li>
+                             </ul>
+                         </div>
+                     </div>
+                     <div class="widget-body-wrapper" ng-switch="col.type">
+                         <div class="widget-body" ng-switch-when=""></div>
+                         <div class="widget-body market-widget base-scroll dark-scroll" ng-controller="goodsOutController" ng-switch-when="goodsOut">
+                             <table ng-if="!loadingMarket">
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(0);"
+                                                ng-class="{'active': filter.goodsOutSortBy == 0, 'rotate-icon': (filter.goodsOutSortDir && filter.goodsOutSortBy == 0)}"></i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.CATEGORY' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.NAME' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(7);"
+                                                ng-class="{'active': filter.goodsOutSortBy == 7, 'rotate-icon': (!filter.goodsOutSortDir && filter.goodsOutSortBy == 7)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.PRICE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(1);"
+                                                ng-class="{'active': filter.goodsOutSortBy == 1, 'rotate-icon': (!filter.goodsOutSortDir && filter.goodsOutSortBy == 1)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(6);"
+                                                ng-class="{'active': filter.goodsOutSortBy == 6, 'rotate-icon': (!filter.goodsOutSortDir && filter.goodsOutSortBy == 6)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}" ng-repeat="offer in offers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)">
+                                     <td class="market-marker" ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                                         <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                                     </td>
+                                     <td>
+                                         <text-dropdown text="::(offer.cat | categoryTitle)" blockclass="'widget-long-item-wrapper'"></text-dropdown>
+                                     </td>
+                                     <td>
+                                         <text-dropdown text="::offer.t" blockclass="'widget-long-item-wrapper'"></text-dropdown>
+                                     </td>
+                                     <td>
+                                         <div class="market-info-wrapper">
+                                             <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                                                data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur></i>
+                                             <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(coinsParse(offer.ap, offer.p))"></span>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'widget-long-item-wrapper'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci" blockclass="'widget-long-item-wrapper'"></place-dropdown>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!offers.length">
+                                     <td colspan="7">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div class="widget-loading" ng-if="loadingMarket">
+                                 <span ng-bind="::('COMMON.LOADING' | translate)"></span>
+                             </div>
+                         </div>
+                         <div class="widget-body market-widget base-scroll dark-scroll" ng-controller="goodsInController" ng-switch-when="goodsIn">
+                             <table ng-if="!loadingMarket">
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(0);"
+                                                ng-class="{'active': filter.goodsInSortBy == 0, 'rotate-icon': (filter.goodsInSortDir && filter.goodsInSortBy == 0)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.CATEGORY' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.NAME' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(7);"
+                                                ng-class="{'active': filter.goodsInSortBy == 7, 'rotate-icon': (filter.goodsInSortDir && filter.goodsInSortBy == 7)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.PRICE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(1);"
+                                                ng-class="{'active': filter.goodsInSortBy == 1, 'rotate-icon': (filter.goodsInSortDir && filter.goodsInSortBy == 1)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(6);"
+                                                ng-class="{'active': filter.goodsInSortBy == 6, 'rotate-icon': (filter.goodsInSortDir && filter.goodsInSortBy == 6)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}" ng-repeat="offer in offers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)">
+                                     <td class="market-marker" ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                                         <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                                     </td>
+                                     <td>
+                                         <text-dropdown text="::(offer.cat | categoryTitle)" blockclass="'widget-long-item-wrapper'"></text-dropdown>
+                                     </td>
+                                     <td>
+                                         <text-dropdown text="::offer.t" blockclass="'widget-long-item-wrapper'"></text-dropdown>
+                                     </td>
+                                     <td>
+                                         <div class="market-info-wrapper">
+                                             <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                                                data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur></i>
+                                             <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(coinsParse(offer.ap, offer.p))"></span>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'widget-long-item-wrapper'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci" blockclass="'widget-long-item-wrapper'"></place-dropdown>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!offers.length">
+                                     <td colspan="7">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div class="widget-loading" ng-if="loadingMarket">
+                                 <span ng-bind="::('COMMON.LOADING' | translate)"></span>
+                             </div>
+                         </div>
+                         <div class="widget-body market-widget base-scroll dark-scroll" ng-controller="currencyOutController" ng-switch-when="currencyOut">
+                             <table ng-if="!loadingMarket">
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(0);"
+                                                ng-class="{'active': filter.currencyOutSortBy == 0, 'rotate-icon': (filter.currencyOutSortDir && filter.currencyOutSortBy == 0)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.RATE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(3);"
+                                                ng-class="{'active': filter.currencyOutSortBy == 3, 'rotate-icon': (filter.currencyOutSortDir && filter.currencyOutSortBy == 3)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::(('MARKET.AMOUNT' | translate) + ' ' + currencySymbol)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(1);"
+                                                ng-class="{'active': filter.currencyOutSortBy == 1, 'rotate-icon': (filter.currencyOutSortDir && filter.currencyOutSortBy == 1)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.CALC' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(6);"
+                                                ng-class="{'active': filter.currencyOutSortBy == 6, 'rotate-icon': (filter.currencyOutSortDir && filter.currencyOutSortBy == 6)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}" ng-repeat="offer in offers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)">
+                                     <td class="market-marker" ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                                         <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(offer | offerRate : offer.t)"></span>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(coinsParse(offer.ap))"></span>
+                                     </td>
+                                     <td>
+                                         <div class="market-info-wrapper">
+                                             <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                                                data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur></i>
+                                             <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <payment-display payment-types="::(offer.pt)"></payment-display>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'widget-long-item-wrapper'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci" blockclass="'widget-long-item-wrapper'"></place-dropdown>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!offers.length">
+                                     <td colspan="7">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div class="widget-loading" ng-if="loadingMarket">
+                                 <span ng-bind="::('COMMON.LOADING' | translate)"></span>
+                             </div>
+                         </div>
+                         <div class="widget-body market-widget base-scroll dark-scroll" ng-controller="currencyInController" ng-switch-when="currencyIn">
+                             <table ng-if="!loadingMarket">
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(0);"
+                                                ng-class="{'active': filter.currencyInSortBy == 0, 'rotate-icon': (filter.currencyInSortDir && filter.currencyInSortBy == 0)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.RATE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(3);"
+                                                ng-class="{'active': filter.currencyInSortBy == 3, 'rotate-icon': (filter.currencyInSortDir && filter.currencyInSortBy == 3)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::(('MARKET.AMOUNT' | translate) + ' ' + currencySymbol)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(1);"
+                                                ng-class="{'active': filter.currencyInSortBy == 1, 'rotate-icon': (filter.currencyInSortDir && filter.currencyInSortBy == 1)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.CALC' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(6);"
+                                                ng-class="{'active': filter.currencyInSortBy == 6, 'rotate-icon': (filter.currencyInSortDir && filter.currencyInSortBy == 6)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}" ng-repeat="offer in offers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)">
+                                     <td class="market-marker" ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                                         <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(offer | offerRate : offer.t)"></span>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(coinsParse(offer.ap))"></span>
+                                     </td>
+                                     <td>
+                                         <div class="market-info-wrapper">
+                                             <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                                                data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur></i>
+                                             <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <payment-display payment-types="::(offer.pt)"></payment-display>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'widget-long-item-wrapper'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci" blockclass="'widget-long-item-wrapper'"></place-dropdown>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!offers.length">
+                                     <td colspan="7">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div class="widget-loading" ng-if="loadingMarket">
+                                 <span ng-bind="::('COMMON.LOADING' | translate)"></span>
+                             </div>
+                         </div>
+                         <div class="widget-body market-widget base-scroll dark-scroll" ng-controller="currencyFavoriteController" ng-switch-when="currencyFavorite">
+                             <table ng-if="!loadingMarket">
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(0);"
+                                                ng-class="{'active': filter.currencyFavSortBy == 0, 'rotate-icon': (filter.currencyFavSortDir && filter.currencyFavSortBy == 0)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.RATE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(3);"
+                                                ng-class="{'active': filter.currencyFavSortBy == 3, 'rotate-icon': (filter.currencyFavSortDir && filter.currencyFavSortBy == 3)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::( ('MARKET.AMOUNT' | translate) + ' ' + currencySymbol )"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(1);"
+                                                ng-class="{'active': filter.currencyFavSortBy == 1, 'rotate-icon': (filter.currencyFavSortDir && filter.currencyFavSortBy == 1)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.CALC' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(6);"
+                                                ng-class="{'active': filter.currencyFavSortBy == 6, 'rotate-icon': (filter.currencyFavSortDir && filter.currencyFavSortBy == 6)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}" ng-if="offers.length" ng-repeat="offer in offers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)">
+                                     <td class="market-marker" ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                                         <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(offer | offerRate : offer.t)"></span>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(coinsParse(offer.ap))"></span>
+                                     </td>
+                                     <td>
+                                         <div class="market-info-wrapper">
+                                             <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                                                data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur></i>
+                                             <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <payment-display payment-types="::(offer.pt)"></payment-display>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'widget-long-item-wrapper'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci" blockclass="'widget-long-item-wrapper'"></place-dropdown>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!offers.length">
+                                     <td colspan="7">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div class="widget-loading" ng-if="loadingMarket">
+                                 <span ng-bind="::('COMMON.LOADING' | translate)"></span>
+                             </div>
+                         </div>
+                         <div class="widget-body market-widget base-scroll dark-scroll" ng-controller="goodsFavoriteController" ng-switch-when="goodsFavorite">
+                             <table ng-if="!loadingMarket">
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(0);"
+                                                ng-class="{'active': filter.goodsFavSortBy == 0, 'rotate-icon': (filter.goodsFavSortDir && filter.goodsFavSortBy == 0)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.CATEGORY' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.NAME' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(7);"
+                                                ng-class="{'active': filter.goodsFavSortBy == 7, 'rotate-icon': (filter.goodsFavSortDir && filter.goodsFavSortBy == 7)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('MARKET.PRICE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(1);"
+                                                ng-class="{'active': filter.goodsFavSortBy == 1, 'rotate-icon': (filter.goodsFavSortDir && filter.goodsFavSortBy == 1)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange(6);"
+                                                ng-class="{'active': filter.goodsFavSortBy == 6, 'rotate-icon': (filter.goodsFavSortDir && filter.goodsFavSortBy == 6)}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}" ng-repeat="offer in offers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)">
+                                     <td class="market-marker" ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                                         <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                                     </td>
+                                     <td>
+                                         <text-dropdown text="::(offer.cat | categoryTitle)" blockclass="'widget-long-item-wrapper'"></text-dropdown>
+                                     </td>
+                                     <td>
+                                         <text-dropdown text="::offer.t" blockclass="'widget-long-item-wrapper'"></text-dropdown>
+                                     </td>
+                                     <td>
+                                         <div class="market-info-wrapper">
+                                             <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                                                data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur></i>
+                                             <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::(coinsParse(offer.ap, offer.p))"></span>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'widget-long-item-wrapper'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci" blockclass="'widget-long-item-wrapper'"></place-dropdown>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!offers.length">
+                                     <td colspan="7">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div class="widget-loading" ng-if="loadingMarket">
+                                 <span ng-bind="::('COMMON.LOADING' | translate)"></span>
+                             </div>
+                         </div>
+                         <div class="widget-body payments-widget base-scroll dark-scroll" ng-controller="outgoingPaymentsController" ng-switch-when="outgoingPayments">
+                             <table>
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.TRANSACTION_DATE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('timestamp');"
+                                                ng-class="{'active': filter.historyOutSortBy == 'timestamp', 'rotate-icon': (!filter.historyOutSortDir && filter.historyOutSortBy == 'timestamp')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.STATUS' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.AMOUNT' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('amount');"
+                                                ng-class="{'active': filter.historyOutSortBy == 'amount', 'rotate-icon': (!filter.historyOutSortDir && filter.historyOutSortBy == 'amount')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th ng-if="!showCommentFieldOut"></th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-repeat="item in historyOut track by $index" ng-class="{'transaction-blocked': item.tx_type == 10 || isExclamation(item)}"
+                                     uib-tooltip-html="'{{getAvailableTime(item)}}'" data-tooltip-enable="{{!!getAvailableTime(item)}}" data-tooltip-class="tr-blocked-tooltip" data-tooltip-placement="top" data-tooltip-append-to-body="true">
+                                     <td>
+                                         <span ng-bind="(item.timestamp | intToDate | date : 'dd.MM.yy&nbsp;&nbsp;HH:mm')"></span>
+                                     </td>
+                                     <td>
+                                         <div class="transaction-status-indicator">
+                                             <circle-show item="item" height="appHeight"></circle-show>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::((item.amount > 0) ? moneyParse(item.amount) : moneyParse(-(item.sortFee)))"></span>
+                                     </td>
+                                     <td ng-if="!showCommentFieldOut">
+                                         <div class="payments-comment-wrapper" ng-if="item.comment">
+                                             <i data-icon="y" class="base-icon" uib-tooltip="{{::item.comment}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!historyOut.length">
+                                     <td colspan="4">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="widget-body payments-widget base-scroll dark-scroll" ng-controller="ingoingPaymentsController" ng-switch-when="ingoingPayments">
+                             <table>
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.TRANSACTION_DATE' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('timestamp');"
+                                                ng-class="{'active': filter.historyInSortBy == 'timestamp', 'rotate-icon': (!filter.historyInSortDir && filter.historyInSortBy == 'timestamp')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.STATUS' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.AMOUNT' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('amount');"
+                                                ng-class="{'active': filter.historyInSortBy == 'amount', 'rotate-icon': (!filter.historyInSortDir && filter.historyInSortBy == 'amount')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th ng-if="!showCommentFieldIn"></th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-repeat="item in historyIn track by $index" ng-class="{'transaction-blocked': item.tx_type == 10 || isExclamation(item)}"
+                                     uib-tooltip-html="'{{getAvailableTime(item)}}'" data-tooltip-enable="{{!!getAvailableTime(item)}}" data-tooltip-class="tr-blocked-tooltip" data-tooltip-placement="top" data-tooltip-append-to-body="true">
+                                     <td ng-class="{'payments-marker': item.is_mining && item.height != 0}">
+                                         <span ng-bind="(item.timestamp | intToDate | date : 'dd.MM.yy&nbsp;&nbsp;HH:mm')"></span>
+                                     </td>
+                                     <td>
+                                         <div class="transaction-status-indicator">
+                                             <circle-show item="item" height="appHeight"></circle-show>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <span ng-bind="::((item.amount > 0) ? moneyParse(item.amount) : moneyParse(-(item.sortFee)))"></span>
+                                     </td>
+                                     <td ng-if="!showCommentFieldIn">
+                                         <div class="payments-comment-wrapper" ng-if="item.comment">
+                                             <i data-icon="y" class="base-icon" uib-tooltip="{{::item.comment}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!historyIn.length">
+                                     <td colspan="4">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="widget-body contacts-widget base-scroll dark-scroll" ng-controller="lastContactsController" ng-switch-when="lastContacts">
+                             <table>
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('name');"
+                                                ng-class="{'active': filter.contactSortBy == 'name', 'rotate-icon': (!filter.contactSortDir && filter.contactSortBy == 'name')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('CONTACTS.COMMUNICATION_METHODS' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('connections');"
+                                                ng-class="{'active': filter.contactSortBy == 'connections', 'rotate-icon': (!filter.contactSortDir && filter.contactSortBy == 'connections')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th>
+                                         <div class="ordered-cell">
+                                             <span ng-bind="::('COMMON.GROUPS' | translate)"></span>
+                                             <i data-icon="b" class="base-icon order-icon" ng-click="orderChange('group_ids.length');"
+                                                ng-class="{'active': filter.contactSortBy == 'group_ids.length', 'rotate-icon': (!filter.contactSortDir && filter.contactSortBy == 'group_ids.length')}">
+                                             </i>
+                                         </div>
+                                     </th>
+                                     <th></th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-repeat="contact in lastContacts track by contact.id">
+                                     <td>
+                                         <div class="contact-name" ng-click="goToPage('/contact/' + contact.id);">
+                                             <i data-icon="3" class="base-icon"></i><span ng-bind="contact.name"></span>
+                                         </div>
+                                     </td>
+                                     <td>
+                                         <contacts-dropdown ng-if="contact.normal_connections.length" contacts="::(contact.normal_connections)" blockclass="'contact-connections'"></contacts-dropdown>
+                                     </td>
+                                     <td>
+                                         <span ng-repeat="item in getContactGroups(contact) track by $index" ng-bind="item.name + (!$last ? ', ' : '')"></span>
+                                     </td>
+                                     <td>
+                                         <div class="contact-options-btn-wrapper">
+                                             <button type="button" class="contact-options-btn" ng-click="sendMoney(contact)" data-ng-disabled="daemonState.daemon_network_state != 2 || safes.length == 0">
+                                                 <i data-icon="&#xe00d;" class="base-icon send-money-icon"
+                                                    uib-tooltip="{{::('SAFE.ACTIONS.SEND_MONEY' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                                 </i>
+                                             </button>
+                                             <button type="button" class="contact-options-btn" ng-click="goToPage('/history/' + contact.id);">
+                                                 <i data-icon="&#xe015;" class="base-icon payments-icon"
+                                                    uib-tooltip="{{::('NEW_CONTACT.RELATED_PAYMENTS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                                 </i>
+                                             </button>
+                                             <button type="button" class="contact-options-btn" ng-click="deleteContact(contact);">
+                                                 <i data-icon="&#xe012;" class="base-icon delete-icon"
+                                                    uib-tooltip="{{::('COMMON.ACTIONS.DELETE' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                                 </i>
+                                             </button>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 <tr ng-if="!lastContacts.length">
+                                     <td colspan="4">
+                                         <div class="empty-table">
+                                             <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="widget-body network-info-widget base-scroll dark-scroll" ng-controller="backendInfoController" ng-switch-when="backendInfo">
+                             <table>
+                                 <thead>
+                                 <tr>
+                                     <th>
+                                         <span ng-bind="::('COMMON.KEY' | translate)"></span>
+                                     </th>
+                                     <th>
+                                         <span ng-bind="::('COMMON.VALUE' | translate)"></span>
+                                     </th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-repeat="state in systemState track by state.stateName">
+                                     <td>
+                                         <span uib-tooltip-template="'views/dashboardNetworkInformation.html'" data-tooltip-class="network-info-tooltip"
+                                               data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" ng-bind="state.stateName">
+                                         </span>
+                                     </td>
+                                     <td>
+                                         <div class="network-text-wrapper" uib-tooltip-template="'views/dashboardNetworkInformation.html'"
+                                              data-tooltip-class="network-info-tooltip" data-tooltip-append-to-body="true" data-tooltip-trigger="'outsideClick'">
+                                             <span class="network-table-text" ng-bind="state.stateValue"></span>
+                                             <i data-icon="d" class="base-icon" ng-if="state.stateName == 'last_blocks'"></i>
+                                         </div>
+                                     </td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="widget-body mining-widget base-scroll dark-scroll" ng-controller="activeMiningController" ng-switch-when="activeMining">
+                             <div class="mining-widget-empty" ng-if="!safesDiagram.length" ng-bind="::('MINING.WIDGET.EMPTY' | translate)"></div>
+                             <div class="mining-widget-chart" ng-if="safesDiagram.length">
+                                 <div class="chart-range-wrapper">
+                                     <div class="chart-range-group">
+                                         <span ng-bind="::('MINING.PERIOD' | translate)"></span>
+                                         <ul class="chart-range-selector">
+                                             <li role="button" ng-class="{'active': safesPeriod == '1week'}" ng-click="setPeriod('1week');" ng-bind="::('1 ' + ('COMMON.WEEK_SHORT' | translate))"></li>
+                                             <li role="button" ng-class="{'active': safesPeriod == '2week'}" ng-click="setPeriod('2week');" ng-bind="::('2 ' + ('COMMON.WEEK_SHORT' | translate))"></li>
+                                             <li role="button" ng-class="{'active': safesPeriod == '1month'}" ng-click="setPeriod('1month');" ng-bind="::('1 ' + ('COMMON.MONTH_SHORT' | translate))"></li>
+                                             <li role="button" ng-class="{'active': safesPeriod == '3month'}" ng-click="setPeriod('3month');" ng-bind="::('3 ' + ('COMMON.MONTH_SHORT' | translate))"></li>
+                                             <li role="button" ng-class="{'active': safesPeriod == '6month'}" ng-click="setPeriod('6month');" ng-bind="::('6 ' + ('COMMON.MONTH_SHORT' | translate))"></li>
+                                             <li role="button" ng-class="{'active': safesPeriod == '1year'}" ng-click="setPeriod('1year');" ng-bind="::('1 ' + ('COMMON.YEAR' | translate))"></li>
+                                             <li role="button" ng-class="{'active': safesPeriod == 'all'}" ng-click="setPeriod('all');" ng-bind="::('COMMON.ALL' | translate)"></li>
+                                         </ul>
+                                     </div>
+                                     <div class="chart-range-group">
+                                         <span ng-bind="::('MINING.GROUP' | translate)"></span>
+                                         <ul class="chart-range-selector">
+                                             <li role="button" ng-class="{'active': safesGroup == 'day'}" ng-click="setGroup('day');" ng-bind="::('COMMON.DAY' | translate)"></li>
+                                             <li role="button" ng-class="{'active': safesGroup == 'week'}" ng-click="setGroup('week');" ng-bind="::('COMMON.WEEK' | translate)"></li>
+                                             <li role="button" ng-class="{'active': safesGroup == 'month'}" ng-click="setGroup('month');" ng-bind="::('COMMON.MONTH' | translate)"></li>
+                                         </ul>
+                                     </div>
+                                 </div>
+                                 <div class="chart-graph" ui-chart="safesDiagram" chart-options="diagramOptions"></div>
+                             </div>
+                         </div>
+                         <div class="widget-body base-scroll dark-scroll" ng-switch-default>
+                             <span ng-bind="::('DASHBOARD.WIDGET.NOT_DETECTED' | translate)"></span>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+        <div class="add-widget-btn-wrapper" ng-if="settings.widgets.length <= 10">
+            <div class="add-widget-btn dropdown-animation" uib-dropdown>
+                <button type="button" uib-dropdown-toggle>
+                    <i data-icon="z" class="base-icon"></i><span class="add-widget-btn-text" ng-bind="::('DASHBOARD.WIDGET.ADD' | translate)"></span>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu>
+                    <li ng-class="{'last-element': settings.widgets.length == 10}" ng-repeat="(key, widget) in widgets" ng-if="!widget.exists">
+                        <button ng-click="addWidget(key);" ng-bind="::(widget.name | translate)"></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>

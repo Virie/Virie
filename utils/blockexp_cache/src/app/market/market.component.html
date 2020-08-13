@@ -1,0 +1,696 @@
+<div class="overlay" *ngIf="loader === true">
+  <div class="loader"></div>
+</div>
+
+<div class="mobile_heading" *ngIf="navIsOpen === false">Market</div>
+
+<div class="top_box" [ngClass]="{'currency': activeClass=='currency', 'products': activeClass=='products'}">
+  <div class="left_box">
+
+    <ul class="nav">
+      <li class="go_currency" [ngClass]="{'active': activeClass=='currency'}">
+        <a (click)="getCurrency($event)">Currency</a>
+      </li>
+      <li class="go_products" [ngClass]="{'active': activeClass=='products'}">
+        <a (click)="getProducts()">Products</a>
+      </li>
+    </ul>
+
+    <div class="filter_search" *ngIf="activeClass==='currency'">
+      <button type="button" class="btn_filter" (click)="openCurrencyFilter()"
+              [ngClass]="{'false': CurrencyFilter===false, 'true': CurrencyFilter===true}">
+        Filter
+      </button>
+      <div class="wrap_search">
+        <button type="button" id="btn_currency_search" class="base-icon" (click)="marketSearch($event)"></button>
+        <input type="text" class="input_search" placeholder="search" [(ngModel)]="filter_currency.keyword"
+               (change)="filter()" (keyup)="filter()">
+      </div>
+    </div>
+    <div class="filter_search" *ngIf="activeClass==='products'">
+      <button type="button" class="btn_filter" (click)="openProductsFilter()"
+              [ngClass]="{'false': ProductsFilter===false, 'true': ProductsFilter===true}">
+        Filter
+      </button>
+      <div class="wrap_box">
+        <div class="wrap_search">
+          <button type="button" id="btn_products_search" class="base-icon" (click)="marketSearch($event)"></button>
+          <input type="text" class="input_search" placeholder="search" [(ngModel)]="filter_products.keyword"
+                 (change)="filter()" (keyup)="filter()">
+        </div>
+        <div class="wrap_search_by_name_only">
+          <input class="checkbox" type="checkbox" id="search_by_name_only"
+                 [(ngModel)]="filter_products.keyword_only_title" (change)="filter()">
+          <label class="label_name_only" for="search_by_name_only">Search by name only</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- CURRENCY FILTER -->
+<div class="filter_wrapper currency_filter" *ngIf="activeClass==='currency' && CurrencyFilter===true">
+  <div class="left_box">
+
+    <div class="item show">
+      <b class="item_label">Show</b>
+      <fieldset>
+        <input id="optradio-pr-1" type="radio" name="optradio" [value]="5" [(ngModel)]="filter_currency.ot"
+               (change)="filter()">
+        <label for="optradio-pr-1" class="radio-inline">All</label>
+      </fieldset>
+      <fieldset>
+        <input id="optradio-pr-2" type="radio" name="optradio" [value]="2" [(ngModel)]="filter_currency.ot"
+               (change)="filter()">
+        <label for="optradio-pr-2" class="radio-inline">Buy</label>
+      </fieldset>
+      <fieldset>
+        <input id="optradio-pr-3" type="radio" name="optradio" [value]="3" [(ngModel)]="filter_currency.ot"
+               (change)="filter()">
+        <label for="optradio-pr-3" class="radio-inline">Sell</label>
+      </fieldset>
+    </div>
+
+
+    <div class="item settlement_currency">
+      <b class="item_label">Settlement currency</b>
+      <kendo-dropdownlist
+        [data]="settlementCurrency"
+        [textField]="'title'"
+        [valueField]="'code'"
+        [defaultItem]="settlementCurrencyValueDefault"
+        (valueChange)="settlementCurrencyChange($event)"
+        [(ngModel)]="settlementCurrencyValue">
+      </kendo-dropdownlist>
+
+      <select class="native_mobile_select" [(ngModel)]="settlementCurrencyValue" (change)="settlementCurrencyChange()">
+        <option [ngValue]="settlementCurrencyValueDefault" selected="selected">all</option>
+        <option [ngValue]="current" *ngFor="let current of settlementCurrency | sortByAlphabet: 'rank'">
+          {{current.title}}
+        </option>
+      </select>
+    </div>
+
+
+    <div class="item settlement_method">
+      <b class="item_label">Settlement method</b>
+      <kendo-multiselect
+        (click)="multiselectChange($event)"
+        [autoClose]="true"
+        [data]="listSettlementMethod"
+        [textField]="'text'"
+        [valueField]="'value'"
+        [placeholder]="'any'"
+        (valueChange)="settlementMethodChange($event)"
+        [clearButton]="false"
+        [tagMapper]="settlementTagMapper"
+        [(ngModel)]="settlementMethodValue">
+      </kendo-multiselect>
+      <select class="native_mobile_select multiple" size="4" multiple [(ngModel)]="settlementMethodValue"
+              (change)="settlementMethodChange(settlementMethodValue)">
+        <option [ngValue]="current" *ngFor="let current of listSettlementMethod">
+          {{current.text}}
+        </option>
+      </select>
+    </div>
+
+
+    <div class="item offer_date">
+      <b class="item_label">Offer date</b>
+      <kendo-dropdownlist
+        [data]="offerDate"
+        [textField]="'text'"
+        [valueField]="'value'"
+        [defaultItem]="offerDateValueDefault"
+        (valueChange)="offerDateChange($event)"
+        [(ngModel)]="offerDateValue">
+      </kendo-dropdownlist>
+      <select class="native_mobile_select" [(ngModel)]="offerDateValue" (change)="offerDateChange()">
+        <option [ngValue]="offerDateValueDefault">any</option>
+        <option [ngValue]="current" *ngFor="let current of offerDate">
+          {{current.text}}
+        </option>
+      </select>
+    </div>
+
+    <div class="item offer_date selected" *ngIf="filter_currency.time === 'period'">
+      <b class="item_label">Date</b>
+      <div class="wrap_items_inputs">
+        <div class="from">
+          <span>from</span>
+          <input readonly (click)="currency_from=!currency_from" (click)="currency_to = false" type="text"
+                 class="style air-input" placeholder="Date" [(ngModel)]="filter_currency.time_start">
+          <air-datepicker *ngIf="currency_from" class="from-air-datepicker" [airOptions]="options" [(airDate)]="date"
+                          (airChange)="filter_currency.time_start = dateChanged($event); filter();"></air-datepicker>
+        </div>
+        <div class="to">
+          <span>to</span>
+          <input readonly (click)="currency_to=!currency_to" (click)="currency_from = false" type="text"
+                 class="style air-input" placeholder="Date" [(ngModel)]="filter_currency.time_end">
+          <air-datepicker *ngIf="currency_to" class="to-air-datepicker" [airOptions]="options" [(airDate)]="date"
+                          (airChange)="filter_currency.time_end = dateChanged($event); filter();"></air-datepicker>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right_box">
+    <div class="item geography">
+      <b class="item_label">Geography</b>
+      <fieldset>
+        <input id="Geographyradio-one" type="radio" name="Geographyradio" [(ngModel)]="filter_currency.location"
+               [value]="'country'" (change)="filter()">
+        <label for="Geographyradio-one" class="radio-inline">Select</label>
+      </fieldset>
+      <fieldset>
+        <input id="Geographyradio-two" type="radio" name="Geographyradio" [(ngModel)]="filter_currency.location"
+               [value]="'any'" (change)="filter()">
+        <label for="Geographyradio-two" class="radio-inline">Anywhere</label>
+      </fieldset>
+    </div>
+
+    <div class="item country" *ngIf="filter_currency.location === 'country'">
+      <b class="item_label">Country</b>
+      <kendo-dropdownlist
+        [data]="listCountry"
+        [textField]="'name'"
+        [valueField]="'alpha2Code'"
+        [defaultItem]="countryValueDefault"
+        (valueChange)="countryChange($event)"
+        [(ngModel)]="countryValue">
+      </kendo-dropdownlist>
+      <select class="native_mobile_select" [(ngModel)]="countryValue" (change)="countryChange()">
+        <option [ngValue]="countryValueDefault">all</option>
+        <option [ngValue]="current" *ngFor="let current of listCountry">
+          {{current.name}}
+        </option>
+      </select>
+    </div>
+
+    <div class="item city" *ngIf="filter_currency.location === 'country'">
+      <b class="item_label">City</b>
+      <input type="text" class="style" placeholder="City" [(ngModel)]="filter_currency.lci" (change)="filter()">
+    </div>
+
+    <div class="item amount">
+      <b class="item_label" *ngIf="filter_currency.ot === 5">Amount</b>
+      <b class="item_label" *ngIf="filter_currency.ot === 2">Purchase amount</b>
+      <b class="item_label" *ngIf="filter_currency.ot === 3">Sale amount</b>
+      <div class="wrap_items_inputs">
+        <div class="from">
+          <span>from</span>
+          <input type="text" class="style" placeholder="numbers VRE" [(ngModel)]="filter_currency.ap_from"
+                 (change)="filter()">
+        </div>
+        <div class="to">
+          <span>to</span>
+          <input type="text" class="style" placeholder="numbers VRE" [(ngModel)]="filter_currency.ap_to"
+                 (change)="filter()">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="item exchange_rate">
+      <b class="item_label">Exchange rate</b>
+      <div class="wrap_items_inputs">
+        <div class="from">
+          <span>from</span>
+          <input type="text" class="style" placeholder="numbers {{filter_currency.p}}"
+                 [(ngModel)]="filter_currency.rate_from" (change)="filter()">
+        </div>
+        <div class="to">
+          <span>to</span>
+          <input type="text" class="style" placeholder="numbers {{filter_currency.p}}"
+                 [(ngModel)]="filter_currency.rate_to" (change)="filter()">
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap_run_btn">
+      <button type="button" class="clear btn" (click)="clearCurrencyFilter()">Clear</button>
+      <button type="button" class="close btn" (click)="openCurrencyFilter()">Close</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- PRODUCTS FILTER-->
+<div class="filter_wrapper" *ngIf="activeClass==='products' && ProductsFilter===true">
+  <div class="left_box">
+
+    <div class="item show">
+      <b class="item_label">Show</b>
+      <fieldset>
+        <input id="optradio-1" type="radio" name="optradio" [value]="4" [(ngModel)]="filter_products.ot"
+               (change)="filter()">
+        <label for="optradio-1" class="radio-inline">All</label>
+      </fieldset>
+      <fieldset>
+        <input id="optradio-2" type="radio" name="optradio" [value]="0" [(ngModel)]="filter_products.ot"
+               (change)="filter()">
+        <label for="optradio-2" class="radio-inline">Buy</label>
+      </fieldset>
+      <fieldset>
+        <input id="optradio-3" type="radio" name="optradio" [value]="1" [(ngModel)]="filter_products.ot"
+               (change)="filter()">
+        <label for="optradio-3" class="radio-inline">Sell</label>
+      </fieldset>
+    </div>
+
+    <div class="item products">
+      <b class="item_label">Category</b>
+      <kendo-dropdownlist
+        [data]="categoriesSorted"
+        [textField]="'title'"
+        [valueField]="'id'"
+        [defaultItem]="categoriesValueDefault"
+        (valueChange)="categoriesChange($event)"
+        [(ngModel)]="categoriesValue">
+        <ng-template kendoDropDownListItemTemplate let-dataItem>
+          <span class="template lavel_{{dataItem.class}}">{{ dataItem.title }}</span>
+        </ng-template>
+      </kendo-dropdownlist>
+      <select class="native_mobile_select" [(ngModel)]="categoriesValue" (change)="categoriesChange()">
+        <option [ngValue]="categoriesValueDefault">all</option>
+        <option [ngValue]="current" *ngFor="let current of categoriesSorted">
+          {{current.title}}
+        </option>
+      </select>
+    </div>
+
+
+    <div class="item offer_date">
+      <b class="item_label">Offer date</b>
+      <kendo-dropdownlist
+        [data]="offerDate"
+        [textField]="'text'"
+        [valueField]="'value'"
+        [defaultItem]="productsOfferDateValueDefault"
+        (valueChange)="productsOfferDateChange($event)"
+        [(ngModel)]="productsOfferDateValue">
+      </kendo-dropdownlist>
+      <select class="native_mobile_select" [(ngModel)]="productsOfferDateValue" (change)="productsOfferDateChange()">
+        <option [ngValue]="productsOfferDateValueDefault">any</option>
+        <option [ngValue]="current" *ngFor="let current of offerDate">
+          {{current.text}}
+        </option>
+      </select>
+    </div>
+
+    <div class="item offer_date selected" *ngIf="filter_products.time === 'period'">
+      <b class="item_label">Date</b>
+      <div class="wrap_items_inputs">
+        <div class="from">
+          <span>from</span>
+          <input readonly (click)="products_from=!products_from" (click)="products_to = false" type="text"
+                 class="air-input style" placeholder="Date" [(ngModel)]="filter_products.time_start">
+          <air-datepicker *ngIf="products_from" class="from-air-datepicker" [airOptions]="options" [(airDate)]="date"
+                          (airChange)="filter_products.time_start = dateChanged($event); filter();"></air-datepicker>
+        </div>
+        <div class="to">
+          <span>to</span>
+          <input readonly (click)="products_to=!products_to" (click)="products_from = false" type="text"
+                 class="air-input style" placeholder="Date" [(ngModel)]="filter_products.time_end">
+          <air-datepicker *ngIf="products_to" class="to-air-datepicker" [airOptions]="options" [(airDate)]="date"
+                          (airChange)="filter_products.time_end = dateChanged($event); filter();"></air-datepicker>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="item settlement_currency">
+      <b class="item_label">Settlement currency</b>
+      <kendo-dropdownlist
+        [data]="settlementCurrency"
+        [textField]="'title'"
+        [valueField]="'code'"
+        [defaultItem]="productsSettlementCurrencyValueDefault"
+        (valueChange)="productsSettlementCurrencyChange($event)"
+        [(ngModel)]="productsSettlementCurrencyValue">
+      </kendo-dropdownlist>
+      <select class="native_mobile_select" [(ngModel)]="productsSettlementCurrencyValue"
+              (change)="productsSettlementCurrencyChange()">
+        <option [ngValue]="productsSettlementCurrencyValueDefault">all</option>
+        <option [ngValue]="current" *ngFor="let current of settlementCurrency">
+          {{current.title}}
+        </option>
+      </select>
+    </div>
+
+
+    <div class="item transfer_method">
+      <b class="item_label">Transfer method</b>
+      <kendo-multiselect
+        (click)="multiselectChange($event)"
+        [autoClose]="true"
+        [data]="listTransferMethod"
+        [textField]="'text'"
+        [valueField]="'value'"
+        [placeholder]="'any'"
+        (valueChange)="transferMethodChange($event)"
+        [clearButton]="false"
+        [tagMapper]="transferTagMapper"
+        [(ngModel)]="transferMethodValue">
+      </kendo-multiselect>
+      <select class="native_mobile_select multiple" multiple [(ngModel)]="transferMethodValue"
+              (change)="transferMethodChange()">
+        <option [ngValue]="current" *ngFor="let current of listTransferMethod">
+          {{current.text}}
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+
+  <div class="right_box">
+
+    <div class="item geography">
+      <b class="item_label">Geography</b>
+      <fieldset>
+        <input id="Geographyradio-1" type="radio" name="Geographyradio" [(ngModel)]="filter_products.location"
+               [value]="'country'" (change)="filter()">
+        <label for="Geographyradio-1" class="radio-inline">Select</label>
+      </fieldset>
+      <fieldset>
+        <input id="Geographyradio-2" type="radio" name="Geographyradio" [(ngModel)]="filter_products.location"
+               [value]="'any'" (change)="filter()">
+        <label for="Geographyradio-2" class="radio-inline">Anywhere</label>
+      </fieldset>
+    </div>
+
+    <div class="item country" *ngIf="filter_products.location === 'country'">
+      <b class="item_label">Country</b>
+      <kendo-dropdownlist
+        [data]="listCountry"
+        [textField]="'name'"
+        [valueField]="'alpha2Code'"
+        [defaultItem]="productsCountryValueDefault"
+        (valueChange)="productsCountryChange($event)"
+        [(ngModel)]="productsCountryValue">
+      </kendo-dropdownlist>
+      <select class="native_mobile_select" [(ngModel)]="productsCountryValue" (change)="productsCountryChange()">
+        <option [ngValue]="productsCountryValueDefault">all</option>
+        <option [ngValue]="current" *ngFor="let current of listCountry">
+          {{current.name}}
+        </option>
+      </select>
+    </div>
+
+    <div class="item city" *ngIf="filter_products.location === 'country'">
+      <b class="item_label">City</b>
+      <input type="text" class="style" placeholder="City" [(ngModel)]="filter_products.lci" (change)="filter()">
+    </div>
+
+
+    <div class="item price">
+      <b class="item_label">Price</b>
+      <div class="wrap_items_inputs">
+        <div class="from">
+          <span>from</span>
+          <input type="text" class="style" placeholder="numbers {{filter_products.p}}"
+                 [(ngModel)]="filter_products.ap_from" (change)="filter()">
+        </div>
+        <div class="to">
+          <span>to</span>
+          <input type="text" class="style" placeholder="numbers {{filter_products.p}}"
+                 [(ngModel)]="filter_products.ap_to" (change)="filter()">
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap_run_btn">
+      <button type="button" class="clear btn" (click)="clearProductsFilter()">Clear</button>
+      <button type="button" class="close btn" (click)="openProductsFilter()">Close</button>
+    </div>
+
+
+  </div>
+</div>
+
+
+<div class="wrapper_table" [ngClass]="{'loading-table': loader === true}" (mouseup)="selectText()">
+
+
+  <!-- ********** CURRENCY TABLE ********** -->
+  <table class="table_market currency" *ngIf="activeClass=='currency'">
+    <thead *ngIf="lengthOffers !== 0">
+    <tr>
+      <th (click)="sorting('timestamp')" class="age">
+        Age
+        <b [class.active]="currentSortingField === 'timestamp'"
+           [ngClass]="currentSortingField === 'timestamp' && currentSortingDirection === true ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+      <th (click)="sorting('rate')" class="exchange_rate ">
+        Exchange Rate
+        <b [class.active]="currentSortingField === 'rate'"
+           [ngClass]="currentSortingField === 'rate' && currentSortingDirection === false ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+      <th (click)="sorting('ap')" class="amount_vre">
+        Amount VRE
+        <b [class.active]="currentSortingField === 'ap'"
+           [ngClass]="currentSortingField === 'ap' && currentSortingDirection === false ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+      <th class="settlement_row">Settlement</th>
+      <th class="contacts">Contact</th>
+      <th (click)="sorting('lco')" class="location">
+        Location
+        <b [class.active]="currentSortingField === 'lco'"
+           [ngClass]="currentSortingField === 'lco' && currentSortingDirection === false ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let offer of Offers" (click)="highlightedText === true || setOffer(offer)"
+        (click)="highlightedText === true || (showDialog = !showDialog)">
+      <td class="age">
+        {{offer.timestamp * 1000 | TimeAgo}}
+      </td>
+      <td class="exchange_rate">
+        {{offer.rate | number : '1.2-8'}} {{offer.t}} / VRE
+      </td>
+      <td class="amount_vre">
+        {{offer.ap | moneyParse}} VRE
+      </td>
+      <td class="settlement_row">
+        <div *ngFor="let pt of offer.pt">
+          <span *ngIf="pt === 'BCX'" class="base-icon bank_card">
+            <span class="tooltiptext">Bank card</span>
+          </span>
+          <span *ngIf="pt === 'BTX'" class="base-icon wire_transfer">
+            <span class="tooltiptext">Wire transfer</span>
+          </span>
+          <span *ngIf="pt === 'CSH'" class="base-icon cash">
+            <span class="tooltiptext">Cash</span>
+          </span>
+          <span *ngIf="pt !== 'EPS' && pt !== 'BCX' && pt !== 'CSH' && pt !== 'BTX'" class="base-icon other">
+            <span class="tooltiptext">{{pt}}</span>
+          </span>
+        </div>
+
+      </td>
+      <td class="contacts">
+        <span *ngFor="let contact of offer.cnt">
+          <span *ngFor="let key of objectKeys(contact)">
+            {{key + ' : ' + contact[key]}}<br>
+          </span>
+        </span>
+      </td>
+      <div *ngIf="offer.lco === '000All'; then thenBlock else elseBlock"></div>
+      <ng-template #thenBlock>
+        <td>Anywhere</td>
+      </ng-template>
+      <ng-template #elseBlock>
+        <td class="location">{{offer.lco | Lang}}<span *ngIf="offer.lci">, {{ offer.lci}}</span></td>
+      </ng-template>
+    </tr>
+    </tbody>
+
+    <app-dialog [(visible)]="showDialog">
+      <div class="dialog_title">
+        <span *ngIf="currentOffer?.ot === 2">Buying Virie</span>
+        <span *ngIf="currentOffer?.ot === 3">Selling Virie</span>
+      </div>
+      <table class="descript_offer table">
+        <tr class="currency" *ngIf="currentOffer?.t.length">
+          <td class="name">Currency:</td>
+          <td class="val"> {{currentOffer?.t}} </td>
+        </tr>
+        <tr class="amount_in" *ngIf="currentOffer?.p.length">
+          <td class="name">Amount in: {{currentOffer?.p}} </td>
+          <td class="val"> {{currentOffer?.at | moneyParse}} {{currentOffer?.t}} </td>
+        </tr>
+        <tr class="bonus" *ngIf="currentOffer?.b.length">
+          <td class="name">Bonus:</td>
+          <td class="val">{{currentOffer?.b}}</td>
+        </tr>
+        <tr class="settlement_method" *ngIf="currentOffer?.pt !== null && currentOffer?.pt.length">
+          <td class="name">Settlement method:</td>
+          <td class="val">
+            <div *ngFor="let pt of currentOffer?.pt">
+              <span *ngIf="pt === 'BCX'" class="base-icon bank_card">Bank card</span>
+              <span *ngIf="pt === 'BTX'" class="base-icon wire_transfer">Wire transfer</span>
+              <span *ngIf="pt === 'CSH'" class="base-icon cash">Cash</span>
+              <span *ngIf="pt !== 'EPS' && pt !== 'BCX' && pt !== 'CSH' && pt !== 'BTX'"
+                    class="base-icon other">{{pt}}</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="terms_of_purshase" *ngIf="currentOffer?.do.length">
+          <td *ngIf="currentOffer?.ot === 2">Terms of purshase:</td>
+          <td *ngIf="currentOffer?.ot === 3">Terms of sale:</td>
+          <td class="val">
+            <div *ngFor="let do of currentOffer?.do.split(',')">
+              <span *ngIf="do === 'ALL'">Full amount at once</span>
+              <span *ngIf="do === 'PARTS'">Payment in parts available</span>
+              <span *ngIf="do === 'CANMEET'">Face-to-face meeting available</span>
+              <span *ngIf="do === 'CANNOTMEET'">Face-to-face meeting unavailable</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="comment" *ngIf="currentOffer?.com.length">
+          <td class="name">Comment:</td>
+          <td class="val">{{currentOffer?.com}}</td>
+        </tr>
+      </table>
+    </app-dialog>
+  </table>
+
+
+  <!-- ********** PRODUCTS TABLE ********** -->
+  <table class="table_market products" *ngIf="activeClass=='products'">
+    <thead *ngIf="lengthOffers !== 0">
+    <tr>
+      <th (click)="sorting('timestamp')" class="age">
+        Age
+        <b [class.active]="currentSortingField === 'timestamp'"
+           [ngClass]="currentSortingField === 'timestamp' && currentSortingDirection === true ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+      <th class="category">Category</th>
+      <th (click)="sorting('t')" class="title_row">
+        Title
+        <b [class.active]="currentSortingField === 't'"
+           [ngClass]="currentSortingField === 't' && currentSortingDirection === false ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+      <th (click)="sorting('ap')" class="price">
+        Price
+        <b [class.active]="currentSortingField === 'ap'"
+           [ngClass]="currentSortingField === 'ap' && currentSortingDirection === false ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+      <th class="contacts">Contact</th>
+      <th (click)="sorting('lco')" class="location">
+        Location
+        <b [class.active]="currentSortingField === 'lco'"
+           [ngClass]="currentSortingField === 'lco' && currentSortingDirection === false ? 'down' : 'up'"
+           class="base-icon sort_arrow"></b>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let offer of Offers" (click)="highlightedText === true || setOffer(offer)"
+        (click)="highlightedText === true || (showDialog = !showDialog)">
+      <td class="age">{{offer.timestamp * 1000 | TimeAgo}}</td>
+      <td class="category">{{ offer.cat | Category }}</td>
+      <td class="title_row">{{offer.t}}</td>
+      <td class="price">{{offer.ap | moneyParse}} {{offer.p}}</td>
+      <td class="contacts">
+          <span *ngFor="let contact of offer.cnt">
+            <span *ngFor="let key of objectKeys(contact)">
+              {{key + ' : ' + contact[key]}}<br>
+            </span>
+          </span>
+      </td>
+      <div *ngIf="offer.lco === '000All'; then thenBlock else elseBlock"></div>
+      <ng-template #thenBlock>
+        <td class="location">Anywhere</td>
+      </ng-template>
+      <ng-template #elseBlock>
+        <td class="location">{{offer.lco | Lang}}<span *ngIf="offer.lci">, {{ offer.lci}}</span></td>
+      </ng-template>
+    </tr>
+    </tbody>
+
+    <app-dialog [(visible)]="showDialog">
+      <div class="dialog_title">
+        <span *ngIf="currentOffer?.ot === 0">Buying item</span>
+        <span *ngIf="currentOffer?.ot === 1">Selling item</span>
+      </div>
+      <table class="descript_offer table">
+        <tr class="currency" *ngIf="currentOffer?.t.length">
+          <td class="name">Title:</td>
+          <td class="val"> {{currentOffer?.t}} </td>
+        </tr>
+        <tr class="currency" *ngIf="currentOffer?.p.length">
+          <td class="name">Currency</td>
+          <td class="val"> {{currentOffer?.p}} </td>
+        </tr>
+        <tr class="price" *ngIf="currentOffer?.ap.length">
+          <td class="name">Price</td>
+          <td class="val"> {{currentOffer?.ap | moneyParse}} {{currentOffer?.p}} </td>
+        </tr>
+        <tr class="bonus" *ngIf="currentOffer?.b.length">
+          <td class="name">Bonus:</td>
+          <td class="val">{{currentOffer?.b}}</td>
+        </tr>
+        <tr class="transfer_method" *ngIf="currentOffer?.pt !== null && currentOffer?.pt.length">
+          <td class="name">Transfer method:</td>
+          <td class="val">
+            <div *ngFor="let pt of currentOffer?.pt">
+              <span *ngIf="pt === 'HANDS'">In person</span>
+              <span *ngIf="pt === 'STORAGE'">Collect from warehouse</span>
+              <span *ngIf="pt !== 'HANDS' && pt !== 'STORAGE' && pt !== 'DELIVERY'">{{pt}}</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="comment" *ngIf="currentOffer?.com.length">
+          <td class="name">Comment:</td>
+          <td class="val">{{currentOffer?.com}}</td>
+        </tr>
+      </table>
+    </app-dialog>
+  </table>
+
+  <div class="no_data" *ngIf="lengthOffers === 0">No data</div>
+
+
+  <ul class="pagination" *ngIf="(visiblePagination === true) && (lengthOffers !== 0)">
+    <div class="left_position">
+      <span>Pages:</span>
+      <button type="button" class="prev_btn" [disabled]="currentPage<=1" (click)="prevPage()">
+        <svg x="0px" y="0px" viewBox="0 0 477.175 477.175">
+          <g>
+            <path d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225
+              c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"/>
+          </g>
+        </svg>
+      </button>
+      <button type="button" class="next_btn" [disabled]="lengthOffers<count" (click)="nextPage()">
+        <svg x="0px" y="0px" viewBox="0 0 477.175 477.175">
+          <g>
+            <path d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5
+              c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z
+              "/>
+          </g>
+        </svg>
+      </button>
+      <input type="text" [value]="currentPage" (input)="currentPage=$event.target.value" (change)="onChange()">
+    </div>
+    <div class="right_position">
+      <span>Items on page:</span>
+      <input type="text" [value]="count" (input)="count=$event.target.value" (change)="itemOnPageChange()">
+    </div>
+  </ul>
+
+
+</div>
+

@@ -1,0 +1,24 @@
+<div class="modal-form-wrapper">
+  <div class="modal-form-header modal-form-header-transparent">
+    <div class="modal-form-header-close">
+      <button ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="general-form-header" ng-bind="::('MASTER_PASS.NOT_USE_QUESTION' | translate)"></div>
+      <div class="general-form-field-group field-group-vertical need-master-password">
+        <div class="general-input-wrapper need-to-focus-field">
+          <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="password"
+                 contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}">
+          <i data-icon="." class="base-icon eye-icon" form-password></i>
+        </div>
+        <span class="field-group-error" ng-if="passError && (appPass != password)" ng-bind="::('MASTER_PASS.WRONG' | translate)"></span>
+      </div>
+      <div class="general-form-control-buttons">
+        <button type="button" class="control-button larger-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+        <button type="button" class="control-button larger-button" ng-click="cancelMPass();" ng-bind="::('MASTER_PASS.NOT_USE' | translate)"></button>
+      </div>
+    </form>
+  </div>
+</div>

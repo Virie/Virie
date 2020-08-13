@@ -1,0 +1,343 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('TRANSACTION.CONFIRM' | translate)"></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form class="general-form">
+            <div class="general-form-review-wrapper" ng-if="!oldOffer">
+                <div class="general-form-field-group field-group-review review-title">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.TYPE' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-if="offer.offer_type == 0" ng-bind="::('BUY_SELL_OFFER.BUY_GOOD' | translate)"></span>
+                        <span ng-if="offer.offer_type == 1" ng-bind="::('BUY_SELL_OFFER.SELL_GOOD' | translate)"></span>
+                        <span ng-if="offer.offer_type == 2" ng-bind="::('BUY_SELL_OFFER.BUY_MONEY' | translate)"></span>
+                        <span ng-if="offer.offer_type == 3" ng-bind="::('BUY_SELL_OFFER.SELL_MONEY' | translate)"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.CATEGORY' | translate)"></label>
+                    <div class="field-group-description" ng-bind-html="(offer.categories.join(',') | categoryTitle)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.AD.NAME' | translate)"></label>
+                    <div class="field-group-description" ng-bind="offer.target"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.AD.DESCRIPTION' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="(offer.comment)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></label>
+                    <div class="field-group-description" ng-bind="offer.currency"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('MARKET.PRICE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="offer.amount_p + ' ' + offer.currency"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.bonus && offer.bonus != ''">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="offer.bonus"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1" ng-repeat="(index, way) in offer.deal_details track by $index">
+                    <label class="field-group-label" ng-show="offer.deal_details.length == 1" ng-bind="::('BUY_SELL_OFFER.TRANSFER' | translate)"></label>
+                    <label class="field-group-label" ng-show="offer.deal_details.length > 1" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.TRANSFER' | translate | lowercase)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-show="way.type != 'DELIVERY'" ng-bind="(deliveryWays[way.type].title | translate)"></div>
+                    <div class="field-group-description" ng-show="way.type == 'DELIVERY' && way.name!=''" ng-bind="way.name"></div>
+                    <div class="field-group-description" ng-show="way.type == 'DELIVERY' && way.name==''" ng-bind="::('DELIVERY_WAYS.DELIVERY' | translate)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></label>
+                    <div class="field-group-description" ng-bind="offer.currency"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label">
+                        {{::('BUY_SELL_OFFER.AMOUNT.TITLE_USD.SELL' | translate )}} {{currencySymbol}}
+                    </label>
+                    <div class="field-group-description" ng-bind="offer.amount_p"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label">
+                        {{::('BUY_SELL_OFFER.AMOUNT.TITLE_USD.SELL' | translate )}} {{offer.currency}}
+                    </label>
+                    <div class="field-group-description" ng-bind="offer.amount_etc"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-bind="::('MARKET.RATE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="(cutLastZeros((convertFloatSToIntS(offer.amount_etc)/convertFloatSToIntS(offer.amount_p)))) + ' ' + offer.currency + '/' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-if="offer.offer_type == 2" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.BUY' | translate)"></label>
+                    <label class="field-group-label" ng-if="offer.offer_type == 3" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.SELL' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-repeat="key in offer.deal_details track by $index">
+                            <span ng-repeat="dd in dealDetails | filter : {key : key} : true track by $index" style="display: block;" ng-bind="(dd.value | translate)"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3" ng-repeat="(index, type) in offer.payment_types track by $index">
+                    <label class="field-group-label" ng-if="offer.payment_types.length == 1" ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate)"></label>
+                    <label class="field-group-label" ng-if="offer.payment_types.length > 1" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-if="type.type != 'EPS'" ng-bind="(paymentTypes[type.type].title | translate)"></div>
+                    <div class="field-group-description" ng-if="type.type == 'EPS'" ng-bind="type.name"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-repeat="(index, contact) in offer.contacts track by $index">
+                    <label class="field-group-label" ng-if="offer.contacts.length == 1" ng-bind="::('NEW_CONTACT.COMMUNICATION_METHOD' | translate)"></label>
+                    <label class="field-group-label" ng-if="offer.contacts.length > 1" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('NEW_CONTACT.COMMUNICATION_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-if="contact.type != 'IMS'" ng-bind="contact.name"></div>
+                    <div class="field-group-description" ng-if="contact.type == 'IMS'" ng-bind="contact.name + ' : ' + contact.username"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('COMMON.PLACE' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-if="!offer.location_country" ng-bind="::('BUY_SELL_OFFER.PLACE.NOT' | translate)"></span>
+                        <span ng-if="offer.location_country == '000All'" ng-bind="::('BUY_SELL_OFFER.PLACE.ALL' | translate)"></span>
+                        <span ng-if="offer.location_country && offer.location_country != '000All'" ng-repeat="country in countryList | filter : {alpha2Code: offer.location_country} : true track by $index">
+                            {{country.name}}
+                        </span>
+                        <span ng-if="offer.location_city" ng-bind="', ' + offer.location_city"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.COMMENT' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="offer.comment"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.QTY_DAYS' | translate)"></label>
+                    <div class="field-group-description" ng-bind="offer.expiration_time | daysFilter"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-if="!offer.is_standard" ng-bind="::('BUY_SELL_OFFER.PREMIUM' | translate)"></label>
+                    <label class="field-group-label" ng-if="offer.is_standard" ng-bind="::('BUY_SELL_OFFER.STANDARD' | translate)"></label>
+                    <div class="field-group-description" ng-bind="('BUY_SELL_OFFER.FEE' | translate) + ' - ' + offer.fee + ' ' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.SAFE' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-repeat="safe in safes |  filter : {wallet_id: offer.wallet_id} : true track by $index">
+                            {{safe.name}}
+                            <br>
+                            {{moneyParse(safe.unlocked_balance)}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="general-form-review-wrapper" ng-if="oldOffer">
+                <div class="general-form-field-group field-group-review review-title">
+                    <label class="field-group-label"></label>
+                    <div class="field-group-description" ng-bind="::('BUY_SELL_OFFER.BEFORE_UPDATE' | translate)"></div>
+                    <div class="field-group-description edited-description" ng-bind="::('BUY_SELL_OFFER.AFTER_UPDATE' | translate)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.TYPE' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-if="oldOffer.offer_type == 0" ng-bind="::('BUY_SELL_OFFER.BUY_GOOD' | translate)"></span>
+                        <span ng-if="oldOffer.offer_type == 1" ng-bind="::('BUY_SELL_OFFER.SELL_GOOD' | translate)"></span>
+                        <span ng-if="oldOffer.offer_type == 2" ng-bind="::('BUY_SELL_OFFER.BUY_MONEY' | translate)"></span>
+                        <span ng-if="oldOffer.offer_type == 3" ng-bind="::('BUY_SELL_OFFER.SELL_MONEY' | translate)"></span>
+                    </div>
+                    <div class="field-group-description edited-description">
+                        <span ng-if="offer.offer_type == 0" ng-bind="::('BUY_SELL_OFFER.BUY_GOOD' | translate)"></span>
+                        <span ng-if="offer.offer_type == 1" ng-bind="::('BUY_SELL_OFFER.SELL_GOOD' | translate)"></span>
+                        <span ng-if="offer.offer_type == 2" ng-bind="::('BUY_SELL_OFFER.BUY_MONEY' | translate)"></span>
+                        <span ng-if="offer.offer_type == 3" ng-bind="::('BUY_SELL_OFFER.SELL_MONEY' | translate)"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.CATEGORY' | translate)"></label>
+                    <div class="field-group-description" ng-bind-html="(oldOffer.categories.join(',') | categoryTitle)"></div>
+                    <div class="field-group-description edited-description" ng-bind-html="offer.categories.join(',') | categoryTitle"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.AD.NAME' | translate)"></label>
+                    <div class="field-group-description" ng-bind="oldOffer.target"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.target"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.AD.DESCRIPTION' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="oldOffer.comment"></div>
+                    <div class="field-group-description edited-description text-pre" ng-bind="offer.comment"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></label>
+                    <div class="field-group-description" ng-bind="(oldOffer.currency | isCurrencyCorrect) ? oldOffer.currency : ''"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.currency"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 0 || offer.offer_type == 1">
+                    <label class="field-group-label" ng-bind="::('MARKET.PRICE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="oldOffer.amount_p + ((oldOffer.currency | isCurrencyCorrect) ? ' ' + oldOffer.currency : '')"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.amount_p + ' ' + offer.currency"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="(offer.offer_type == 0 || offer.offer_type == 1) && (offer.bonus || oldOffer.bonus)">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="oldOffer.bonus"></div>
+                    <div class="field-group-description edited-description text-pre" ng-bind="offer.bonus"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="(offer.offer_type == 0 || offer.offer_type == 1) && offer.deal_details.length >= oldOffer.deal_details.length"
+                     ng-repeat="(index, way) in offer.deal_details track by $index">
+                    <label class="field-group-label" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.TRANSFER' | translate | lowercase)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-if="oldOffer.deal_details[$index].type != 'DELIVERY'" ng-bind="(deliveryWays[oldOffer.deal_details[$index].type].title | translate)"></div>
+                    <div class="field-group-description" ng-if="oldOffer.deal_details[$index].type == 'DELIVERY' && oldOffer.deal_details[$index].name!=''" ng-bind="oldOffer.deal_details[$index].name"></div>
+                    <div class="field-group-description" ng-if="oldOffer.deal_details[$index].type == 'DELIVERY' && oldOffer.deal_details[$index].name==''" ng-bind="::('DELIVERY_WAYS.DELIVERY' | translate)"></div>
+                    <div class="field-group-description edited-description" ng-if="way.type != 'DELIVERY'" ng-bind="(deliveryWays[way.type].title | translate)"></div>
+                    <div class="field-group-description edited-description" ng-if="way.type == 'DELIVERY' && way.name!=''" ng-bind="way.name"></div>
+                    <div class="field-group-description edited-description" ng-if="way.type == 'DELIVERY' && way.name==''" ng-bind="::('DELIVERY_WAYS.DELIVERY' | translate)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="(offer.offer_type == 0 || offer.offer_type == 1) && offer.deal_details.length < oldOffer.deal_details.length"
+                     ng-repeat="(index, way) in oldOffer.deal_details track by $index">
+                    <label class="field-group-label" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.TRANSFER' | translate | lowercase)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-if="way.type != 'DELIVERY'" ng-bind="(deliveryWays[way.type].title | translate)"></div>
+                    <div class="field-group-description" ng-if="way.type == 'DELIVERY' && way.name!=''" ng-bind="way.name"></div>
+                    <div class="field-group-description" ng-if="way.type == 'DELIVERY' && way.name==''" ng-bind="::('DELIVERY_WAYS.DELIVERY' | translate)"></div>
+                    <div class="field-group-description edited-description" ng-if="offer.deal_details[$index].type != 'DELIVERY'" ng-bind="(deliveryWays[offer.deal_details[$index].type].title | translate)"></div>
+                    <div class="field-group-description edited-description" ng-if="offer.deal_details[$index].type == 'DELIVERY' && offer.deal_details[$index].name!=''" ng-bind="offer.deal_details[$index].name"></div>
+                    <div class="field-group-description edited-description" ng-if="offer.deal_details[$index].type == 'DELIVERY' && offer.deal_details[$index].name==''" ng-bind="::('DELIVERY_WAYS.DELIVERY' | translate)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></label>
+                    <div class="field-group-description" ng-bind="oldOffer.currency"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.currency"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label">
+                        {{::('BUY_SELL_OFFER.AMOUNT.TITLE_USD.SELL' | translate )}} {{currencySymbol}}
+                    </label>
+                    <div class="field-group-description" ng-bind="oldOffer.amount_p"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.amount_p"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label">
+                        {{::('BUY_SELL_OFFER.AMOUNT.TITLE_USD.SELL' | translate )}} {{offer.currency}}
+                    </label>
+                    <div class="field-group-description" ng-bind="oldOffer.amount_etc"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.amount_etc"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-bind="::('MARKET.RATE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="cutLastZeros((convertFloatSToIntS(oldOffer.amount_etc)/convertFloatSToIntS(oldOffer.amount_p))) + ' ' + oldOffer.currency + '/' + currencySymbol"></div>
+                    <div class="field-group-description edited-description" ng-bind="cutLastZeros((convertFloatSToIntS(offer.amount_etc)/convertFloatSToIntS(offer.amount_p))) + ' ' + offer.currency + '/' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-show="offer.offer_type == 2" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.BUY' | translate)"></label>
+                    <label class="field-group-label" ng-show="offer.offer_type == 3" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.SELL' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-repeat="key in oldOffer.deal_details track by $index">
+                            <span ng-repeat="dd in dealDetails | filter : {key : key} : true track by $index" style="display: block;" ng-bind="(dd.value | translate)"></span>
+                        </span>
+                    </div>
+                    <div class="field-group-description edited-description">
+                        <span ng-repeat="key in offer.deal_details track by $index">
+                            <span ng-repeat="dd in dealDetails | filter : {key : key} : true track by $index" style="display: block;" ng-bind="(dd.value | translate)"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="(offer.offer_type == 2 || offer.offer_type == 3) && (offer.bonus || oldOffer.bonus)">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="oldOffer.bonus"></div>
+                    <div class="field-group-description edited-description text-pre" ng-bind="offer.bonus"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="(offer.offer_type == 2 || offer.offer_type == 3) && offer.payment_types.length >= oldOffer.payment_types.length"
+                     ng-repeat="(index, type) in offer.payment_types track by $index">
+                    <label class="field-group-label" ng-show="$index == 0" ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate)"></label>
+                    <label class="field-group-label" ng-show="$index > 0" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-show="oldOffer.payment_types[$index].type != 'EPS'" ng-bind="(paymentTypes[oldOffer.payment_types[$index].type].title | translate)"></div>
+                    <div class="field-group-description" ng-show="oldOffer.payment_types[$index].type == 'EPS'" ng-bind="oldOffer.payment_types[$index].name"></div>
+                    <div class="field-group-description edited-description" ng-show="type.type != 'EPS'" ng-bind="(paymentTypes[type.type].title | translate)"></div>
+                    <div class="field-group-description edited-description" ng-show="type.type == 'EPS'" ng-bind="type.name"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="(offer.offer_type == 2 || offer.offer_type == 3) && offer.payment_types.length < oldOffer.payment_types.length"
+                     ng-repeat="(index, type) in oldOffer.payment_types track by $index">
+                    <label class="field-group-label" ng-show="$index == 0" ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate)"></label>
+                    <label class="field-group-label" ng-show="$index > 0" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-show="type.type != 'EPS'" ng-bind="(paymentTypes[type.type].title | translate)"></div>
+                    <div class="field-group-description" ng-show="type.type == 'EPS'" ng-bind="type.name"></div>
+                    <div class="field-group-description edited-description" ng-show="offer.payment_types[$index].type != 'EPS'" ng-bind="(payment_types[offer.payment_types[$index].type].title | translate)"></div>
+                    <div class="field-group-description edited-description" ng-show="offer.payment_types[$index].type == 'EPS'" ng-bind="offer.payment_types[$index].name"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.offer_type == 2 || offer.offer_type == 3">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.COMMENT' | translate)"></label>
+                    <div class="field-group-description text-pre" ng-bind="oldOffer.comment"></div>
+                    <div class="field-group-description edited-description text-pre" ng-bind="offer.comment"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.contacts.length >= oldOffer.contacts.length" ng-repeat="(index, contact) in offer.contacts track by $index">
+                    <label class="field-group-label" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('NEW_CONTACT.COMMUNICATION_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-if="oldOffer.contacts[$index].type != 'IMS'" ng-bind="oldOffer.contacts[$index].name"></div>
+                    <div class="field-group-description" ng-if="oldOffer.contacts[$index].type == 'IMS'" ng-bind="(oldOffer.contacts[$index].name) + ' : ' + (oldOffer.contacts[$index].username)"></div>
+                    <div class="field-group-description edited-description" ng-if="contact.type != 'IMS'" ng-bind="contact.name"></div>
+                    <div class="field-group-description edited-description" ng-if="contact.type == 'IMS'" ng-bind="(contact.name) + ' : ' + (contact.username)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="offer.contacts.length < oldOffer.contacts.length" ng-repeat="(index,contact) in oldOffer.contacts track by $index">
+                    <label class="field-group-label" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('NEW_CONTACT.COMMUNICATION_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-description" ng-if="contact.type != 'IMS'" ng-bind="contact.name"></div>
+                    <div class="field-group-description" ng-if="contact.type == 'IMS'" ng-bind="(contact.name) + ' : ' + (contact.username)"></div>
+                    <div class="field-group-description edited-description" ng-if="offer.contacts[$index].type != 'IMS'" ng-bind="offer.contacts[$index].name"></div>
+                    <div class="field-group-description edited-description" ng-if="offer.contacts[$index].type == 'IMS'" ng-bind="(offer.contacts[$index].name) + ' : ' + (offer.contacts[$index].username)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('COMMON.PLACE' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-if="!oldOffer.location_country" ng-bind="::('BUY_SELL_OFFER.PLACE.NOT' | translate)"></span>
+                        <span ng-if="oldOffer.location_country == '000All'" ng-bind="::('BUY_SELL_OFFER.PLACE.ALL' | translate)"></span>
+                        <span ng-if="oldOffer.location_country && oldOffer.location_country != '000All'" ng-repeat="country in countryList | filter : {alpha2Code: oldOffer.location_country}:true track by $index">
+                            {{country.name}}
+                        </span>
+                        <span ng-if="oldOffer.location_city" ng-bind="', ' + oldOffer.location_city"></span>
+                    </div>
+                    <div class="field-group-description edited-description">
+                        <span ng-if="!offer.location_country" ng-bind="::('BUY_SELL_OFFER.PLACE.NOT' | translate)"></span>
+                        <span ng-if="offer.location_country == '000All'" ng-bind="::('BUY_SELL_OFFER.PLACE.ALL' | translate)"></span>
+                        <span ng-if="offer.location_country && offer.location_country != '000All'" ng-repeat="country in countryList | filter : {alpha2Code: offer.location_country}:true track by $index">
+                            {{country.name}}
+                        </span>
+                        <span ng-if="offer.location_city" ng-bind="', ' + offer.location_city"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.QTY_DAYS' | translate)"></label>
+                    <div class="field-group-description" ng-bind="oldOffer.expiration_time | daysFilter"></div>
+                    <div class="field-group-description edited-description" ng-bind="offer.expiration_time | daysFilter"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-if="!offer.is_standard" ng-bind="::('BUY_SELL_OFFER.PREMIUM' | translate)"></label>
+                    <label class="field-group-label" ng-if="offer.is_standard" ng-bind="::('BUY_SELL_OFFER.STANDARD' | translate)"></label>
+                    <div class="field-group-description" ng-bind="('BUY_SELL_OFFER.FEE' | translate) + ' - ' + oldOffer.fee + ' ' + currencySymbol"></div>
+                    <div class="field-group-description edited-description" ng-bind="('BUY_SELL_OFFER.FEE' | translate) + ' - ' + offer.fee + ' ' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('BUY_SELL_OFFER.SAFE' | translate)"></label>
+                    <div class="field-group-description">
+                        <span ng-repeat="safe in safes |  filter : {wallet_id: oldOffer.wallet_id} : true track by $index">
+                            {{safe.name}}
+                            <br>
+                            {{moneyParse(safe.unlocked_balance)}}
+                        </span>
+                    </div>
+                    <div class="field-group-description edited-description">
+                        <span ng-repeat="safe in safes |  filter : {wallet_id: offer.wallet_id} : true track by $index">
+                            {{safe.name}}
+                            <br>
+                            {{moneyParse(safe.unlocked_balance)}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="general-form-field-group need-master-password" ng-show="needPass">
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="appPass" contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button larger-button" ng-click="cancel();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button larger-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.EDIT' | translate)"></button>
+                <button type="button" class="control-button larger-button" ng-click="confirm();" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)" data-ng-disabled="sendingOffer"></button>
+            </div>
+        </form>
+    </div>
+</div>
+

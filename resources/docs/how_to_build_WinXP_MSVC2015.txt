@@ -1,0 +1,108 @@
+How to build Virie for Windows XP (32 bit) using MSVC 2015 Update 1
+
+
+== IMPORTANT NOTES ==
+0. 'nmake clean' DOES NOT clean everything! Some build files are not cleared, so if in doubt REMOVE THE WHOLE FOLDER!
+
+1. In order to enable OpenSSL support in Virie you need to download OpenSSL for win32, set paths to INCLUDE and LIB and add '-openssl' configure option (see below).
+
+2. windeployqt.exe must be run from correct environment (see also batch file for environment setup below).
+
+3. Most stable way to get OpenGL support for Qt under XP is force using OpenGL software renderer with combination of "-opengl dynamic" config parameter:
+   more info: https://bugreports.qt.io/browse/QTBUG-44985
+   more info: https://blog.qt.io/blog/2014/11/27/qt-weekly-21-dynamic-opengl-implementation-loading-in-qt-5-4/
+
+4. If running under XP on VMWare Workstation the application MAY crash with illegal instruction due to a bug in VMWare. Consiger using VirtualBox or real machine
+   more info: http://qt-creator.qt-project.narkive.com/SPW1UVnl/qt-creator-3-4-binaries-will-be-compiled-with-msvc-2013-dynamic-opengl
+
+5. Add this code before instantiating QtApplication:
+    QCoreApplication::setAttribute( Qt::AA_UseSoftwareOpenGL ); // force using OpenGL software renderer
+
+
+== TODOs and CURRENT ISSUES ==
+1. nmake does not build 'resources' folder, it should contains the following files:
+icudtl.dat
+qtwebengine_resources.pak
+qtwebengine_resources_100p.pak
+qtwebengine_resources_200p.pak
+2. Also nmake does not build these neseccary files:
+   opengl32sw.dll
+   translations\qtwebengine_locales\*
+In order to get these files use "normal" Qt 5.6.0 distribution.
+
+
+== DEBUGGING TIPS ==
+When nothing else helps...
+1. Define QT_LOGGING_RULES environment variable and set it to "*.gl=true" (without quotes) or even "*.debug=true" to enable Qt logging.
+2. Use DebugView for Windows XP to view debug messages from Qt
+3. Use UserModeProcessDumper (ver 8.1 seems good) to create a full mini-dump when it fails with exception under XP.
+   Such dump can be loaded into MSVS2015 for further analysis.
+
+
+== MANUAL ==
+
+0. Got Qt 5.6.0 sources from here: http://download.qt.io/official_releases/qt/5.6/5.6.0/single/qt-everywhere-opensource-src-5.6.0.zip.mirrorlist
+
+1. Install http://slproweb.com/download/Win32OpenSSL-1_0_2h.exe
+
+2. Prepare environment using this batch file:
+
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
+SET _ROOT=C:\<your_path>\Qt5.6.0_src
+SET PATH=%_ROOT%\qtbase\bin;%_ROOT%\gnuwin32\bin;%PATH%
+SET QMAKESPEC=win32-msvc2015
+SET INCLUDE=C:\<your_path>\OpenSSL-Win32\include;%INCLUDE%
+SET LIB=C:\<your_path>\OpenSSL-Win32\lib;%LIB%
+
+
+3. Configure Qt with this command (mind the correct env!!!):
+
+
+configure.bat -target xp -platform win32-msvc2015 -opensource -release -shared -no-ltcg ^
+-openssl ^
+-opengl dynamic ^
+-nomake tests -nomake examples -no-compile-examples
+
+
+4. Make Qt by running:
+
+nmake
+
+It may take up to few hours, depending on your machine.
+
+5. Configure Virie by running:
+
+cmake -D CMAKE_PREFIX_PATH="<path_to_qt_youve_built>" -D BUILD_GUI=TRUE -D STATIC=FALSE -DBOOST_ROOT="%BOOST_ROOT%" -DBOOST_LIBRARYDIR="%BOOST_ROOT%\lib32-msvc-14.0" -G "Visual Studio 14 2015" -T v140_xp ".."
+
+6. Open virie.sln
+
+7. Select 'Virie' project -> Properties, make sure "Platform toolset" is set to "Visual Studio 2015 - Windows XP (v140_xp)". If not - smth went wrong in step 5.
+
+8. Build all in Release
+
+9. Deploy
+
+9.1. Make a folder (i.e. '<deploy_folder>'), copy virie.exe into it.
+9.2. Navigate to Qt bin folder and run with correct ENV variables (see also step 2)!!!
+
+windeployqt.exe <deploy_folder>\virie.exe
+(Many files will be copied into <deploy_folder>)
+
+9.3. Copy src\gui\qt-daemon\html\* into <deploy_folder>\html\*
+9.4. Copy C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x86\Microsoft.VC140.CRT\* into <deploy_folder>
+9.5. Copy C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT\* into <deploy_folder>
+9.6. Copy C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x86\api*.dll into <deploy_folder>
+9.7. Copy C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x86\ucrtbase.dll into <deploy_folder>
+
+9.8. Get normal Qt 5.6.0 installation (with pre-built binaries) in separate directory, then:
+9.8.1. Copy <normal_Qt>\5.6\msvc2015\resources into <deploy_folder>
+9.8.2. Copy <normal_Qt>\5.6\msvc2015\translations\qtwebengine_locales into <deploy_folder>\translations
+9.8.3. Copy <normal_Qt>\5.6\msvc2015\bin\opengl32sw.dll into <deploy_folder>
+
+9.9. Copy from <OpenSSL-Win32-path> libeay32.dll and ssleay32.dll into <deploy_folder>
+
+
+Hope, now you can run it under XP!
+
+
+THE END

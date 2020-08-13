@@ -1,0 +1,50 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('ALIAS.TRANSFER' | translate)"></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form name="transferAlias" class="general-form" novalidate>
+            <div class="safe-alias-modal" ng-class="{'safe-alias-modal-no-comment': alias.comment.length == 0}" ng-if="alias">
+                <div class="safe-alias-modal-name contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{alias.name}}" ng-bind="alias.name"></div>
+                <div class="safe-alias-modal-comment" ng-if="alias.comment.length > 0">
+                    <span ng-bind="alias.comment"></span><i data-icon="&#xe001;" class="base-icon safe-alias-modal-copy" ng-click="setClipboard(alias.comment);"></i>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-vertical bigger-indent">
+                <label class="field-group-label bolder-label" ng-bind="::('ALIAS.SAFE.TRANSFER_ADDRESS' | translate)"></label>
+                <div class="general-input-wrapper">
+                    <input type="text" class="general-input contextMenuButton" ng-model="transferTo" ng-model-options="{debounce: 300}"
+                           ng-change="changeTransfer();" placeholder="{{::('ALIAS.SAFE.ADDRESS.ENTER' | translate)}}" required/>
+                    <i data-icon="A" class="base-icon success-icon" ng-if="transferToValid === true && transferTo.length"></i>
+                    <i data-icon="B" class="base-icon error-icon" ng-if="transferToValid === false && transferAliasSubmitted && transferTo.length" ng-click="clearInput();"
+                       uib-tooltip="{{::('COMMON.WRONG_ADDRESS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                </div>
+                <span class="field-group-error" ng-if="transferAliasSubmitted && !timerError && !existsAlias && (!transferToValid || (transferToValid && !permissionSend))">
+                    {{!transferToValid ? 'INFORMER.SAME_SAFE_WRONG_ADR' : 'ALIAS_EXISTS_IN_ADDRESS' | translate}}
+                </span>
+            </div>
+            <div class="general-form-field-group field-group-vertical" ng-if="existsAlias">
+                <alias-display ng-if="existsAlias" alias="existsAlias"></alias-display>
+                <span class="field-group-error" style="align-self: center;" ng-bind="::('ALIAS_EXISTS_IN_ADDRESS' | translate)"></span>
+            </div>
+            <div class="general-form-price-description">
+                <span class="price-text">{{::('COMMON.COMMISSION' |translate)}} {{commission}} {{currencySymbol}}</span>
+                <span class="price-error" ng-if="!notEnoughMoney" ng-bind="::('ALIAS.ERROR.NO_MONEY_TO_SEND' | translate)"></span>
+            </div>
+            <div class="general-form-field-group need-master-password" ng-show="needPass">
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="appPass"
+                           contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}"/>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button" ng-click="confirm();" data-ng-disabled="!notEnoughMoney || existsAlias" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+/.idea
+/blockexp_cache/node_modules
+/blockexp_cache/.idea
+/blockexp_cache/db
+configure_local_paths.cmd
+!build*

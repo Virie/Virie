@@ -1,0 +1,42 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('MASTER_PASS.CHANGE' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon="g" class="base-icon wider-icon"></i></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form name="changeMPForm" class="general-form" ng-submit="changeMasterPass(pass, newPass);" novalidate>
+            <div class="general-form-field-group field-group-vertical">
+                <label class="field-group-label bolder-label" ng-bind="::('SAFE.CURRENT_PASSWORD' | translate)"></label>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" name="oldAppPass" class="general-input need-to-focus contextMenuButton" ng-model="pass"
+                           contextMenuEnabledItems="paste" contextMenuCopyText="{{item}}" required autofocus/>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+                <span class="field-group-error" ng-style="{'visibility': changeMPForm.oldAppPass.$touched && changeMPForm.oldAppPass.$error.required ? 'visible' : 'hidden'}" ng-bind="::('COMMON.ERROR.REQUIRED_FIELD' | translate)"></span>
+            </div>
+            <div class="general-form-field-group field-group-vertical new-password">
+                <label class="field-group-label bolder-label" ng-bind="::('COMMON.NEW_PASSWORD' | translate)"></label>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" name="newAppPass" class="general-input need-to-focus contextMenuButton" ng-model="newPass"
+                           contextMenuEnabledItems="paste" contextMenuCopyText="{{item}}" placeholder="{{::('COMMON.NEW_PASSWORD' | translate | lowercase)}}" pattern="{{passPattern}}" required>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+                <div class="general-input-wrapper need-to-focus-field bigger-indent">
+                    <input type="password" name="newAppPassRepeat" class="general-input need-to-focus contextMenuButton" ng-model="newPassRepeat"
+                           contextMenuEnabledItems="paste" contextMenuCopyText="{{item}}" placeholder="{{::('COMMON.CHANGE_PASS_CONF' | translate | lowercase)}}" pattern="{{passPattern}}" required>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+                <span class="field-group-error" ng-style="{'visibility': (changeMPForm.newAppPassRepeat.$dirty && !changeMPForm.newAppPass.$error.required && newPass != newPassRepeat) || (changeMPForm.newAppPass.$error.pattern || changeMPForm.newAppPassRepeat.$error.pattern) ? 'visible' : 'hidden'}">
+                    {{changeMPForm.newAppPass.$error.pattern || changeMPForm.newAppPassRepeat.$error.pattern ? ('MASTER_PASS.WRONG' | translate) : ('MASTER_PASS.NOT_MATCH' | translate)}}
+                </span>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button" ng-click="changeFromSettings ? cancel() : lockPass()" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="submit" class="control-button" data-ng-disabled="!changeMPForm.$valid || newPass != newPassRepeat" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,581 @@
+<form name="modalOfferForm" ng-submit="confirmOffer(offer);" novalidate>
+
+    <div class="modal-form-wrapper">
+        <div class="modal-form-header">
+            <div class="modal-form-header-title" ng-if="!isEdit">
+                <span ng-if="offer.offer_type == '0'" data-translate="BUY_SELL_OFFER.GOODS.TITLE.BUY"></span>
+                <span ng-if="offer.offer_type == '1'" data-translate="BUY_SELL_OFFER.GOODS.TITLE.SELL"></span>
+                <span ng-if="offer.offer_type == '2'" data-translate="BUY_SELL_OFFER.CURRENCY.TITLE.BUY"></span>
+                <span ng-if="offer.offer_type == '3'" data-translate="BUY_SELL_OFFER.CURRENCY.TITLE.SELL"></span>
+            </div>
+            <div class="modal-form-header-title" ng-if="isEdit">
+                <span ng-if="offer.offer_type == '0'" data-translate="BUY_SELL_OFFER.GOODS.TITLE.EDITING.BUY"></span>
+                <span ng-if="offer.offer_type == '1'" data-translate="BUY_SELL_OFFER.GOODS.TITLE.EDITING.SELL"></span>
+                <span ng-if="offer.offer_type == '2'" data-translate="BUY_SELL_OFFER.CURRENCY.TITLE.EDITING.BUY"></span>
+                <span ng-if="offer.offer_type == '3'" data-translate="BUY_SELL_OFFER.CURRENCY.TITLE.EDITING.SELL"></span>
+            </div>
+            <div class="modal-form-header-icon">
+                <i data-icon='&#xe010;' class="base-icon wider-icon" ng-if="offer.offer_type == '0' || offer.offer_type == '1'"></i>
+                <i data-icon='&#xe016;' class="base-icon wider-icon" ng-if="offer.offer_type == '2' || offer.offer_type == '3'"></i>
+            </div>
+            <div class="modal-form-header-close">
+                <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+            </div>
+        </div>
+        <div class="modal-form-body first-offer-form">
+            <div class="create-offer-indicator" ng-class="{'empty': buySellCount == 0}" ng-click="sendFilteredList();">
+                <div class="application-description">
+                    <span class="desc-usual" ng-bind="::('BUY_SELL_OFFER.THERE_ARE.DESCRIPTION' | translate)"></span>
+                </div>
+                <div class="application-number">
+                    <span class="number" ng-bind="buySellCount"></span>
+                </div>
+            </div>
+            <div class="general-form">
+                <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.TYPE' | translate)"></label>
+                    <select selectpicker name="offer_type" class="general-select show-tick need-to-focus dropdown-animation"
+                            ng-class="{'bootstrap-select-disabled': isEdit}" data-ng-model="offer.offer_type" data-ng-change="onChangeOfferType(); recalcOffers();"
+                            ng-options="type.key as type.value for type in offerTypes" data-ng-disabled="isOldOffer" required>
+                    </select>
+                </div>
+                <div ng-if="offer.offer_type == '2' || offer.offer_type == '3'" style="width: 100%;">
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label">
+                            <span ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></span>
+                            <span ng-if="offer.offer_type == '2'" class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.CURRENCY.COMMENT_BUY' | translate) + ')')"></span>
+                            <span ng-if="offer.offer_type == '3'" class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.CURRENCY.COMMENT_SELL' | translate) + ')')"></span>
+                        </label>
+                        <select selectpicker name="currency" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="offer.currency"
+                                data-ng-change="recalcOffers(); refreshKotTables();" ng-options="currency.code as currency.title for currency in currencies" required>
+                        </select>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label"
+                               ng-bind="(offer.offer_type == '2' ? 'BUY_SELL_OFFER.AMOUNT.TITLE.BUY' : 'BUY_SELL_OFFER.AMOUNT.TITLE.SELL') | translate">
+                        </label>
+                        <div class="field-group-error-wrapper">
+                            <div class="general-input-wrapper">
+                                <input type="text" name="amountMoney" id="amount_p" class="general-input need-to-focus contextMenuButton input_replace"
+                                       ng-model="offer.amount_p" ng-model-options="{debounce: 500}" ng-change="recount('primary');" required/>
+                                <span class="input-addon post-input" ng-bind="currencySymbol"></span>
+                            </div>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && (modalOfferForm.amountMoney.$error.required || offer.amount_p==0)" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label ng-if="offer.offer_type == '2'" class="field-group-label bolder-label">
+                            {{::('BUY_SELL_OFFER.AMOUNT.TITLE_USD.BUY' | translate )}} {{offer.currency}}
+                        </label>
+                        <label ng-if="offer.offer_type == '3'" class="field-group-label bolder-label">
+                            {{::('BUY_SELL_OFFER.AMOUNT.TITLE_USD.SELL' | translate )}} {{offer.currency}}
+                        </label>
+                        <div class="field-group-error-wrapper">
+                            <div class="general-input-wrapper">
+                                <input type="text" name="amountETC" id="amount_etc" class="general-input need-to-focus contextMenuButton input_replace"
+                                       ng-model="offer.amount_etc" ng-model-options="{debounce: 500}" ng-change="recount('target');" required/>
+                                <span class="input-addon post-input" ng-bind="(offer.currency | isCurrencyCorrect) ? offer.currency : ''"></span>
+                            </div>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && (modalOfferForm.amountETC.$error.required || offer.amount_etc==0)" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label">
+                            <span ng-bind="::('BUY_SELL_OFFER.RATE' | translate)"></span>
+                            <span class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.RATE.PLACEHOLDER' | translate) + ')')"></span>
+                        </label>
+                        <div class="field-group-error-wrapper">
+                            <div class="general-input-wrapper">
+                                <input type="text" name="exRate" class="general-input need-to-focus contextMenuButton input_replace" ng-model="offer.rate" ng-model-options="{debounce: 500}"
+                                       ng-change="recount('rate')" ng-value="offer.rate | currency : '' : 10" required/>
+                                <span class="input-addon post-input" ng-bind="(offer.currency | isCurrencyCorrect) ? offer.currency + '/' + currencySymbol : ''"></span>
+                            </div>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.exRate.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <textarea elastic class="general-textarea need-to-focus contextMenuButton textarea_count_rows" data-ng-model="offer.bonus" ng-model-options="{debounce: 500}"
+                                      rows="1" max-length-field="300" data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.BONUS.PLACEHOLDER' | translate)}}">
+                            </textarea>
+                            <span class="field-group-error" ng-show="offer.bonus.length >= 300" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-if="offer.offer_type == 2" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.BUY' | translate)"></label>
+                        <label class="field-group-label bolder-label" ng-if="offer.offer_type == 3" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.SELL' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <select selectpicker id="SelectPickerDeals" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="offer.deal_details"
+                                    title="{{offer.offer_type == '2' ? 'BUY_SELL_OFFER.CONDITIONS.SELL.PLACEHOLDER' : 'BUY_SELL_OFFER.CONDITIONS.BUY.PLACEHOLDER' | translate}}"
+                                    ng-options="item.key as item.value | translate for item in dealDetails" multiple>
+                            </select>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && getDealsRequired()" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                            <input type="hidden" id="dealsCount" ng-required="getDealsRequired();" ng-model="dealsCount">
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field" ng-class="{'no-hover': !type.is_edit}" ng-repeat="type in offer.payment_types">
+                        <label class="field-group-label bolder-label" ng-if="$index == 0">
+                            <span ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate)"></span>
+                            <span ng-if="offer.offer_type == '2'" class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.SETTLEMENT_METHOD.TRANSFER_COMMENT' | translate) + ')')"></span>
+                            <span ng-if="offer.offer_type == '3'" class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.SETTLEMENT_METHOD.RECEIVE_COMMENT' | translate) + ')')"></span>
+                        </label>
+                        <label class="field-group-label bolder-label" ng-if="$index > 0" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                        <div class="field-group-error-wrapper" ng-if="type.type != 'EPS'">
+                            <div class="general-input-wrapper" ng-if="type.is_edit">
+                                <select selectpicker class="general-select show-tick need-to-focus dropdown-animation SelectPickerPaymentTypeEdit" data-ng-model="localModelNewType[type.id]"
+                                        data-ng-change="type.new_type=localModelNewType[type.id]; editPaymentType(type)" title="{{::('BUY_SELL_OFFER.SETTLEMENT_METHOD.PLACEHOLDER' | translate)}}">
+                                    <option data-ng-value="" value="" ng-show="false">{{::('BUY_SELL_OFFER.SETTLEMENT_METHOD.PLACEHOLDER' | translate)}}</option>
+                                    <option data-ng-value="key" ng-repeat="(key, item) in paymentTypes" data-ng-disabled="type.new_type == key ? false : disabledPaymentType[key]">
+                                        {{::(item.title | translate)}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="general-input-wrapper no-hover" ng-if="!type.is_edit">
+                                <i data-icon="{{paymentTypes[type.type].classname}}" class="base-icon payment-type-icon"></i>
+                                <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="paymentTypes[type.type].title | translate" readonly>
+                                <i data-icon="T" class="base-icon option-icon" ng-click="localModelNewType[type.id] = ''; type.is_edit = true"></i>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removePaymentType(type.id)"></i>
+                            </div>
+                        </div>
+                        <div class="field-group-error-wrapper" ng-if="type.type == 'EPS' && type.is_edit">
+                            <div class="general-input-wrapper">
+                                <i data-icon="{{paymentTypes['EPS'].classname}}" class="base-icon payment-type-icon"></i>
+                                <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="paymentTypes['EPS'].title | translate" readonly>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removePaymentType(type.id);"></i>
+                            </div>
+                            <input type="text" class="general-input need-to-focus contextMenuButton" style="margin-top: 2.5rem;" ng-model="type.name" maxlength="50"
+                                   data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.SETTLEMENT_METHOD.SYSTEM.ENTER_NAME' | translate)}}"
+                                   data-ng-enter="type.is_edit = blurInputByName(type)" ng-blur="type.is_edit = blurInputByName(type)" autofocus/>
+                            <span class="field-group-error" ng-show="type.name.length >= 50" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                        <div class="general-input-wrapper no-hover" ng-if="type.type == 'EPS' && !type.is_edit">
+                            <i data-icon="{{paymentTypes['EPS'].classname}}" class="base-icon payment-type-icon"></i>
+                            <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="type.name" readonly>
+                            <i data-icon="T" class="base-icon option-icon" ng-click="type.is_edit = true"></i>
+                            <i data-icon="u" class="base-icon option-icon" ng-click="removePaymentType(type.id)"></i>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-if="!offer.payment_types.length">
+                            <span ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHOD' | translate)"></span>
+                            <span ng-if="offer.offer_type == '2'" class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.SETTLEMENT_METHOD.TRANSFER_COMMENT' | translate) + ')')"></span>
+                            <span ng-if="offer.offer_type == '3'" class="field-group-label-info" ng-bind="::('(' + ('BUY_SELL_OFFER.SETTLEMENT_METHOD.RECEIVE_COMMENT' | translate) + ')')"></span>
+                        </label>
+                        <label class="field-group-label bolder-label" ng-if="offer.payment_types.length"></label>
+                        <div class="field-group-error-wrapper">
+                            <div ng-show="offer.show_type_selector">
+                                <select selectpicker id="SelectPickerPaymentType" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="page.paymentType"
+                                        data-ng-change="pushPaymentType(page.paymentType)" title="{{::('BUY_SELL_OFFER.SETTLEMENT_METHOD.PLACEHOLDER' | translate)}}">
+                                    <option data-ng-value="" value="" ng-show="false">{{::('BUY_SELL_OFFER.SETTLEMENT_METHOD.PLACEHOLDER' | translate)}}</option>
+                                    <option data-ng-value="key" ng-repeat="(key, item) in paymentTypes" data-ng-disabled="disabledPaymentType[key]">
+                                        {{::(item.title | translate)}}
+                                    </option>
+                                </select>
+                            </div>
+                            <button type="button" id="SelectPickerPaymentTypeButton2" class="market-add-btn" ng-click="offer.show_type_selector = true" ng-show="!offer.show_type_selector">
+                                <i data-icon="U" class="base-icon"></i>
+                                <span ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHOD.ADD' | translate)"></span>
+                            </button>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && getPaymentsRequired()" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                            <input type="hidden" id="paymentCount" ng-required="getPaymentsRequired();" ng-model="paymentsCount">
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="offer.offer_type == '0' || offer.offer_type == '1'" style="width: 100%;">
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.CATEGORY' | translate)"></label>
+                        <div class="field-group-error-wrapper field-max-width">
+                            <select selectpicker name="categories" id="categories" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="offer.categories[0]"
+                                    data-ng-change="setSubCategory(0); recalcOffers();" data-dropup-auto="false" required>
+                                <option value="" data-hidden="true" ng-selected="offer.categories[0] == ''">{{::('BUY_SELL_OFFER.CHOOSE_CATEGORY' | translate)}}</option>
+                                <option value="{{category.id}}" ng-repeat="category in categories" ng-selected="category.id == offer.categories[0]">
+                                    {{::(category.title)}}
+                                </option>
+                            </select>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.categories.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field" ng-if="subcategories[0].length">
+                        <label class="field-group-label bolder-label" ng-bind="subcategoriesTitle[0] | translate"></label>
+                        <div class="field-group-error-wrapper">
+                            <select selectpicker name="categories2" id="categories2" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="offer.categories[1]"
+                                    data-nameoptions="subcategories[0]" data-ng-change="setSubCategory(1); recalcOffers();" data-dropup-auto="false" required>
+                                <option value="" data-hidden="true" ng-selected="offer.categories[1] == ''">{{::('BUY_SELL_OFFER.SUBCATEGORY' | translate)}}</option>
+                                <option value="{{s.id}}" ng-repeat="s in subcategories[0]" ng-selected="s.id == offer.categories[1]">{{::(s.title)}}</option>
+                            </select>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.categories2.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field" ng-if="subcategories[1].length">
+                        <label class="field-group-label bolder-label" ng-bind="subcategoriesTitle[1] | translate"></label>
+                        <div class="field-group-error-wrapper">
+                            <select selectpicker name="categories3" id="categories3" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="offer.categories[2]"
+                                    data-nameoptions="subcategories[1]" data-ng-change="recalcOffers()" data-dropup-auto="false" required>
+                                <option value="" data-hidden="true" ng-selected="offer.categories[2] == ''">{{::('BUY_SELL_OFFER.SUBCATEGORY' | translate)}}</option>
+                                <option value="{{s.id}}" ng-repeat="s in subcategories[1]" ng-selected="s.id == offer.categories[2]">{{::(s.title)}}</option>
+                            </select>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.categories3.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.AD.NAME' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <input type="text" id="title" name="title" class="general-input need-to-focus contextMenuButton" ng-model="offer.target"
+                                   maxlength="100" data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.AD.NAME.PLACEHOLDER' | translate)}}" required/>
+                            <span class="field-group-error" ng-show="offer.target.length >= 100" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.title.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.AD.DESCRIPTION' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <textarea name="comment" id="comment" elastic class="general-textarea need-to-focus contextMenuButton textarea_count_rows" data-ng-model="offer.comment"
+                                      rows="1" max-length-field="500" data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.AD.DESCRIPTION.PLACEHOLDER' | translate)}}" required>
+                            </textarea>
+                            <span class="field-group-error" ng-show="offer.comment.length >= 500" ng-bind="::('COMMON.MAX_LENGTH_ADS' | translate)"></span>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.comment.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <select selectpicker name="currency" id="currencyGoods" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="offer.currency"
+                                    data-ng-change="recalcOffers();" ng-options="currency.code as currency.title for currency in currenciesWithMoney" required>
+                            </select>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.currency.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('MARKET.PRICE' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <div class="general-input-wrapper">
+                                <input type="text" name="amountMoney" id="amount_p" class="general-input need-to-focus contextMenuButton input_replace"
+                                       ng-model="offer.amount_p" ng-model-options="{debounce: 500}" ng-change="recalcOffers()" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}}" required/>
+                                <span class="input-addon post-input" ng-bind="(offer.currency | isCurrencyCorrect) ? offer.currency : ''"></span>
+                            </div>
+                            <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.amountMoney.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <textarea elastic class="general-textarea need-to-focus contextMenuButton textarea_count_rows" data-ng-model="offer.bonus" ng-model-options="{debounce: 500}"
+                                      rows="1" max-length-field="300" data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.BONUS.PLACEHOLDER' | translate)}}">
+                            </textarea>
+                            <span class="field-group-error" ng-show="offer.bonus.length >= 300" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field" ng-class="{'no-hover': !way.is_edit}" ng-repeat="way in offer.deal_details">
+                        <label class="field-group-label bolder-label" ng-if="$index == 0" ng-bind="::('BUY_SELL_OFFER.TRANSFER' | translate)"></label>
+                        <label class="field-group-label bolder-label" ng-if="$index > 0" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.TRANSFER' | translate | lowercase)] | joinLangReverse )"></label>
+                        <div class="field-group-error-wrapper" ng-if="way.type != 'DELIVERY'">
+                            <div class="general-input-wrapper" ng-if="way.is_edit">
+                                <select selectpicker class="general-select show-tick need-to-focus dropdown-animation SelectPickerDealsEdit" data-ng-model="localModelWayType[way.id]"
+                                        data-ng-change="way.new_type = localModelWayType[way.id]; editWay(way);" title="{{'BUY_SELL_OFFER.TRANSFER.SELECT' | translate}}">
+                                    <option data-ng-value="" value="" ng-show="false">{{::('BUY_SELL_OFFER.TRANSFER.SELECT' | translate)}}</option>
+                                    <option data-ng-value="key" ng-repeat="(key, item) in deliveryWays" data-ng-disabled="way.new_type == key ? false : disabledDeals[key]" data-icon="deliveryWays[key].classname">
+                                        {{::(item.title | translate)}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="general-input-wrapper no-hover" ng-if="!way.is_edit">
+                                <i data-icon="" class="base-icon delivery-way-icon {{deliveryWays[way.type].classname}}"></i>
+                                <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="deliveryWays[way.type].title | translate" readonly>
+                                <i data-icon="T" class="base-icon option-icon" ng-click="localModelWayType[way.id] = ''; way.is_edit = true"></i>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removeWay(way.id);"></i>
+                            </div>
+                        </div>
+                        <div class="field-group-error-wrapper" ng-if="way.type == 'DELIVERY' && way.is_edit">
+                            <div class="general-input-wrapper no-hover">
+                                <i data-icon="" class="base-icon delivery-way-icon {{deliveryWays['DELIVERY'].classname}}"></i>
+                                <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="deliveryWays['DELIVERY'].title | translate" readonly>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removeWay(way.id);"></i>
+                            </div>
+                            <input type="text" class="general-input need-to-focus contextMenuButton" style="margin-top: 2.5rem;" ng-model="way.name" maxlength="50"
+                                   data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.DELIVERY.TITLE' | translate)}}" ng-blur="way.is_edit = blurInputByName(way)" autofocus/>
+                            <span class="field-group-error" ng-show="way.name.length >= 50" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                        <div class="general-input-wrapper no-hover" ng-if="way.type == 'DELIVERY' && !way.is_edit">
+                            <i data-icon="" class="base-icon delivery-way-icon {{deliveryWays['DELIVERY'].classname}}"></i>
+                            <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="way.name" readonly>
+                            <i data-icon="T" class="base-icon option-icon" ng-click="way.is_edit = true"></i>
+                            <i data-icon="u" class="base-icon option-icon" ng-click="removeWay(way.id);"></i>
+                        </div>
+                    </div>
+                    <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                        <label class="field-group-label bolder-label" ng-if="!offer.deal_details.length" ng-bind="::('BUY_SELL_OFFER.TRANSFER' | translate)"></label>
+                        <label class="field-group-label bolder-label" ng-if="offer.deal_details.length"></label>
+                        <div class="field-group-error-wrapper">
+                            <div ng-show="offer.show_way_selector">
+                                <select selectpicker id="SelectPickerDeals" class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="page.deliveryWay"
+                                        data-ng-change="pushDeliveryWay(page.deliveryWay);" title="{{::('BUY_SELL_OFFER.TRANSFER.SELECT' | translate)}}">
+                                    <option data-ng-value="" value="" ng-show="false">{{::('BUY_SELL_OFFER.TRANSFER.SELECT' | translate)}}</option>
+                                    <option data-ng-value="key" ng-repeat="(key, item) in deliveryWays" data-ng-disabled="disabledDeals[key]">
+                                        {{::(item.title | translate)}}
+                                    </option>
+                                </select>
+                            </div>
+                            <button type="button" id="SelectPickerDealsButton2" class="market-add-btn" ng-click="offer.show_way_selector = true" ng-show="!offer.show_way_selector">
+                                <i data-icon="U" class="base-icon"></i>
+                                <span ng-bind="::('BUY_SELL_OFFER.TRANSFER.ADD' | translate)"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal need-to-focus-field" ng-class="{'no-hover': !contact.is_edit}" ng-repeat="(index, contact) in offer.contacts">
+                    <label class="field-group-label bolder-label" ng-if="$index == 0" ng-bind="::('BUY_SELL_OFFER.COMMUNICATION_METHOD' | translate)"></label>
+                    <label class="field-group-label bolder-label" ng-if="$index > 0" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('BUY_SELL_OFFER.COMMUNICATION_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                    <div class="field-group-error-wrapper" ng-if="contact.type != 'IMS' && contact.is_edit">
+                        <div class="general-input-wrapper">
+                            <input type="text" class="general-input need-to-focus contextMenuButton contact_edit" ng-class="{'input_phone': contact.type == 'PHONE'}" ng-model="contact.name"
+                                   maxlength="{{contact.type == 'EMAIL' ? 40 : 30}}" data-ng-trim="false" placeholder="{{contacts[contact.type].placeholder | translate}}"
+                                   ng-blur="contact.is_edit = blurInputByName(contact);">
+                            <i data-icon="u" class="base-icon option-icon" ng-click="removeContact(contact.id);"></i>
+                        </div>
+                        <span class="field-group-error" ng-show="(modalOfferForm.$submitted && contact.name.length == 0)" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        <span class="field-group-error" ng-show="(modalOfferForm.$submitted && contact.name.length > 0 && contact.type == 'EMAIL' && contact.valid === false )" ng-bind="::('MARKET.ERROR.WRONG_EMAIL' | translate)"></span>
+                        <span class="field-group-error" ng-show="(contact.name.length >= (contact.type == 'EMAIL' ? 40 : 30))" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                    </div>
+                    <div class="general-input-wrapper no-hover" ng-if="contact.type != 'IMS' && !contact.is_edit">
+                        <input type="text" class="general-input no-hover gradient-text-input" gradient-text ng-value="contact.name" readonly>
+                        <i data-icon="T" class="base-icon option-icon" ng-click="contact.is_edit = true"></i>
+                        <i data-icon="u" class="base-icon option-icon" ng-click="removeContact(contact.id);"></i>
+                    </div>
+                    <div class="field-group-error-wrapper" ng-if="contact.type == 'IMS' && contact.is_edit">
+                        <div class="market-connection-wrapper">
+                            <angucomplete-alt id="messengerInput{{index}}" pause="100" placeholder="{{::('BUY_SELL_OFFER.COMMUNICATION_METHOD.TITLE' | translate)}}" maxlength="30"
+                                              local-data="messengerList" search-fields="name" title-field="name" minlength="0" input-class="general-input need-to-focus contact_edit"
+                                              selected-object="selectedMessenger" input-changed="changeMessengerInput" initial-value="contact.name"
+                                              focus-out="contact.is_edit = blurIMS(contact)" field-required="true" text-no-results="false">
+                            </angucomplete-alt>
+                            <div class="general-input-wrapper">
+                                <input type="text" class="general-input need-to-focus contextMenuButton contact_edit" ng-model="contact.username" maxlength="30"
+                                       data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.COMMUNICATION_METHOD.NAME' | translate)}}" ng-blur="contact.is_edit = blurIMS(contact)"/>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removeContact(contact.id);"></i>
+                            </div>
+                        </div>
+                        <span class="field-group-error" ng-show="modalOfferForm.$submitted && (contact.name.length == 0 || contact.username.length == 0)" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        <span class="field-group-error" ng-show="(contact.name.length >= 30 || contact.username.length >= 30)" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                    </div>
+                    <div class="market-connection-wrapper" ng-if="contact.type == 'IMS' && !contact.is_edit">
+                        <input type="text" class="general-input messenger-type gradient-text-input" gradient-text ng-value="contact.name" readonly/>
+                        <div class="general-input-wrapper">
+                            <input type="text" class="general-input gradient-text-input" gradient-text ng-value="contact.username" readonly/>
+                            <i data-icon="T" class="base-icon option-icon" ng-click="contact.is_edit = true"></i>
+                            <i data-icon="u" class="base-icon option-icon" ng-click="removeContact(contact.id);"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+                    <label class="field-group-label bolder-label" ng-if="!offer.contacts.length" ng-bind="::('BUY_SELL_OFFER.COMMUNICATION_METHOD' | translate)"></label>
+                    <label class="field-group-label bolder-label" ng-if="offer.contacts.length"></label>
+                    <div class="field-group-error-wrapper">
+                        <div ng-show="offer.show_contact_selector">
+                            <select id="SelectPickerContacts" selectpicker class="general-select show-tick need-to-focus dropdown-animation" data-ng-model="page.contact"
+                                    data-ng-change="pushContact(page.contact);" title="{{::('BUY_SELL_OFFER.COMMUNICATION_METHOD.SELECT' | translate)}}">
+                                <option data-ng-value="" value="" ng-show="false">{{::('BUY_SELL_OFFER.COMMUNICATION_METHOD.SELECT' | translate)}}</option>
+                                <option data-ng-value="key" ng-repeat="(key, item) in contacts" data-ng-disabled="disabledContacts[key]">
+                                    {{::(item.title | translate)}}
+                                </option>
+                            </select>
+                        </div>
+                        <button type="button" id="SelectPickerContactsButton2" class="market-add-btn" ng-click="offer.show_contact_selector = true" ng-show="!offer.show_contact_selector">
+                            <i data-icon="U" class="base-icon"></i>
+                            <span ng-bind="::('BUY_SELL_OFFER.COMMUNICATION_METHOD.ADD' | translate)"></span>
+                        </button>
+                        <span class="field-group-error" ng-show="modalOfferForm.$submitted && offer.contacts.length==0" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        <input type="hidden" id="contactsCount" ng-value="offer.contacts.length">
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal no-hover">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.PLACE' | translate)"></label>
+                    <div class="general-switch" init-switch-option>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !countryCheckboxAll}" ng-click="countryCheckboxAll=false; changeCountryVisibleAll();"
+                              ng-bind="::('MARKET.FILTER.SELECT_PLACE' | translate)"></span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': countryCheckboxAll}" ng-click="countryCheckboxAll=true; changeCountryVisibleAll();"
+                              ng-bind="::('MARKET.FILTER.ALL_WORLD' | translate)"></span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal need-to-focus-field slideAnimation" ng-show="!countryCheckboxAll">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.PLACE.COUNTRY' | translate | firstUpper)"></label>
+                    <div class="field-group-error-wrapper" ng-if="!countryCheckboxAll">
+                        <div class="general-input-wrapper autocomplete-wrapper">
+                            <angucomplete-alt id="countryInput" placeholder="{{::('BUY_SELL_OFFER.PLACE.COUNTRY' | translate)}}" pause="100" selected-object="selectedCountry"
+                                              local-data="countryList" search-fields="name" title-field="name" input-changed="changeCountryInput" minlength="0"
+                                              input-class="general-input need-to-focus contextMenuButton" initial-value="offer.initial_country" focus-out="focusOutCountry()"
+                                              input-name="countryInput" field-required="true" enable-clear-search-btn="true" text-no-results="false">
+                            </angucomplete-alt>
+                            <i data-icon="a" class="base-icon autocomplete-caret"></i>
+                        </div>
+                        <input type="hidden" name="countryInput2" required ng-model="offer.location_country">
+                        <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.countryInput2.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal need-to-focus-field slideAnimation" ng-show="!countryCheckboxAll && offer.location_country">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.PLACE.CITY' | translate | firstUpper)"></label>
+                    <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="offer.location_city" maxlength="50" ng-change="recalcOffers();" placeholder="{{::('BUY_SELL_OFFER.PLACE.CITY' | translate)}}"/>
+                </div>
+                <div class="general-form-field-group field-group-horizontal need-to-focus-field" ng-if="offer.offer_type == '2' || offer.offer_type == '3'">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.COMMENT' | translate)"></label>
+                    <div class="field-group-error-wrapper">
+                        <textarea elastic class="general-textarea need-to-focus contextMenuButton textarea_count_rows" data-ng-model="offer.comment"
+                                  rows="1" max-length-field="500" data-ng-trim="false" placeholder="{{::('BUY_SELL_OFFER.MESSAGE.PLACEHOLDER' | translate)}}">
+                        </textarea>
+                        <span class="field-group-error" ng-show="offer.comment.length >= 500" ng-bind="::('COMMON.MAX_LENGTH_COMMENT' | translate)"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-form-wrapper" ng-if="(offer.offer_type == '2' || offer.offer_type == '3') && (offer.currency | isCurrencyCorrect)">
+        <div class="modal-form-header" ng-class="{'closed-panel': !latestTransactions}" ng-click="latestTransactions = !latestTransactions;">
+            <div class="modal-form-header-title">
+                {{::('BUY_SELL_OFFER.RATES' | translate)}} {{offer.currency}}/{{currencySymbol}}
+                <i data-icon="b" class="base-icon modal-form-header-arrow"></i>
+            </div>
+        </div>
+        <div class="modal-form-body second-offer-form slideAnimation" ng-show="latestTransactions">
+            <div class="rates-table-wrapper">
+                <div class="demand-table">
+                    <h3 ng-bind="::('BUY_SELL_OFFER.RATES.DEMAND' | translate)"></h3>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                {{::('BUY_SELL_OFFER.RATES.RATE' | translate)}} {{offer.currency}}/{{currencySymbol}}
+                                <span class="description" ng-bind="::('(' + ('BUY_SELL_OFFER.RATE.PLACEHOLDER' | translate) + ')')"></span>
+                            </th>
+                            <th>
+                                {{::('BUY_SELL_OFFER.RATES.AMOUNT' | translate)}}, {{currencySymbol}}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-if="currencyOfferBuy.length" ng-repeat="item in currencyOfferBuy track by $index">
+                            <td><span ng-bind="(item | offerRate)"></span></td>
+                            <td><span ng-bind="coinsParse(item.ap)"></span></td>
+                        </tr>
+                        <tr ng-if="!currencyOfferBuy.length">
+                            <td colspan="2">
+                                <div class="text-center" ng-bind="::('COMMON.NO_DATA' | translate)"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="offer-table">
+                    <h3 ng-bind="::('BUY_SELL_OFFER.RATES.OFFER' | translate)"></h3>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                {{::('BUY_SELL_OFFER.RATES.RATE' | translate)}} {{offer.currency}}/{{currencySymbol}}
+                                <span class="description" ng-bind="::('(' + ('BUY_SELL_OFFER.RATE.PLACEHOLDER' | translate) + ')')"></span>
+                            </th>
+                            <th>
+                                {{::('BUY_SELL_OFFER.RATES.AMOUNT' | translate)}}, {{currencySymbol}}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-if="currencyOfferSell.length" ng-repeat="item in currencyOfferSell track by $index">
+                            <td><span ng-bind="(item | offerRate)"></span></td>
+                            <td><span ng-bind="coinsParse(item.ap)"></span></td>
+                        </tr>
+                        <tr ng-if="!currencyOfferSell.length">
+                            <td colspan="2">
+                                <div class="text-center" ng-bind="::('COMMON.NO_DATA' | translate)"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-form-wrapper">
+        <div class="modal-form-header">
+            <div class="modal-form-header-title" ng-bind="::('BUY_SELL_OFFER.CONDITIONS' | translate)"></div>
+        </div>
+        <div class="modal-form-body third-offer-form">
+            <div class="general-form">
+                <div class="general-form-field-group field-group-horizontal market-description-group need-to-focus-field">
+                    <label class="field-group-label bolder-label" ng-bind-html="::('BUY_SELL_OFFER.DAYS' | translate)"></label>
+                    <div class="field-group-error-wrapper">
+                        <select selectpicker name="expirationTime" class="general-select show-tick need-to-focus dropdown-animation"
+                                data-ng-model="offer.expiration_time" ng-options="interval as (interval | daysFilter) for interval in intervals" required>
+                        </select>
+                        <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.expirationTime.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                    </div>
+                    <div class="market-description">
+                        <span class="description-text marked-text" ng-bind="::('BUY_SELL_OFFER.AUTO_REMOVE_INFO' | translate)"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal bigger-indent market-description-group need-to-focus-field">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.STATUS' | translate)"></label>
+                    <select selectpicker class="general-select need-to-focus dropdown-animation" data-ng-model="offer.is_premium"
+                            data-ng-change="changeStatusPackage()" ng-options="c.bool as c.title for c in statusPackage" required>
+                    </select>
+                    <div class="market-description standard" ng-if="!offer.is_premium">
+                        <span class="description-text marked-text">
+                            {{::('BUY_SELL_OFFER.PREMIUM.RECOMMENDATION' | translate)}}
+                        </span>
+                        <div class="field-group-error-wrapper">
+                            <div class="need-to-focus-field">
+                                <!--send-money-subgroup-right-->
+                                <!--<label class="field-group-label bolder-label" ng-bind="::('SEND_MONEY.COMMISSION' | translate)"></label>-->
+                                <div class="general-input-wrapper">
+                                    <input type="text" class="general-input need-to-focus input_replace" data-min-count-replace="{{config.standardFeeDecimal}}" id="fee_standard"
+                                           ng-model="offer.fee_standard" placeholder="{{::('SEND_MONEY.COMMISSION.PLACEHOLDER' | translate)}}"
+                                           needFocus="{{(offer.fee_standard | moneyToInt) < (config.standardFee | moneyToInt)}}" required/>
+                                    <span class="input-addon post-input" ng-bind="currencySymbol"></span>
+                                </div>
+                            </div>
+                            <span class="field-group-error" ng-show="(offer.fee_standard | moneyToInt) < (config.standardFee | moneyToInt)"
+                                  data-translate="SEND_MONEY.ERROR.MIN_COMMISSION" data-translate-values="{fee: config.standardFee}" style="text-align: right"></span>
+                        </div>
+                    </div>
+                    <div class="market-description" ng-if="offer.is_premium">
+                        <span class="description-text">{{::('BUY_SELL_OFFER.RIBBON' | translate)}}<i uib-tooltip-template="'views/marketOfferMiniTable.html'" data-tooltip-class="market-image-tooltip" data-icon="P" class="base-icon info-icon"></i></span>
+                        <span class="description-text marked-text">{{::('BUY_SELL_OFFER.PREMIUM.RECOMMENDATION' | translate)}} {{offer.fee_premium}} {{currencySymbol}}</span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal bigger-indent need-to-focus-field" ng-class="{'no-hover': isEdit}">
+                    <label class="field-group-label bolder-label" ng-bind="::('BUY_SELL_OFFER.STATUS_SAFE' | translate)"></label>
+                    <div class="field-group-error-wrapper">
+                        <select selectpicker name="walletID" class="general-select show-tick need-to-focus dropdown-animation"
+                                data-ng-model="offer.wallet_id" data-ng-change="setValuesForSafeChange(offer.wallet_id);" data-nameoptions="safesList"
+                                ng-options="safe.walletId as safe.name + ' (' + (moneyParse(safe.unlockedBalance)) + ')' for safe in safesList | orderBy : 'balance' : true"
+                                required ng-show="!isEdit">
+                        </select>
+                        <span class="selected-safe" ng-repeat="safe in safesList | filter : {walletId: offer.wallet_id} : true track by $index" ng-show="isEdit">
+                            {{safe.name + ' (' + (moneyParse(safe.unlockedBalance)) + ')'}}
+                        </span>
+                        <span class="field-group-error" ng-show="modalOfferForm.$submitted && modalOfferForm.walletID.$error.required" ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)"></span>
+                        <span class="field-group-error" ng-show="balanceError" ng-bind="::('COMMON.ERROR.SAFE_BALANCE' | translate)"></span>
+                        <span class="field-group-error" ng-show="balanceErrorSync" ng-bind="::('COMMON.ERROR.SAFE_SYNC' | translate)"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-horizontal field-group-checkbox-wrapper" ng-show="offer.offer_type == 0 || offer.offer_type == 1">
+                    <div class="field-group-error-wrapper">
+                        <div class="general-checkbox" ng-class="{'active': agreement}" ng-click="agreement = !agreement; agreementChange();">
+                            <div class="check-border"><i data-icon="v" class="base-icon"></i></div>
+                            <span class="general-checkbox-text" ng-if="offer.offer_type == 0" ng-bind="::('BUY_SELL_OFFER.GOODS.AGREEMENT_BUY' | translate)"></span>
+                            <span class="general-checkbox-text" ng-if="offer.offer_type == 1" ng-bind="::('BUY_SELL_OFFER.GOODS.AGREEMENT_SELL' | translate)"></span>
+                        </div>
+                        <span class="field-group-error" ng-show="modalOfferForm.$submitted && errorAgreement" ng-bind="::('MARKET.ERROR.VERIFY_AGREEMENT' | translate)"></span>
+                    </div>
+                </div>
+                <div class="general-form-control-buttons">
+                    <button type="button" class="control-button large-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                    <button type="submit" class="control-button large-button" ng-if="offer.offer_type == 0 || offer.offer_type == 1" onclick="addOfferSendFocus();" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)" data-ng-disabled="!agreement"></button>
+                    <button type="submit" class="control-button large-button" ng-if="offer.offer_type == 2 || offer.offer_type == 3" onclick="addGOfferSendFocus();" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

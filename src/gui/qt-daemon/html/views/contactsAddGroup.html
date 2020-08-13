@@ -1,0 +1,20 @@
+<div class="modal-form-wrapper">
+  <div class="modal-form-header">
+    <div class="modal-form-header-title" ng-bind="::('CONTACTS.GROUP.NEW' | translate)"></div>
+    <div class="modal-form-header-close">
+      <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="general-form-field-group field-group-vertical">
+        <div class="add-group-wrapper">
+          <input type="text" id="groupName" class="general-input contextMenuButton" ng-model="newGroup.name" ng-change="addGroupError = false"
+                 maxlength="30" placeholder="{{::('COMMON.ACTIONS.ENTER.NAME' | translate)}}" autofocus>
+          <button class="general-button add-group-btn" ng-style="{'visibility': (newGroup.name.length == 0) ? 'hidden' : 'visible'}" ng-click="addNewGroup(newGroup)" ng-bind="::('CONTACTS.GROUPS_ADD' | translate)"></button>
+        </div>
+        <span class="field-group-error" ng-style="{'visibility': (addGroupError) ? 'visible' : 'hidden'}" ng-bind="::('CONTACTS.ERROR.NAME_EXISTS' | translate)"></span>
+      </div>
+    </form>
+  </div>
+</div>

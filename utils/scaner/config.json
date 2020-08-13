@@ -1,0 +1,8 @@
+{
+	"start_scan_address":"",
+	"start_scan_port":"12595",
+	"port_default":"12595",
+	"email_to":"recipient@mail.com",
+	"connectivity_tool_private_key":"1112223334445556667778889990001112223334445556667778889990001112",
+	"server_port":8090
+}

@@ -1,0 +1,109 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('SAFE.NEW' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon="R" class="base-icon"></i></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="closeSafeForm();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form name="createSafeForm" class="general-form" novalidate>
+            <div class="general-form-progress-bar-wrapper">
+                <div class="general-form-progress-bar">
+                    <div class="progress-bar-fill" ng-style="{'width': (currentPage * 25) + '%'}"></div>
+                </div>
+                <div class="general-form-step-container">
+                    <div class="general-form-step" ng-class="{'active': currentPage == 1, 'passed': currentPage > 1}" ng-bind="::( ['1', ' ', ('SAFE.STEP' | translate)] | joinLangReverse )"></div>
+                    <div class="general-form-step" ng-class="{'active': currentPage == 2, 'passed': currentPage > 2}" ng-bind="::( ['2', ' ', ('SAFE.STEP' | translate)] | joinLangReverse )"></div>
+                    <div class="general-form-step" ng-class="{'active': currentPage == 3, 'passed': currentPage > 3}" ng-bind="::( ['3', ' ', ('SAFE.STEP' | translate)] | joinLangReverse )"></div>
+                    <div class="general-form-step" ng-class="{'active': currentPage == 4}" ng-bind="::( ['4', ' ', ('SAFE.STEP' | translate)] | joinLangReverse )"></div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-vertical" ng-if="currentPage == 1">
+                <label class="field-group-label" ng-bind="::('SAFE.ADD_NAME' | translate)"></label>
+                <input type="text" class="general-input contextMenuButton" ng-model="safe.name" ng-change="checkDuplicate();"
+                       maxlength="25" placeholder="{{::('SAFE.ADD_NAME.PLACEHOLDER' | translate)}}" autofocus/>
+                <span class="field-group-error" ng-style="{'visibility': nameAlreadyExist ? 'visible' : 'hidden'}" ng-bind="::('SAFE.ERROR.NAME_ALREADY_EXISTS' | translate)"></span>
+            </div>
+            <div class="general-form-field-group field-group-vertical" ng-if="currentPage == 2">
+                <label class="field-group-label" ng-bind="::('SAFE.ADD_PASSWORD' | translate)"></label>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" name="safePass" class="general-input need-to-focus contextMenuButton" ng-model="safe.password" next-focus
+                           contextMenuEnabledItems="paste" placeholder="{{::('SAFE.ADD_PASSWORD.PLACEHOLDER' | translate)}}" pattern="{{passPattern}}">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" name="safePassRepeat" class="general-input need-to-focus contextMenuButton" ng-model="safe.repeat"
+                           contextMenuEnabledItems="paste" placeholder="{{::('SAFE.REPEAT_PASSWORD.PLACEHOLDER' | translate)}}" pattern="{{passPattern}}">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+                <span class="field-group-error" ng-style="{'visibility': ((safe.repeat.length > 0 && safe.password != safe.repeat) || (createSafeForm.safePass.$error.pattern || createSafeForm.safePassRepeat.$error.pattern)) ? 'visible' : 'hidden'}">
+                    {{createSafeForm.safePass.$error.pattern || createSafeForm.safePassRepeat.$error.pattern ? ('MASTER_PASS.WRONG' | translate) : ('MASTER_PASS.NOT_MATCH' | translate)}}
+                </span>
+            </div>
+            <div class="general-form-warning" ng-if="currentPage == 2">
+                <span class="warning-title" ng-bind="::('SAFE.ADD_PASSWORD.BE_SURE' | translate)"></span>
+                <span class="warning-description" ng-bind="::('SAFE.ADD_PASSWORD.BE_SURE.HINT' | translate)"></span>
+            </div>
+            <div class="general-form-field-group field-group-vertical" ng-if="currentPage == 3">
+                <label class="field-group-label" ng-bind="::('SAFE.ADD_PASSWORD.MAKE_SURE' | translate)"></label>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="safe.confirm_password" next-focus
+                           ng-change="confirmChange();" contextMenuEnabledItems="paste" ng-readonly="safe.fileSaved">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+                <span class="field-group-error" ng-style="{'visibility': errorExist || (safe.confirm_password.length > 0 && safe.password != safe.confirm_password) ? 'visible' : 'hidden'}">
+                    {{(errorExist || ('MASTER_PASS.WRONG') | translate)}}
+                </span>
+            </div>
+            <div class="general-form-safe-backup" ng-if="currentPage == 4">
+                <div class="general-form-safe-description">
+                    <span class="first-description" ng-bind="::('SAFE.PHYSICAL' | translate)"></span>
+                    <span class="second-description" ng-bind="::('SAFE.PHYSICAL.HINT' | translate)"></span>
+                </div>
+                <div class="general-form-control-buttons">
+                    <button type="button" class="control-button" ng-class="{'inactive': fileSaved}" ng-click="safeBackup(newSafe);" data-ng-disabled="fileSaved">
+                        {{(!fileSaved) ? 'SAFE.PHYSICAL.COPY' : 'SAFE.PHYSICAL.COPY.SAVED' | translate}}
+                        <i data-icon="%" class="base-icon" ng-if="fileSaved"></i>
+                    </button>
+                </div>
+                <div class="general-form-safe-description">
+                    <span class="third-description" ng-bind="::('SAFE.SMART' | translate)"></span>
+                </div>
+                <div class="general-form-control-buttons">
+                    <button type="button" class="control-button" ng-class="{'inactive': smartSafeAlreadySaved}" ng-click="openSmartSafeForm(newSafe, true);" data-ng-disabled="smartSafeAlreadySaved">
+                        {{(!smartSafeAlreadySaved) ? 'SAFE.SMART.DO' : 'SAFE.SMART.DO.SAVED' | translate}}
+                        <i data-icon="%" class="base-icon" ng-if="smartSafeAlreadySaved"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="general-form-control-buttons" ng-if="currentPage == 1">
+                <button type="button" class="control-button larger-button" ng-click="closeSafeForm();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button larger-button" ng-click="changePage(2);" data-ng-disabled="safe.name.length == 0 || nameAlreadyExist" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+            </div>
+            <div class="general-form-control-buttons" ng-if="currentPage == 2">
+                <button type="button" class="control-button larger-button" ng-click="closeSafeForm();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button larger-button" ng-click="changePage(3);" data-ng-disabled="safe.password != safe.repeat || createSafeForm.safePass.$error.pattern || createSafeForm.safePassRepeat.$error.pattern" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+            </div>
+            <div class="general-form-control-buttons" ng-if="currentPage == 3">
+                <button type="button" class="control-button" ng-class="{'inactive': !confirmedPassword || safe.fileSaved}"
+                        ng-click="saveSafeFile(safe);" data-ng-disabled="!confirmedPassword || safe.fileSaved">
+                    {{(!safe.fileSaved) ? 'SAFE.SAVE_FILE' : 'SAFE.SAVE_FILE.SAVED' | translate}}
+                    <i data-icon="%" class="base-icon" ng-if="safe.fileSaved"></i>
+                </button>
+                <button type="button" class="control-button" ng-class="{'inactive': !safe.fileSaved}" ng-click="changePage(4);"
+                        data-ng-disabled="!safe.fileSaved" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-form-wrapper" ng-if="currentPage == 4">
+    <div class="modal-form-body start-use-safe">
+        <div class="general-form">
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button" ng-click="startUseSafe();" ng-bind="::('SAFE.START_USE' | translate)"></button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,187 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title">
+            {{::((contract.is_a) ? "DEALS.BUY_CONTRACT" : "DEALS.SELL_CONTRACT" | translate)}} "{{contract.private_details.t}}"
+        </div>
+        <div class="modal-form-header-close">
+            <button ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form class="general-form">
+            <div class="general-form-review-wrapper">
+                <div class="general-form-field-group field-group-review" ng-if="contract.payment_id">
+                    <label class="field-group-label">Payment ID</label>
+                    <div class="field-group-description" ng-bind="contract.payment_id"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="contract.state != 1 && contract.state != 110">
+                    <label class="field-group-label" ng-bind="::('DEALS.CONTRACT_TIME' | translate)"></label>
+                    <div class="field-group-description">
+                        <date-age from-time="{{contract.timestamp}}"></date-age>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.CONTRACT_SHORT_DESC' | translate)"></label>
+                    <div class="field-group-description" ng-bind="contract.private_details.t"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="contract.is_a">
+                    <label class="field-group-label" ng-bind="::('DEALS.SELLER' | translate)"></label>
+                    <div class="field-group-description">
+                        <safe-address-copy address="contract.private_details.b_addr"></safe-address-copy>
+                        <alias-display ng-if="getSafeAlias(contract.private_details.b_addr).name" alias="getSafeAlias(contract.private_details.b_addr)"></alias-display>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="!contract.is_a">
+                    <label class="field-group-label" ng-bind="::('DEALS.CUSTOMER' | translate)"></label>
+                    <div class="field-group-description">
+                        <safe-address-copy address="contract.private_details.a_addr"></safe-address-copy>
+                        <alias-display ng-if="getSafeAlias(contract.private_details.a_addr).name" alias="getSafeAlias(contract.private_details.a_addr)"></alias-display>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.CONTRACT_FULL_PRICE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="moneyParse(contract.private_details.to_pay)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review active-line">
+                    <label class="field-group-label" ng-bind="::('DEALS.YOUR_PLEDGE' | translate)"></label>
+                    <div class="field-group-description" ng-if="contract.is_a" ng-bind="moneyParse(contract.private_details.a_pledge)"></div>
+                    <div class="field-group-description" ng-if="!contract.is_a && contract.state != 1" ng-bind="moneyParse(contract.private_details.b_pledge)"></div>
+                    <div class="field-group-description" ng-if="!contract.is_a && contract.state == 1" ng-bind="moneyParse(contract.private_details.b_pledge) + ' (+' + config.standardFee + ' ' + currencySymbol + ' ' + ('DEALS.COMMISSION_FUTURE_RETURN' | translate) + ')'"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="contract.is_a">
+                    <label class="field-group-label" ng-bind="::('DEALS.SELLER_PLEDGE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="moneyParse(contract.private_details.b_pledge)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="!contract.is_a">
+                    <label class="field-group-label" ng-bind="::('DEALS.CUSTOMER_PLEDGE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="moneyParse(contract.private_details.a_pledge)"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="contract.private_details.c">
+                    <label class="field-group-label" ng-if="contract.is_a" ng-bind="::('DEALS.MSG_TO_SELLER' | translate)"></label>
+                    <label class="field-group-label" ng-if="!contract.is_a" ng-bind="::('DEALS.MSG_TO_CUSTOMER' | translate)"></label>
+                    <div class="field-group-description" ng-bind="contract.private_details.c"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label ng-if="contract.state == 1 || contract.state == 110" class="field-group-label" ng-bind="::('DEALS.WHAT_SAFE' | translate)"></label>
+                    <label ng-if="!(contract.state == 1 || contract.state == 110)" class="field-group-label" ng-bind="::('DEALS.PAID_SAFE' | translate)"></label>
+                    <div class="field-group-description" ng-repeat="s in safes | filter : {wallet_id: contract.wallet_id} : true track by s.wallet_id">
+                        {{s.name}} ({{moneyParse(s.unlocked_balance)}})
+                        <div class="field-group-error" ng-if="contract.state == 1 && !contract.is_a && (contract.private_details.b_pledge + (config.standardFee | moneyToInt) + (config.standardFee | moneyToInt)) > s.unlocked_balance" ng-bind="::('DEALS.ERROR.SAFE_BALANCE' | translate)"></div>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="!contract.is_a && contract.state == 1">
+                    <label class="field-group-label" ng-bind="::('DEALS.COMMISSION_PLEDGE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="config.standardFee + ' ' + currencySymbol"></div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-review-full" ng-if="contract.is_a">
+                <span ng-if="contract.state == 1" ng-bind="::('DEALS.CUSTOMER_WAITING_ANSWER' | translate)"></span>
+                <span ng-if="contract.state == 1" class="review-description additional-margin" ng-bind="'(' + (contract.expiration_time | buyingTime : 0) + ')'"></span>
+
+                <span ng-if="contract.state == 110" ng-bind="::('DEALS.SELLER_IGNORE_DEAL_SENTENCE' | translate)"></span>
+                <span ng-if="contract.state == 110" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.YOU_PLEDGE_RETURNED' | translate) + ')')"></span>
+
+                <span ng-if="contract.state == 120" ng-bind="::('DEALS.WAITING_GOOD_FROM_SELLER' | translate)"></span>
+
+                <span ng-if="contract.state == 130" ng-bind="::('DEALS.SELLER_IGNORE_CANCELLING_SENTENCE' | translate)"></span>
+
+                <span ng-if="contract.state == 140" class="additional-margin" ng-bind="::('DEALS.TRANSACTION_CANCELED' | translate)"></span>
+
+                <span ng-if="contract.state == 201" class="additional-margin" ng-bind="::('DEALS.ACCEPT_STATE_WAIT' | translate)"></span>
+
+                <span ng-if="contract.state == 2" ng-bind="::('DEALS.WAITING_GOOD_FROM_SELLER' | translate)"></span>
+
+                <span ng-if="contract.state == 3" ng-bind="::('DEALS.DEAL_OK' | translate)"></span>
+                <span ng-if="contract.state == 3" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_IS_OK' | translate) + ')')"></span>
+
+                <span ng-if="contract.state == 4" ng-bind="::('DEALS.ACTIONS.GOOD_NOT_GOT' | translate)"></span>
+                <span ng-if="contract.state == 4" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_BURNED' | translate) + ')')"></span>
+
+                <span ng-if="contract.state == 5" ng-bind="::('DEALS.CONTRACT_CANCEL_PROPOSAL_SENT2' | translate)"></span>
+                <span ng-if="contract.state == 5" class="review-description additional-margin" ng-bind="'(' + (contract.cancel_expiration_time | buyingTime : 2) + ')'"></span>
+
+                <span ng-if="contract.state == 601" class="additional-margin" ng-bind="::('DEALS.DEALS_CANCELED_WAIT' | translate)"></span>
+
+                <span ng-if="contract.state == 6" ng-bind="::('DEALS.DEAL_CANCELED' | translate)"></span>
+                <span ng-if="contract.state == 6" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_IS_RETURNED' | translate) + ')')"></span>
+            </div>
+            <div class="general-form-field-group field-group-review-full" ng-if="!contract.is_a">
+                <span ng-if="contract.state == 1" ng-bind="::('DEALS.PROPOSAL_SENT2' | translate)"></span>
+                <span ng-if="contract.state == 1" class="review-description" ng-bind="'(' + (contract.expiration_time | buyingTime : 1) + ')'"></span>
+
+                <span ng-if="contract.state == 110" class="additional-margin" ng-bind="::('DEALS.SELLER_IGNORE_CUSTOMER_DEAL' | translate)"></span>
+
+                <span ng-if="contract.state == 130" class="additional-margin" ng-bind="::('DEALS.SELLER_IGNORE_SENTENCE_ABOUT_CANCELLING' | translate)"></span>
+
+                <span ng-if="contract.state == 140" class="additional-margin" ng-bind="::('DEALS.TRANSACTION_CANCELED' | translate)"></span>
+
+                <span ng-if="contract.state == 201" class="additional-margin" ng-bind="::('DEALS.ACCEPT_STATE_WAIT' | translate)"></span>
+
+                <span ng-if="contract.state == 2" ng-bind="::('DEALS.CUSTOMER_WAITING_GOOD' | translate)"></span>
+                <span ng-if="contract.state == 2" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_INCLUDED' | translate) + ')')"></span>
+
+                <span ng-if="contract.state == 3" ng-bind="::('DEALS.DEAL_OK' | translate)"></span>
+                <span ng-if="contract.state == 3" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_IS_OK' | translate) + ')')"></span>
+
+                <span ng-if="contract.state == 4" ng-bind="::('DEALS.ACTIONS.GOOD_NOT_GOT' | translate)"></span>
+                <span ng-if="contract.state == 4" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_BURNED' | translate) + ')')"></span>
+
+                <span ng-if="contract.state == 5" ng-bind="::('DEALS.CONTRACT_CANCEL_PROPOSAL_SENT' | translate)"></span>
+                <span ng-if="contract.state == 5" class="review-description" ng-bind="'(' + (contract.cancel_expiration_time | buyingTime : 1) + ')'"></span>
+
+                <span ng-if="contract.state == 601" class="additional-margin" ng-bind="::('DEALS.DEALS_CANCELED_WAIT' | translate)"></span>
+
+                <span ng-if="contract.state == 6" ng-bind="::('DEALS.DEAL_CANCELED' | translate)"></span>
+                <span ng-if="contract.state == 6" class="review-description additional-margin" ng-bind="::('(' + ('DEALS.PLEDGE_IS_RETURNED' | translate) + ')')"></span>
+            </div>
+
+            <div class="general-form-field-group field-group-review-full-second" ng-if="contract.state == 201 || contract.state == 601">
+                <div class="transaction-status-indicator">
+                    <circle-show  item="{is_income:historyBlock.is_income, is_mining:false, height:contract.height}" height="appHeight"></circle-show>
+                </div>
+                <span ng-if="historyBlock.sortAmount" ng-bind="(historyBlock.is_income ? '+' : '') + moneyParse(historyBlock.sortAmount)"></span>
+            </div>
+
+            <div class="general-form-field-group need-master-password" ng-show="!contract.is_a && contract.state == 1 && needPass">
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="sPassword" contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-control-buttons" ng-if="contract.is_a && (contract.state == 201 || contract.state == 2 || contract.state == 120 || contract.state == 130)">
+                <button type="button" class="control-button" ng-click="productNotGot();" data-ng-disabled="contract.cancel_expiration_time == 0 && (contract.height == 0 || (appHeight - contract.height) < 10)">
+                    <span ng-bind="::('DEALS.ACTIONS.GOOD_NOT_GOT' | translate)"></span>
+                    <span class="control-button-info" ng-bind="::('DEALS.ACTIONS.DROP_PLEDGES' | translate)"></span>
+                </button>
+                <button type="button" class="control-button" ng-click="finishContract();" data-ng-disabled="contract.cancel_expiration_time == 0 && (contract.height == 0 || (appHeight - contract.height) < 10)">
+                    <span ng-bind="::('DEALS.ACTIONS.GOOD_GOT' | translate)"></span>
+                    <span class="control-button-info" ng-bind="::('DEALS.ACTIONS.SENT_PAYMENT_RETURN_PLEDGES_TO_SELLER' | translate)"></span>
+                </button>
+            </div>
+            <div class="general-form-control-buttons escrow-submit-button" ng-if="contract.is_a && (contract.state == 201 || contract.state == 2 || contract.state == 120 || contract.state == 130)">
+                <button type="button" class="control-button" ng-click="cancelContract();" data-ng-disabled="contract.cancel_expiration_time == 0 && (contract.height == 0 || (appHeight - contract.height) < 10)">
+                    <span ng-bind="::('DEALS.ACTIONS.CANCEL_CONTRACT' | translate)"></span>
+                    <span class="control-button-info" ng-bind="::('DEALS.ACTIONS.RETURN_PLEDGES' | translate)"></span>
+                </button>
+            </div>
+            <div class="general-form-control-buttons" ng-if="!contract.is_a && contract.state == 1" style="margin-bottom: 6rem;">
+                <button type="button" class="control-button large-button" ng-click="acceptState();" ng-repeat="s in safes | filter : {wallet_id: contract.wallet_id} : true track by s.wallet_id"
+                        data-ng-disabled="(contract.private_details.b_pledge + (config.standardFee | moneyToInt) + (config.standardFee | moneyToInt)) > s.unlocked_balance">
+                    <span ng-bind="::('DEALS.ACTIONS.ACCEPT' | translate)"></span>
+                    <span class="control-button-info" ng-bind="::('DEALS.ACTIONS.MAKE_PLEDGE' | translate)"></span>
+                </button>
+                <button type="button" class="control-button large-button" ng-click="ignoreContract();" ng-bind="::('DEALS.ACTIONS.IGNORE' | translate)"></button>
+            </div>
+            <div class="general-form-control-buttons" ng-if="!contract.is_a && contract.state == 5">
+                <button type="button" class="control-button large-button" ng-click="doNotCancelContract();">
+                    <span ng-bind="::('DEALS.ACTIONS.NOT_CANCEL' | translate)"></span>
+                    <span class="control-button-info" ng-bind="::('DEALS.ACTIONS.ITEM_SHIPPED' | translate)"></span>
+                </button>
+                <button type="button" class="control-button large-button" ng-click="sellerCancelContract();">
+                    <span ng-bind="::('DEALS.ACTIONS.CANCEL_CONTRACT' | translate)"></span>
+                    <span class="control-button-info" ng-bind="::('DEALS.ACTIONS.RETURN_PLEDGES' | translate)"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

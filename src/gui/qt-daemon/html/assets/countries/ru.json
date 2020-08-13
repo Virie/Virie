@@ -1,0 +1,1006 @@
+[
+    {
+        "alpha2Code": "ZD",
+        "name": "Абхазия"
+    },
+    {
+        "alpha2Code": "AF",
+        "name": "Афганистан"
+    },
+    {
+        "alpha2Code": "AX",
+        "name": "Аландские острова"
+    },
+    {
+        "alpha2Code": "AL",
+        "name": "Албания"
+    },
+    {
+        "alpha2Code": "DZ",
+        "name": "Алжир"
+    },
+    {
+        "alpha2Code": "AS",
+        "name": "Американское Самоа"
+    },
+    {
+        "alpha2Code": "AD",
+        "name": "Андорра"
+    },
+    {
+        "alpha2Code": "AO",
+        "name": "Ангола"
+    },
+    {
+        "alpha2Code": "AI",
+        "name": "Ангилья"
+    },
+    {
+        "alpha2Code": "AG",
+        "name": "Антигуа и Барбуда"
+    },
+    {
+        "alpha2Code": "AR",
+        "name": "Аргентина"
+    },
+    {
+        "alpha2Code": "AM",
+        "name": "Армения"
+    },
+    {
+        "alpha2Code": "AW",
+        "name": "Аруба"
+    },
+    {
+        "alpha2Code": "AU",
+        "name": "Австралия"
+    },
+    {
+        "alpha2Code": "AT",
+        "name": "Австрия"
+    },
+    {
+        "alpha2Code": "AZ",
+        "name": "Азербайджан"
+    },
+    {
+        "alpha2Code": "BS",
+        "name": "Багамские острова"
+    },
+    {
+        "alpha2Code": "BH",
+        "name": "Бахрейн"
+    },
+    {
+        "alpha2Code": "BD",
+        "name": "Бангладеш"
+    },
+    {
+        "alpha2Code": "BB",
+        "name": "Барбадос"
+    },
+    {
+        "alpha2Code": "BY",
+        "name": "Беларусь"
+    },
+    {
+        "alpha2Code": "BE",
+        "name": "Бельгия"
+    },
+    {
+        "alpha2Code": "BZ",
+        "name": "Белиз"
+    },
+    {
+        "alpha2Code": "BJ",
+        "name": "Бенин"
+    },
+    {
+        "alpha2Code": "BM",
+        "name": "Бермудские острова"
+    },
+    {
+        "alpha2Code": "BT",
+        "name": "Бутан"
+    },
+    {
+        "alpha2Code": "BO",
+        "name": "Боливия"
+    },
+    {
+        "alpha2Code": "BQ",
+        "name": "Бонайре"
+    },
+    {
+        "alpha2Code": "BA",
+        "name": "Босния и Герцеговина"
+    },
+    {
+        "alpha2Code": "BW",
+        "name": "Ботсвана"
+    },
+    {
+        "alpha2Code": "BV",
+        "name": "Остров Буве"
+    },
+    {
+        "alpha2Code": "BR",
+        "name": "Бразилия"
+    },
+    {
+        "alpha2Code": "IO",
+        "name": "Британская территория в Индийском океане"
+    },
+    {
+        "alpha2Code": "UM",
+        "name": "Малые Тихоокеанские Отдаленные Острова Соединенных Штатов"
+    },
+    {
+        "alpha2Code": "VG",
+        "name": "Виргинские острова (Британские)"
+    },
+    {
+        "alpha2Code": "BN",
+        "name": "Бруней-Даруссалам"
+    },
+    {
+        "alpha2Code": "BG",
+        "name": "Болгария"
+    },
+    {
+        "alpha2Code": "BF",
+        "name": "Буркина-Фасо"
+    },
+    {
+        "alpha2Code": "BI",
+        "name": "Бурунди"
+    },
+    {
+        "alpha2Code": "KH",
+        "name": "Камбоджа"
+    },
+    {
+        "alpha2Code": "CM",
+        "name": "Камерун"
+    },
+    {
+        "alpha2Code": "CA",
+        "name": "Канада"
+    },
+    {
+        "alpha2Code": "CV",
+        "name": "Кабо-Верде"
+    },
+    {
+        "alpha2Code": "KY",
+        "name": "Острова Кайман"
+    },
+    {
+        "alpha2Code": "CF",
+        "name": "Центрально-Африканская Республика"
+    },
+    {
+        "alpha2Code": "TD",
+        "name": "Чад"
+    },
+    {
+        "alpha2Code": "CL",
+        "name": "Чили"
+    },
+    {
+        "alpha2Code": "CN",
+        "name": "Китай"
+    },
+    {
+        "alpha2Code": "CX",
+        "name": "Остров Рождества"
+    },
+    {
+        "alpha2Code": "CC",
+        "name": "Кокосовые острова"
+    },
+    {
+        "alpha2Code": "CO",
+        "name": "Колумбия"
+    },
+    {
+        "alpha2Code": "KM",
+        "name": "Коморские острова"
+    },
+    {
+        "alpha2Code": "CG",
+        "name": "Республика Конго"
+    },
+    {
+        "alpha2Code": "CD",
+        "name": "Демократическая Республика Конго"
+    },
+    {
+        "alpha2Code": "CK",
+        "name": "Острова Кука"
+    },
+    {
+        "alpha2Code": "CR",
+        "name": "Коста-Рика"
+    },
+    {
+        "alpha2Code": "HR",
+        "name": "Хорватия"
+    },
+    {
+        "alpha2Code": "CU",
+        "name": "Куба"
+    },
+    {
+        "alpha2Code": "CW",
+        "name": "Кюрасао"
+    },
+    {
+        "alpha2Code": "CY",
+        "name": "Кипр"
+    },
+    {
+        "alpha2Code": "CZ",
+        "name": "Чешская Республика"
+    },
+    {
+        "alpha2Code": "DK",
+        "name": "Дания"
+    },
+    {
+        "alpha2Code": "DJ",
+        "name": "Джибути"
+    },
+    {
+        "alpha2Code": "DM",
+        "name": "Доминика"
+    },
+    {
+        "alpha2Code": "DO",
+        "name": "Доминиканская Республика"
+    },
+    {
+        "alpha2Code": "EC",
+        "name": "Эквадор"
+    },
+    {
+        "alpha2Code": "EG",
+        "name": "Египет"
+    },
+    {
+        "alpha2Code": "SV",
+        "name": "Эль-Сальвадор"
+    },
+    {
+        "alpha2Code": "GQ",
+        "name": "Экваториальная Гвинея"
+    },
+    {
+        "alpha2Code": "ER",
+        "name": "Эритрея"
+    },
+    {
+        "alpha2Code": "EE",
+        "name": "Эстония"
+    },
+    {
+        "alpha2Code": "ET",
+        "name": "Эфиопия"
+    },
+    {
+        "alpha2Code": "FK",
+        "name": "Фолклендские острова"
+    },
+    {
+        "alpha2Code": "FO",
+        "name": "Фарерские острова"
+    },
+    {
+        "alpha2Code": "FJ",
+        "name": "Фиджи"
+    },
+    {
+        "alpha2Code": "FI",
+        "name": "Финляндия"
+    },
+    {
+        "alpha2Code": "FR",
+        "name": "Франция"
+    },
+    {
+        "alpha2Code": "GF",
+        "name": "Французская Гвиана"
+    },
+    {
+        "alpha2Code": "PF",
+        "name": "Французская Полинезия"
+    },
+    {
+        "alpha2Code": "TF",
+        "name": "Французские Южные Территории"
+    },
+    {
+        "alpha2Code": "GA",
+        "name": "Габон"
+    },
+    {
+        "alpha2Code": "GM",
+        "name": "Гамбия"
+    },
+    {
+        "alpha2Code": "GE",
+        "name": "Грузия"
+    },
+    {
+        "alpha2Code": "DE",
+        "name": "Германия"
+    },
+    {
+        "alpha2Code": "GH",
+        "name": "Гана"
+    },
+    {
+        "alpha2Code": "GI",
+        "name": "Гибралтар"
+    },
+    {
+        "alpha2Code": "GR",
+        "name": "Греция"
+    },
+    {
+        "alpha2Code": "GL",
+        "name": "Гренландия"
+    },
+    {
+        "alpha2Code": "GD",
+        "name": "Гренада"
+    },
+    {
+        "alpha2Code": "GP",
+        "name": "Гваделупа"
+    },
+    {
+        "alpha2Code": "GU",
+        "name": "Гуам"
+    },
+    {
+        "alpha2Code": "GT",
+        "name": "Гватемала"
+    },
+    {
+        "alpha2Code": "GG",
+        "name": "Гернси"
+    },
+    {
+        "alpha2Code": "GN",
+        "name": "Гвинея"
+    },
+    {
+        "alpha2Code": "GW",
+        "name": "Гвинея-Бисау"
+    },
+    {
+        "alpha2Code": "GY",
+        "name": "Гайана"
+    },
+    {
+        "alpha2Code": "HT",
+        "name": "Гаити"
+    },
+    {
+        "alpha2Code": "HM",
+        "name": "Острова Херд и Макдональд"
+    },
+    {
+        "alpha2Code": "HN",
+        "name": "Гондурас"
+    },
+    {
+        "alpha2Code": "HK",
+        "name": "Гонконг"
+    },
+    {
+        "alpha2Code": "HU",
+        "name": "Венгрия"
+    },
+    {
+        "alpha2Code": "IS",
+        "name": "Исландия"
+    },
+    {
+        "alpha2Code": "IN",
+        "name": "Индия"
+    },
+    {
+        "alpha2Code": "ID",
+        "name": "Индонезия"
+    },
+    {
+        "alpha2Code": "CI",
+        "name": "Кот д'Ивуар"
+    },
+    {
+        "alpha2Code": "IR",
+        "name": "Иран"
+    },
+    {
+        "alpha2Code": "IQ",
+        "name": "Ирак"
+    },
+    {
+        "alpha2Code": "IE",
+        "name": "Республика Ирландия"
+    },
+    {
+        "alpha2Code": "IM",
+        "name": "Остров Мэн"
+    },
+    {
+        "alpha2Code": "IL",
+        "name": "Израиль"
+    },
+    {
+        "alpha2Code": "IT",
+        "name": "Италия"
+    },
+    {
+        "alpha2Code": "JM",
+        "name": "Ямайка"
+    },
+    {
+        "alpha2Code": "JP",
+        "name": "Япония"
+    },
+    {
+        "alpha2Code": "JE",
+        "name": "Джерси"
+    },
+    {
+        "alpha2Code": "JO",
+        "name": "Иордания"
+    },
+    {
+        "alpha2Code": "KZ",
+        "name": "Казахстан"
+    },
+    {
+        "alpha2Code": "KE",
+        "name": "Кения"
+    },
+    {
+        "alpha2Code": "KI",
+        "name": "Кирибати"
+    },
+    {
+        "alpha2Code": "KW",
+        "name": "Кувейт"
+    },
+    {
+        "alpha2Code": "KG",
+        "name": "Киргизия"
+    },
+    {
+        "alpha2Code": "LA",
+        "name": "Лаос"
+    },
+    {
+        "alpha2Code": "LV",
+        "name": "Латвия"
+    },
+    {
+        "alpha2Code": "LB",
+        "name": "Ливан"
+    },
+    {
+        "alpha2Code": "LS",
+        "name": "Лесото"
+    },
+    {
+        "alpha2Code": "LR",
+        "name": "Либерия"
+    },
+    {
+        "alpha2Code": "ZF",
+        "name": "Либерландия"
+    },
+    {
+        "alpha2Code": "LY",
+        "name": "Ливия"
+    },
+    {
+        "alpha2Code": "LI",
+        "name": "Лихтенштейн"
+    },
+    {
+        "alpha2Code": "LT",
+        "name": "Литва"
+    },
+    {
+        "alpha2Code": "LU",
+        "name": "Люксембург"
+    },
+    {
+        "alpha2Code": "MO",
+        "name": "Макао"
+    },
+    {
+        "alpha2Code": "MK",
+        "name": "Республика Македония"
+    },
+    {
+        "alpha2Code": "MG",
+        "name": "Мадагаскар"
+    },
+    {
+        "alpha2Code": "MW",
+        "name": "Малави"
+    },
+    {
+        "alpha2Code": "MY",
+        "name": "Малайзия"
+    },
+    {
+        "alpha2Code": "MV",
+        "name": "Мальдивы"
+    },
+    {
+        "alpha2Code": "ML",
+        "name": "Мали"
+    },
+    {
+        "alpha2Code": "MT",
+        "name": "Мальта"
+    },
+    {
+        "alpha2Code": "MH",
+        "name": "Маршалловы острова"
+    },
+    {
+        "alpha2Code": "MQ",
+        "name": "Мартиника"
+    },
+    {
+        "alpha2Code": "MR",
+        "name": "Мавритания"
+    },
+    {
+        "alpha2Code": "MU",
+        "name": "Маврикий"
+    },
+    {
+        "alpha2Code": "YT",
+        "name": "Майотта"
+    },
+    {
+        "alpha2Code": "MX",
+        "name": "Мексика"
+    },
+    {
+        "alpha2Code": "FM",
+        "name": "Федеративные Штаты Микронезии"
+    },
+    {
+        "alpha2Code": "MD",
+        "name": "Молдова"
+    },
+    {
+        "alpha2Code": "MC",
+        "name": "Монако"
+    },
+    {
+        "alpha2Code": "MN",
+        "name": "Монголия"
+    },
+    {
+        "alpha2Code": "ME",
+        "name": "Черногория"
+    },
+    {
+        "alpha2Code": "MS",
+        "name": "Монтсеррат"
+    },
+    {
+        "alpha2Code": "MA",
+        "name": "Марокко"
+    },
+    {
+        "alpha2Code": "MZ",
+        "name": "Мозамбик"
+    },
+    {
+        "alpha2Code": "MM",
+        "name": "Мьянма"
+    },
+    {
+        "alpha2Code": "NA",
+        "name": "Намибия"
+    },
+    {
+        "alpha2Code": "NR",
+        "name": "Науру"
+    },
+    {
+        "alpha2Code": "NP",
+        "name": "Непал"
+    },
+    {
+        "alpha2Code": "NL",
+        "name": "Нидерланды"
+    },
+    {
+        "alpha2Code": "NC",
+        "name": "Новая Каледония"
+    },
+    {
+        "alpha2Code": "NZ",
+        "name": "Новая Зеландия"
+    },
+    {
+        "alpha2Code": "NI",
+        "name": "Никарагуа"
+    },
+    {
+        "alpha2Code": "NE",
+        "name": "Нигер"
+    },
+    {
+        "alpha2Code": "NG",
+        "name": "Нигерия"
+    },
+    {
+        "alpha2Code": "NU",
+        "name": "Ниуэ"
+    },
+    {
+        "alpha2Code": "NF",
+        "name": "Остров Норфолк"
+    },
+    {
+        "alpha2Code": "KP",
+        "name": "КНДР"
+    },
+    {
+        "alpha2Code": "MP",
+        "name": "Северные Марианские острова"
+    },
+    {
+        "alpha2Code": "NO",
+        "name": "Норвегия"
+    },
+    {
+        "alpha2Code": "OM",
+        "name": "Оман"
+    },
+    {
+        "alpha2Code": "PK",
+        "name": "Пакистан"
+    },
+    {
+        "alpha2Code": "PW",
+        "name": "Палау"
+    },
+    {
+        "alpha2Code": "PS",
+        "name": "Государство Палестина"
+    },
+    {
+        "alpha2Code": "PA",
+        "name": "Панама"
+    },
+    {
+        "alpha2Code": "PG",
+        "name": "Папуа — Новая Гвинея"
+    },
+    {
+        "alpha2Code": "PY",
+        "name": "Парагвай"
+    },
+    {
+        "alpha2Code": "PE",
+        "name": "Перу"
+    },
+    {
+        "alpha2Code": "PH",
+        "name": "Филиппины"
+    },
+    {
+        "alpha2Code": "PN",
+        "name": "Питкерн"
+    },
+    {
+        "alpha2Code": "PL",
+        "name": "Польша"
+    },
+    {
+        "alpha2Code": "PT",
+        "name": "Португалия"
+    },
+    {
+        "alpha2Code": "PR",
+        "name": "Пуэрто-Рико"
+    },
+    {
+        "alpha2Code": "QA",
+        "name": "Катар"
+    },
+    {
+        "alpha2Code": "XK",
+        "name": "Республика Косово"
+    },
+    {
+        "alpha2Code": "RE",
+        "name": "Реюньон"
+    },
+    {
+        "alpha2Code": "RO",
+        "name": "Румыния"
+    },
+    {
+        "alpha2Code": "RU",
+        "name": "Россия"
+    },
+    {
+        "alpha2Code": "RW",
+        "name": "Руанда"
+    },
+    {
+        "alpha2Code": "BL",
+        "name": "Сен-Бартельми"
+    },
+    {
+        "alpha2Code": "SH",
+        "name": "Святая Елена, остров Вознесения, Тристан-да-Кунья"
+    },
+    {
+        "alpha2Code": "KN",
+        "name": "Сент-Китс и Невис"
+    },
+    {
+        "alpha2Code": "LC",
+        "name": "Сент-Люсия"
+    },
+    {
+        "alpha2Code": "MF",
+        "name": "Сен-Мартен"
+    },
+    {
+        "alpha2Code": "PM",
+        "name": "Сен-Пьер и Микелон"
+    },
+    {
+        "alpha2Code": "VC",
+        "name": "Сент-Винсент и Гренадины"
+    },
+    {
+        "alpha2Code": "WS",
+        "name": "Самоа"
+    },
+    {
+        "alpha2Code": "SM",
+        "name": "Сан-Марино"
+    },
+    {
+        "alpha2Code": "ST",
+        "name": "Сан-Томе и Принсипи"
+    },
+    {
+        "alpha2Code": "SA",
+        "name": "Саудовская Аравия"
+    },
+    {
+        "alpha2Code": "SN",
+        "name": "Сенегал"
+    },
+    {
+        "alpha2Code": "RS",
+        "name": "Сербия"
+    },
+    {
+        "alpha2Code": "SC",
+        "name": "Сейшельские острова"
+    },
+    {
+        "alpha2Code": "SL",
+        "name": "Сьерра-Леоне"
+    },
+    {
+        "alpha2Code": "SG",
+        "name": "Сингапур"
+    },
+    {
+        "alpha2Code": "SX",
+        "name": "Синт-Мартен"
+    },
+    {
+        "alpha2Code": "SK",
+        "name": "Словакия"
+    },
+    {
+        "alpha2Code": "SI",
+        "name": "Словения"
+    },
+    {
+        "alpha2Code": "SB",
+        "name": "Соломоновы острова"
+    },
+    {
+        "alpha2Code": "SO",
+        "name": "Сомали"
+    },
+    {
+        "alpha2Code": "ZA",
+        "name": "Южная Африка"
+    },
+    {
+        "alpha2Code": "GS",
+        "name": "Южная Джорджия и Южные Сандвичевы острова"
+    },
+    {
+        "alpha2Code": "KR",
+        "name": "Республика Корея"
+    },
+    {
+        "alpha2Code": "ZE",
+        "name": "Республика Южная Осетия"
+    },
+    {
+        "alpha2Code": "SS",
+        "name": "Южный Судан"
+    },
+    {
+        "alpha2Code": "ES",
+        "name": "Испания"
+    },
+    {
+        "alpha2Code": "LK",
+        "name": "Шри-Ланка"
+    },
+    {
+        "alpha2Code": "SD",
+        "name": "Судан"
+    },
+    {
+        "alpha2Code": "SR",
+        "name": "Суринам"
+    },
+    {
+        "alpha2Code": "SJ",
+        "name": "Шпицберген и Ян-Майен"
+    },
+    {
+        "alpha2Code": "SZ",
+        "name": "Свазиленд"
+    },
+    {
+        "alpha2Code": "SE",
+        "name": "Швеция"
+    },
+    {
+        "alpha2Code": "CH",
+        "name": "Швейцария"
+    },
+    {
+        "alpha2Code": "SY",
+        "name": "Сирия"
+    },
+    {
+        "alpha2Code": "TW",
+        "name": "Тайвань"
+    },
+    {
+        "alpha2Code": "TJ",
+        "name": "Таджикистан"
+    },
+    {
+        "alpha2Code": "TZ",
+        "name": "Танзания"
+    },
+    {
+        "alpha2Code": "TH",
+        "name": "Таиланд"
+    },
+    {
+        "alpha2Code": "TL",
+        "name": "Тимор-Лесте"
+    },
+    {
+        "alpha2Code": "TG",
+        "name": "Того"
+    },
+    {
+        "alpha2Code": "TK",
+        "name": "Токелау"
+    },
+    {
+        "alpha2Code": "TO",
+        "name": "Тонга"
+    },
+    {
+        "alpha2Code": "TT",
+        "name": "Тринидад и Тобаго"
+    },
+    {
+        "alpha2Code": "TN",
+        "name": "Тунис"
+    },
+    {
+        "alpha2Code": "TR",
+        "name": "Турция"
+    },
+    {
+        "alpha2Code": "ZC",
+        "name": "Турецкая Республика Северного Кипра"
+    },
+    {
+        "alpha2Code": "TM",
+        "name": "Туркменистан"
+    },
+    {
+        "alpha2Code": "TC",
+        "name": "Острова Тёркс и Кайкос"
+    },
+    {
+        "alpha2Code": "TV",
+        "name": "Тувалу"
+    },
+    {
+        "alpha2Code": "UG",
+        "name": "Уганда"
+    },
+    {
+        "alpha2Code": "UA",
+        "name": "Украина"
+    },
+    {
+        "alpha2Code": "AE",
+        "name": "Объединенные Арабские Эмираты"
+    },
+    {
+        "alpha2Code": "GB",
+        "name": "Соединенное Королевство"
+    },
+    {
+        "alpha2Code": "US",
+        "name": "Соединенные Штаты"
+    },
+    {
+        "alpha2Code": "UY",
+        "name": "Уругвай"
+    },
+    {
+        "alpha2Code": "UZ",
+        "name": "Узбекистан"
+    },
+    {
+        "alpha2Code": "VU",
+        "name": "Вануату"
+    },
+    {
+        "alpha2Code": "VE",
+        "name": "Венесуэла"
+    },
+    {
+        "alpha2Code": "VN",
+        "name": "Вьетнам"
+    },
+    {
+        "alpha2Code": "WF",
+        "name": "Уоллис и Футуна"
+    },
+    {
+        "alpha2Code": "EH",
+        "name": "Западная Сахара"
+    },
+    {
+        "alpha2Code": "YE",
+        "name": "Йемен"
+    },
+    {
+        "alpha2Code": "ZM",
+        "name": "Замбия"
+    },
+    {
+        "alpha2Code": "ZW",
+        "name": "Зимбабве"
+    }
+]

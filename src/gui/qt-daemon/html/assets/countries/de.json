@@ -1,0 +1,1006 @@
+[
+    {
+        "alpha2Code": "ZD",
+        "name": "Abchasien"
+    },
+    {
+        "alpha2Code": "AF",
+        "name": "Afghanistan"
+    },
+    {
+        "alpha2Code": "AX",
+        "name": "Åland"
+    },
+    {
+        "alpha2Code": "AL",
+        "name": "Albanien"
+    },
+    {
+        "alpha2Code": "DZ",
+        "name": "Algerien"
+    },
+    {
+        "alpha2Code": "AS",
+        "name": "Amerikanisch-Samoa"
+    },
+    {
+        "alpha2Code": "AD",
+        "name": "Andorra"
+    },
+    {
+        "alpha2Code": "AO",
+        "name": "Angola"
+    },
+    {
+        "alpha2Code": "AI",
+        "name": "Anguilla"
+    },
+    {
+        "alpha2Code": "AG",
+        "name": "Antigua und Barbuda"
+    },
+    {
+        "alpha2Code": "AR",
+        "name": "Argentinien"
+    },
+    {
+        "alpha2Code": "AM",
+        "name": "Armenien"
+    },
+    {
+        "alpha2Code": "AW",
+        "name": "Aruba"
+    },
+    {
+        "alpha2Code": "AU",
+        "name": "Australien"
+    },
+    {
+        "alpha2Code": "AT",
+        "name": "Österreich"
+    },
+    {
+        "alpha2Code": "AZ",
+        "name": "Aserbaidschan"
+    },
+    {
+        "alpha2Code": "BH",
+        "name": "Bahrain"
+    },
+    {
+        "alpha2Code": "BD",
+        "name": "Bangladesch"
+    },
+    {
+        "alpha2Code": "BB",
+        "name": "Barbados"
+    },
+    {
+        "alpha2Code": "BY",
+        "name": "Weißrussland"
+    },
+    {
+        "alpha2Code": "BE",
+        "name": "Belgien"
+    },
+    {
+        "alpha2Code": "BZ",
+        "name": "Belize"
+    },
+    {
+        "alpha2Code": "BJ",
+        "name": "Benin"
+    },
+    {
+        "alpha2Code": "BM",
+        "name": "Bermuda"
+    },
+    {
+        "alpha2Code": "BT",
+        "name": "Bhutan"
+    },
+    {
+        "alpha2Code": "BO",
+        "name": "Bolivien"
+    },
+    {
+        "alpha2Code": "BQ",
+        "name": "Bonaire"
+    },
+    {
+        "alpha2Code": "BA",
+        "name": "Bosnien und Herzegowina"
+    },
+    {
+        "alpha2Code": "BW",
+        "name": "Botsuana"
+    },
+    {
+        "alpha2Code": "BV",
+        "name": "Bouvetinsel"
+    },
+    {
+        "alpha2Code": "BR",
+        "name": "Brasilien"
+    },
+    {
+        "alpha2Code": "IO",
+        "name": "Britisches Territorium im Indischen Ozean"
+    },
+    {
+        "alpha2Code": "VG",
+        "name": "Britische Jungferninseln"
+    },
+    {
+        "alpha2Code": "BN",
+        "name": "Brunei"
+    },
+    {
+        "alpha2Code": "BG",
+        "name": "Bulgarien"
+    },
+    {
+        "alpha2Code": "BF",
+        "name": "Burkina Faso"
+    },
+    {
+        "alpha2Code": "BI",
+        "name": "Burundi"
+    },
+    {
+        "alpha2Code": "KH",
+        "name": "Kambodscha"
+    },
+    {
+        "alpha2Code": "CM",
+        "name": "Kamerun"
+    },
+    {
+        "alpha2Code": "CA",
+        "name": "Kanada"
+    },
+    {
+        "alpha2Code": "CV",
+        "name": "Kap Verde"
+    },
+    {
+        "alpha2Code": "KY",
+        "name": "Kaimaninseln"
+    },
+    {
+        "alpha2Code": "CF",
+        "name": "Zentralafrikanische Republik"
+    },
+    {
+        "alpha2Code": "TD",
+        "name": "Tschad"
+    },
+    {
+        "alpha2Code": "CL",
+        "name": "Chile"
+    },
+    {
+        "alpha2Code": "CN",
+        "name": "China"
+    },
+    {
+        "alpha2Code": "CX",
+        "name": "Weihnachtsinsel"
+    },
+    {
+        "alpha2Code": "CC",
+        "name": "Kokosinseln"
+    },
+    {
+        "alpha2Code": "CO",
+        "name": "Kolumbien"
+    },
+    {
+        "alpha2Code": "KM",
+        "name": "Komoren"
+    },
+    {
+        "alpha2Code": "CK",
+        "name": "Cookinseln"
+    },
+    {
+        "alpha2Code": "CR",
+        "name": "Costa Rica"
+    },
+    {
+        "alpha2Code": "HR",
+        "name": "Kroatien"
+    },
+    {
+        "alpha2Code": "CU",
+        "name": "Kuba"
+    },
+    {
+        "alpha2Code": "CW",
+        "name": "Curaçao"
+    },
+    {
+        "alpha2Code": "CY",
+        "name": "Zypern"
+    },
+    {
+        "alpha2Code": "CZ",
+        "name": "Tschechische Republik"
+    },
+    {
+        "alpha2Code": "CD",
+        "name": "Demokratische Republik Kongo"
+    },
+    {
+        "alpha2Code": "DK",
+        "name": "Dänemark"
+    },
+    {
+        "alpha2Code": "DJ",
+        "name": "Dschibuti"
+    },
+    {
+        "alpha2Code": "DM",
+        "name": "Dominica"
+    },
+    {
+        "alpha2Code": "DO",
+        "name": "Dominikanische Republik"
+    },
+    {
+        "alpha2Code": "TL",
+        "name": "Osttimor"
+    },
+    {
+        "alpha2Code": "EC",
+        "name": "Ecuador"
+    },
+    {
+        "alpha2Code": "EG",
+        "name": "Ägypten"
+    },
+    {
+        "alpha2Code": "SV",
+        "name": "El Salvador"
+    },
+    {
+        "alpha2Code": "GQ",
+        "name": "Äquatorialguinea"
+    },
+    {
+        "alpha2Code": "ER",
+        "name": "Eritrea"
+    },
+    {
+        "alpha2Code": "EE",
+        "name": "Estland"
+    },
+    {
+        "alpha2Code": "ET",
+        "name": "Äthiopien"
+    },
+    {
+        "alpha2Code": "FK",
+        "name": "Falklandinseln"
+    },
+    {
+        "alpha2Code": "FO",
+        "name": "Färöer"
+    },
+    {
+        "alpha2Code": "FM",
+        "name": "Föderierte Staaten von Mikronesien"
+    },
+    {
+        "alpha2Code": "FJ",
+        "name": "Fidschi"
+    },
+    {
+        "alpha2Code": "FI",
+        "name": "Finnland"
+    },
+    {
+        "alpha2Code": "FR",
+        "name": "Frankreich"
+    },
+    {
+        "alpha2Code": "GF",
+        "name": "Französisch-Guayana"
+    },
+    {
+        "alpha2Code": "PF",
+        "name": "Französisch-Polynesien"
+    },
+    {
+        "alpha2Code": "TF",
+        "name": "Französische Süd- und Antarktisgebiete"
+    },
+    {
+        "alpha2Code": "GA",
+        "name": "Gabun"
+    },
+    {
+        "alpha2Code": "GE",
+        "name": "Georgien"
+    },
+    {
+        "alpha2Code": "DE",
+        "name": "Deutschland"
+    },
+    {
+        "alpha2Code": "GH",
+        "name": "Ghana"
+    },
+    {
+        "alpha2Code": "GI",
+        "name": "Gibraltar"
+    },
+    {
+        "alpha2Code": "GR",
+        "name": "Griechenland"
+    },
+    {
+        "alpha2Code": "GL",
+        "name": "Grönland"
+    },
+    {
+        "alpha2Code": "GD",
+        "name": "Grenada"
+    },
+    {
+        "alpha2Code": "GP",
+        "name": "Guadeloupe"
+    },
+    {
+        "alpha2Code": "GU",
+        "name": "Guam"
+    },
+    {
+        "alpha2Code": "GT",
+        "name": "Guatemala"
+    },
+    {
+        "alpha2Code": "GG",
+        "name": "Guernsey"
+    },
+    {
+        "alpha2Code": "GN",
+        "name": "Guinea"
+    },
+    {
+        "alpha2Code": "GW",
+        "name": "Guinea-Bissau"
+    },
+    {
+        "alpha2Code": "GY",
+        "name": "Guyana"
+    },
+    {
+        "alpha2Code": "HT",
+        "name": "Haiti"
+    },
+    {
+        "alpha2Code": "HM",
+        "name": "Heard und McDonaldinseln"
+    },
+    {
+        "alpha2Code": "HN",
+        "name": "Honduras"
+    },
+    {
+        "alpha2Code": "HK",
+        "name": "Hongkong"
+    },
+    {
+        "alpha2Code": "HU",
+        "name": "Ungarn"
+    },
+    {
+        "alpha2Code": "IS",
+        "name": "Island"
+    },
+    {
+        "alpha2Code": "IN",
+        "name": "Indien"
+    },
+    {
+        "alpha2Code": "ID",
+        "name": "Indonesien"
+    },
+    {
+        "alpha2Code": "IR",
+        "name": "Iran"
+    },
+    {
+        "alpha2Code": "IQ",
+        "name": "Irak"
+    },
+    {
+        "alpha2Code": "IM",
+        "name": "Insel Man"
+    },
+    {
+        "alpha2Code": "IL",
+        "name": "Israel"
+    },
+    {
+        "alpha2Code": "IT",
+        "name": "Italien"
+    },
+    {
+        "alpha2Code": "CI",
+        "name": "Republik Côte d’Ivoire"
+    },
+    {
+        "alpha2Code": "JM",
+        "name": "Jamaika"
+    },
+    {
+        "alpha2Code": "JP",
+        "name": "Japan"
+    },
+    {
+        "alpha2Code": "JE",
+        "name": "Jersey"
+    },
+    {
+        "alpha2Code": "JO",
+        "name": "Jordanien"
+    },
+    {
+        "alpha2Code": "KZ",
+        "name": "Kasachstan"
+    },
+    {
+        "alpha2Code": "KE",
+        "name": "Kenia"
+    },
+    {
+        "alpha2Code": "KI",
+        "name": "Kiribati"
+    },
+    {
+        "alpha2Code": "KW",
+        "name": "Kuwait"
+    },
+    {
+        "alpha2Code": "KG",
+        "name": "Kirgisistan"
+    },
+    {
+        "alpha2Code": "LA",
+        "name": "Laos"
+    },
+    {
+        "alpha2Code": "LV",
+        "name": "Lettland"
+    },
+    {
+        "alpha2Code": "LB",
+        "name": "Libanon"
+    },
+    {
+        "alpha2Code": "LS",
+        "name": "Lesotho"
+    },
+    {
+        "alpha2Code": "LR",
+        "name": "Liberia"
+    },
+    {
+        "alpha2Code": "ZF",
+        "name": "Liberland"
+    },
+    {
+        "alpha2Code": "LY",
+        "name": "Libyen"
+    },
+    {
+        "alpha2Code": "LI",
+        "name": "Liechtenstein"
+    },
+    {
+        "alpha2Code": "LT",
+        "name": "Litauen"
+    },
+    {
+        "alpha2Code": "LU",
+        "name": "Luxemburg"
+    },
+    {
+        "alpha2Code": "MO",
+        "name": "Macau"
+    },
+    {
+        "alpha2Code": "MG",
+        "name": "Madagaskar"
+    },
+    {
+        "alpha2Code": "MW",
+        "name": "Malawi"
+    },
+    {
+        "alpha2Code": "MY",
+        "name": "Malaysia"
+    },
+    {
+        "alpha2Code": "MV",
+        "name": "Malediven"
+    },
+    {
+        "alpha2Code": "ML",
+        "name": "Mali"
+    },
+    {
+        "alpha2Code": "MT",
+        "name": "Malta"
+    },
+    {
+        "alpha2Code": "MH",
+        "name": "Marshallinseln"
+    },
+    {
+        "alpha2Code": "MQ",
+        "name": "Martinique"
+    },
+    {
+        "alpha2Code": "MR",
+        "name": "Mauretanien"
+    },
+    {
+        "alpha2Code": "MU",
+        "name": "Mauritius"
+    },
+    {
+        "alpha2Code": "YT",
+        "name": "Mayotte"
+    },
+    {
+        "alpha2Code": "MX",
+        "name": "Mexiko"
+    },
+    {
+        "alpha2Code": "MD",
+        "name": "Republik Moldau"
+    },
+    {
+        "alpha2Code": "MC",
+        "name": "Monaco"
+    },
+    {
+        "alpha2Code": "MN",
+        "name": "Mongolei"
+    },
+    {
+        "alpha2Code": "ME",
+        "name": "Montenegro"
+    },
+    {
+        "alpha2Code": "MS",
+        "name": "Montserrat"
+    },
+    {
+        "alpha2Code": "MA",
+        "name": "Marokko"
+    },
+    {
+        "alpha2Code": "MZ",
+        "name": "Mosambik"
+    },
+    {
+        "alpha2Code": "MM",
+        "name": "Myanmar"
+    },
+    {
+        "alpha2Code": "NA",
+        "name": "Namibia"
+    },
+    {
+        "alpha2Code": "NR",
+        "name": "Nauru"
+    },
+    {
+        "alpha2Code": "NP",
+        "name": "Nepal"
+    },
+    {
+        "alpha2Code": "NL",
+        "name": "Niederlande"
+    },
+    {
+        "alpha2Code": "NC",
+        "name": "Neukaledonien"
+    },
+    {
+        "alpha2Code": "NZ",
+        "name": "Neuseeland"
+    },
+    {
+        "alpha2Code": "NI",
+        "name": "Nicaragua"
+    },
+    {
+        "alpha2Code": "NE",
+        "name": "Niger"
+    },
+    {
+        "alpha2Code": "NG",
+        "name": "Nigeria"
+    },
+    {
+        "alpha2Code": "NU",
+        "name": "Niue"
+    },
+    {
+        "alpha2Code": "NF",
+        "name": "Norfolkinsel"
+    },
+    {
+        "alpha2Code": "KP",
+        "name": "Nordkorea"
+    },
+    {
+        "alpha2Code": "MP",
+        "name": "Nördliche Marianen"
+    },
+    {
+        "alpha2Code": "NO",
+        "name": "Norwegen"
+    },
+    {
+        "alpha2Code": "OM",
+        "name": "Oman"
+    },
+    {
+        "alpha2Code": "PK",
+        "name": "Pakistan"
+    },
+    {
+        "alpha2Code": "PW",
+        "name": "Palau"
+    },
+    {
+        "alpha2Code": "PS",
+        "name": "Staat Palästina"
+    },
+    {
+        "alpha2Code": "PA",
+        "name": "Panama"
+    },
+    {
+        "alpha2Code": "PG",
+        "name": "Papua-Neuguinea"
+    },
+    {
+        "alpha2Code": "PY",
+        "name": "Paraguay"
+    },
+    {
+        "alpha2Code": "PE",
+        "name": "Peru"
+    },
+    {
+        "alpha2Code": "PH",
+        "name": "Philippinen"
+    },
+    {
+        "alpha2Code": "PN",
+        "name": "Pitcairninseln"
+    },
+    {
+        "alpha2Code": "PL",
+        "name": "Polen"
+    },
+    {
+        "alpha2Code": "PT",
+        "name": "Portugal"
+    },
+    {
+        "alpha2Code": "PR",
+        "name": "Puerto Rico"
+    },
+    {
+        "alpha2Code": "QA",
+        "name": "Katar"
+    },
+    {
+        "alpha2Code": "IE",
+        "name": "Irland"
+    },
+    {
+        "alpha2Code": "XK",
+        "name": "Republik Kosovo"
+    },
+    {
+        "alpha2Code": "MK",
+        "name": "Republik Mazedonien"
+    },
+    {
+        "alpha2Code": "CG",
+        "name": "Demokratische Republik Kongo"
+    },
+    {
+        "alpha2Code": "RE",
+        "name": "Réunion"
+    },
+    {
+        "alpha2Code": "RO",
+        "name": "Rumänien"
+    },
+    {
+        "alpha2Code": "RU",
+        "name": "Russische Föderation"
+    },
+    {
+        "alpha2Code": "RW",
+        "name": "Ruanda"
+    },
+    {
+        "alpha2Code": "BL",
+        "name": "Saint-Barthélemy"
+    },
+    {
+        "alpha2Code": "SH",
+        "name": "St. Helena"
+    },
+    {
+        "alpha2Code": "KN",
+        "name": "St. Kitts und Nevis"
+    },
+    {
+        "alpha2Code": "LC",
+        "name": "St. Lucia"
+    },
+    {
+        "alpha2Code": "MF",
+        "name": "Saint-Martin"
+    },
+    {
+        "alpha2Code": "PM",
+        "name": "St. Pierre und Miquelon"
+    },
+    {
+        "alpha2Code": "VC",
+        "name": "St. Vincent und die Grenadinen"
+    },
+    {
+        "alpha2Code": "WS",
+        "name": "Samoa"
+    },
+    {
+        "alpha2Code": "SM",
+        "name": "San Marino"
+    },
+    {
+        "alpha2Code": "ST",
+        "name": "São Tomé und Príncipe"
+    },
+    {
+        "alpha2Code": "SA",
+        "name": "Saudi-Arabien"
+    },
+    {
+        "alpha2Code": "SN",
+        "name": "Senegal"
+    },
+    {
+        "alpha2Code": "RS",
+        "name": "Serbien"
+    },
+    {
+        "alpha2Code": "SC",
+        "name": "Seychellen"
+    },
+    {
+        "alpha2Code": "SL",
+        "name": "Sierra Leone"
+    },
+    {
+        "alpha2Code": "SG",
+        "name": "Singapur"
+    },
+    {
+        "alpha2Code": "SX",
+        "name": "St. Maarten"
+    },
+    {
+        "alpha2Code": "SK",
+        "name": "Slowakei"
+    },
+    {
+        "alpha2Code": "SI",
+        "name": "Slowenien"
+    },
+    {
+        "alpha2Code": "SB",
+        "name": "Salomonen"
+    },
+    {
+        "alpha2Code": "SO",
+        "name": "Somalia"
+    },
+    {
+        "alpha2Code": "ZA",
+        "name": "Südafrika"
+    },
+    {
+        "alpha2Code": "GS",
+        "name": "Südgeorgien"
+    },
+    {
+        "alpha2Code": "KR",
+        "name": "Südkorea"
+    },
+    {
+        "alpha2Code": "ZE",
+        "name": "Südossetien"
+    },
+    {
+        "alpha2Code": "SS",
+        "name": "Südsudan"
+    },
+    {
+        "alpha2Code": "ES",
+        "name": "Spanien"
+    },
+    {
+        "alpha2Code": "LK",
+        "name": "Sri Lanka"
+    },
+    {
+        "alpha2Code": "SD",
+        "name": "Sudan"
+    },
+    {
+        "alpha2Code": "SR",
+        "name": "Suriname"
+    },
+    {
+        "alpha2Code": "SJ",
+        "name": "Svalbard und Jan Mayen"
+    },
+    {
+        "alpha2Code": "SZ",
+        "name": "Swasiland"
+    },
+    {
+        "alpha2Code": "SE",
+        "name": "Schweden"
+    },
+    {
+        "alpha2Code": "CH",
+        "name": "Schweiz"
+    },
+    {
+        "alpha2Code": "SY",
+        "name": "Syrien"
+    },
+    {
+        "alpha2Code": "TW",
+        "name": "Taiwan"
+    },
+    {
+        "alpha2Code": "TJ",
+        "name": "Tadschikistan"
+    },
+    {
+        "alpha2Code": "TZ",
+        "name": "Tansania"
+    },
+    {
+        "alpha2Code": "TH",
+        "name": "Thailand"
+    },
+    {
+        "alpha2Code": "BS",
+        "name": "Bahamas"
+    },
+    {
+        "alpha2Code": "GM",
+        "name": "Gambia"
+    },
+    {
+        "alpha2Code": "TG",
+        "name": "Togo"
+    },
+    {
+        "alpha2Code": "TK",
+        "name": "Tokelau"
+    },
+    {
+        "alpha2Code": "TO",
+        "name": "Tonga"
+    },
+    {
+        "alpha2Code": "TT",
+        "name": "Trinidad und Tobago"
+    },
+    {
+        "alpha2Code": "TN",
+        "name": "Tunesien"
+    },
+    {
+        "alpha2Code": "TR",
+        "name": "Türkei"
+    },
+    {
+        "alpha2Code": "ZC",
+        "name": "Türkische Republik Nordzypern"
+    },
+    {
+        "alpha2Code": "TM",
+        "name": "Turkmenistan"
+    },
+    {
+        "alpha2Code": "TC",
+        "name": "Turks- und Caicosinseln"
+    },
+    {
+        "alpha2Code": "TV",
+        "name": "Tuvalu"
+    },
+    {
+        "alpha2Code": "UG",
+        "name": "Uganda"
+    },
+    {
+        "alpha2Code": "UA",
+        "name": "Ukraine"
+    },
+    {
+        "alpha2Code": "AE",
+        "name": "Vereinigte Arabische Emirate"
+    },
+    {
+        "alpha2Code": "GB",
+        "name": "Vereinigtes Königreich"
+    },
+    {
+        "alpha2Code": "US",
+        "name": "Vereinigte Staaten von Amerika"
+    },
+    {
+        "alpha2Code": "UM",
+        "name": "United States Minor Outlying Islands"
+    },
+    {
+        "alpha2Code": "UY",
+        "name": "Uruguay"
+    },
+    {
+        "alpha2Code": "UZ",
+        "name": "Usbekistan"
+    },
+    {
+        "alpha2Code": "VU",
+        "name": "Vanuatu"
+    },
+    {
+        "alpha2Code": "VE",
+        "name": "Venezuela"
+    },
+    {
+        "alpha2Code": "VN",
+        "name": "Vietnam"
+    },
+    {
+        "alpha2Code": "WF",
+        "name": "Wallis und Futuna"
+    },
+    {
+        "alpha2Code": "EH",
+        "name": "Westsahara"
+    },
+    {
+        "alpha2Code": "YE",
+        "name": "Jemen"
+    },
+    {
+        "alpha2Code": "ZM",
+        "name": "Sambia"
+    },
+    {
+        "alpha2Code": "ZW",
+        "name": "Simbabwe"
+    }
+]

@@ -1,0 +1,218 @@
+
+.links line {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.nodes circle {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+body {
+    height: 94vh;
+}
+
+.upper_box {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    border: 1px solid #eee;
+}
+
+.svg {
+    width: 100%;
+    height: 99%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.info_box {
+    width: 100%;
+    height: 100%;
+    font: 12px/12px Courier, monospace;
+    margin: 0px;
+    padding: 0.3em 0em 0em 0.3em;
+    color: #555;
+}
+
+.info_box > pre {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: auto;
+}
+
+.log {
+    width: 100%;
+    overflow: scroll;
+    margin: 0px;
+    padding: 2px 0px 0px 0px;
+    border: 1px solid #eee;
+    overflow-x: auto;
+}
+
+.log > pre {
+    font: 12px/12px Courier, monospace;
+    margin: 0px;
+    padding: 0em 0em 0em 0.3em;
+    color: darkgray;
+}
+
+.error {
+    color: #711;
+    font-weight: normal;
+}
+
+.inp_ip {
+    font: 16px/20px Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+    width: 200px;
+    height: 1.5em;
+    background-color: darkgray;
+    color: white;
+}
+
+.inp_btn {
+    font: 16px/20px Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+    height: 1.9em;
+}
+
+.txt_info, .txt_info_title {
+    font: 16px/20px Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+    height: 1.9em;
+}
+
+.split, .split-flex {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+}
+
+.gutter {
+    background-color: #eee;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+    cursor: ew-resize;
+}
+
+.gutter.gutter-vertical {
+    cursor: ns-resize;
+}
+
+.split.split-horizontal, .gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
+}
+
+/*settings*/
+#nav_settings {
+    margin: 0 15px;
+    color: #000;
+    font-size: 16px;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+    display: inline-block;
+    cursor: pointer;
+}
+#nav_settings:hover {
+    border-bottom: 1px solid transparent;
+}
+#settings {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: #fff;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    display: none;
+}
+#settings.active {
+    display: block;
+}
+#settings .top_panel {
+    padding: 15px;
+    width: 1140px;
+    margin: 0 auto;
+    border: 1px solid #eee;
+    height: 60px;
+}
+#settings .top_panel #back {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 18px;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+#settings .setting-item {
+    padding: 15px;
+    width: 1140px;
+    margin: 0 auto;
+}
+#settings label {
+    margin: 0 10px 0 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #292b2c;
+}
+#settings .input {
+    background-clip: padding-box;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    width: 180px;
+    padding: 7px 10px;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 0;
+}
+#settings .input input + span {
+    font-size: 1rem;
+    color: #464a4c;
+}
+#settings .input input {
+    border: none;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 1rem;
+    color: #464a4c;
+    outline: none;
+}
+#settings .input input#address {
+    width: 120px;
+    position: relative;
+}
+#settings .input input#port {
+    width: 47px;
+}
+#settings button {
+    display: inline-block;
+    color: #ccc;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    padding: .5rem 1rem;
+    font-size: 1rem;
+    border-radius: .25rem;
+    transition: all .2s ease-in-out;
+    outline: none;
+}
+#settings button:hover {
+    color: #fff;
+    background-color: #ccc;
+    border-color: #ccc;
+}

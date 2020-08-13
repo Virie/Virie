@@ -1,0 +1,133 @@
+TERMS AND CONDITIONS FOR USING VIRIE
+
+PLEASE READ CAREFULLY THESE TERMS AND CONDITIONS FOR USING VIRIE TOGETHER WITH ANY DOCUMENTS EXPRESSLY INCLUDED BY WAY OF REFERENCE (HEREINAFTER REFERRED TO AS "THE RULES") BEFORE USING THE VIRIE SERVICE (HEREINAFTER REFERRED TO AS "VIRIE," "VIRIE APPLICATION"). USE BY YOU (HEREINAFTER REFERRED TO AS "YOU," "THE USER") OF THE VIRIE SERVICE AND/OR VIRIE TOKENS MEANS THAT YOU HAVE READ THE RULES, AGREE TO ALL CONDITIONS SPECIFIED IN THE RULES, AND ACCEPT ALL RISKS. IF YOU DO NOT AGREE WITH ANY PROVISION OF THE RULES AND CONDITIONS, YOU SHOULD NOT USE VIRIE.
+
+The User clearly understands and agrees that he/she uses VIRIE exclusively at his/her own risk.
+
+The User acknowledges that he/she knows and understands all the risks and implications of using cryptographic tokens and open-source software developed using blockchain technology.
+
+1. ABOUT VIRIE
+
+1.1. VIRIE is a decentralized online service that operates on a peer-to-peer basis. There is, therefore, no potential for its administration and moderation by third parties; it is designed using blockchain technology so that Users may enter information into the VIRIE Blockchain using VIRIE Tokens. Users use VIRIE at their own discretion and liability.
+
+1.2. VIRIE is a peer-to-peer network: VIRIE operates without an administrative center, and its work (including the processing of transactions) is supported by an unlimited number of Users (including the Developers) who are equal. The algorithm for reaching consensus between them is a composite constructed through the combination of the Proof-of-Stake and Proof-of-Work principles, which makes access to any control over or moderation of VIRIE impossible.
+
+1.3. Blockchain is a technology for distributed data storage.
+
+1.4. The VIRIE Token is an internal unit of account in the work of the decentralized online VIRIE service, which is offered to Users to enter information into the VIRIE Blockchain.
+
+1.5. The limitations of liability provided by these Rules apply in full to all persons involved in the development of VIRIE, including the company that has provided the VIRIE source code ( hereinafter referred to as "Developers").
+
+2. RISKS OF VIRIE USE
+
+2.1. The User understands and acknowledges the potential for the following risks when using VIRIE, and expressly agrees that he/she is solely liable for all possible repercussions that may occur:
+
+
+2.1.1. RISK OF REGULATORY ACTION IN ONE OR MORE JURISDICTIONS
+VIRIE may fall within the jurisdiction of one or more legislative regulatory acts that may prohibit or restrict the operation of decentralized technologies or may prohibit or restrict the User's ability to use and/or own Tokens.
+
+2.1.2. RISK OF HARD FORKS, NETWORK DIVISIONS, OR APPEARANCE OF ALTERNATIVE, INFORMAL NETWORKS
+Hacking attacks, source-code errors, or actions by the Developers may lead to creation of alternative blockchains using the source code and protocol on which VIRIE is based or to other protocol changes that directly or indirectly affect VIRIE operations.
+
+2.1.3. RISK OF LACK OF INTEREST IN THE PLATFORM
+VIRIE may not be supported by a large number of Users and/or may only attract limited interest. This lack of interest could affect the development of VIRIE and the potential use of Tokens. The platform Developers cannot predict and do not guarantee the success of their exertions in the elaboration and development of VIRIE.
+
+2.1.4. RISK TO PROGRAM CODE SECURITY AND SAFE WORK OF THE PLATFORM VIRIE is based on open-source software, and there is a risk that Users or other persons not directly related to VIRIE, including hackers, may make changes to the source code and other changes to any aspect of the VIRIE infrastructure, which could result in the loss and/or restriction of access to the functional elements of VIRIE, loss and/or restriction of access to VIRIE, or loss of the private keys required for access to the functional elements of VIRIE and VIRIE Tokens.
+
+2.1.5. RISK OF PROBLEMS ARISING FROM USE OF THE PLATFORM
+VIRIE may suffer cyberattacks, activity bursts, or other operational or technical problems that may cause interruptions in the operation of VIRIE, including but not limited to transaction delays, transaction processing shut-downs, loss of User data, or loss of VIRIE tokens. You agree to take the risks arising from technical problems, including those caused by cyberattacks. You agree to hold the Developers harmless for any losses incurred.
+
+2.1.6. RISK OF EMERGENCE OF NEW TECHNOLOGIES IN THE FIELD OF CRYPTOGRAPHY
+Advances in cryptography or technical advances such as the development of quantum computers and other achievements may pose risks to the work of VIRIE and may also lead to theft or loss of Tokens.
+
+2.1.7. RISK OF LOW OR NO LIQUIDITY
+There is no guarantee that a VIRIE Token will be available for exchanges of every type of valuable, nor are VIRIE Tokens provided with liquidity guarantees. The exchange of Tokens is not guaranteed on value-exchanging platforms.
+
+2.1.8. RISK OF UNINSURED LOSSES
+Direct and indirect losses that Users may incur in connection with the use of VIRIE are not insured and are not covered by third parties.
+
+
+2.1.9. INTERNET TRAFFIC TRANSFER RISKS
+The User acknowledges that there are risks associated with the use of Tokens and other VIRIE elements, including but not limited to equipment failures, software failures, and Internet connection failures. You acknowledge that the Developers are not liable for any communication errors, malfunctions, distortions, or delays that may occur when using VIRIE, whatever their cause.
+
+2.1.10. CONTINGENCY RISKS
+Blockchains and Tokens are a new and untested technology. In addition to the risks set out in paragraphs 2.1-2.1.9, there are risks that the Developers cannot foresee because of the novelty and experimental nature of the technology. In the event of any other risks which have not been described in this document, these will be considered to be unforeseen, such that the Developers are in no way liable for them. Users independently assume full responsibility in the event that unforeseen potential risks become a reality.
+
+3. LIMITATION OF LIABILITY
+
+3.1. The Developers are not liable for any repercussions occurring as a result of using VIRIE . VIRIE is completely without controls and cannot be administered, and once the Developers have placed the VIRIE source code in the public domain and VIRIE becomes supported by a sufficient number of Users, the Developers possess equal opportunities for its use, apart from the responsibility for issuing email notifications to Users about VIRIE functionality updates and network monitoring capabilities.
+
+3.2. The Developers, their affiliates, and their respective officers, employees or agents are not responsible to You or anyone else for any damages of any kind, including but not limited to direct, indirect, incidental, or other damages (including loss of profits, trading losses, or damages resulting from the use of or inability to use VIRIE), even if the Developers have been notified of the potential for such damages.
+
+3.3. Under no circumstances shall the Developers, their affiliates and respective officers, employees or agents be liable to the User or to any third parties for any indirect, incidental, or unintended damages, including loss of profits, damage to honor, dignity, or business reputation, which may occur in connection with the use of VIRIE, the maintenance of the work of VIRIE, or related to access to User data by third parties (including hackers), changes made to these data, or their corruption and destruction.
+
+3.4. The Developers do not guarantee that Users will be able to exchange Tokens for goods, services, or any other assets by using VIRIE.
+
+3.5. VIRIE Tokens are solely intended for entering information into the VIRIE Blockchain. When Users make use of VIRIE Tokens for any other purpose, including but not limited to any investment, speculative, or other financial objectives, they do it at their own risk and liability. Under no circumstances will the Developers be liable for the ways in which Users make use of VIRIE Tokens.
+
+3.6. These Rules constitute the entire agreement between the User and the Developer regarding the limitation of liability for the use of VIRIE. These Rules supersede all previous agreements or arrangements between the User and the Developer, regardless of whether they were written or verbal agreements concerning these Rules. The Developers shall not have their rights limited by any condition, guarantee, or other provision from the User.
+
+3.7. These Rules may be amended and/or supplemented by the Developers unilaterally, without any special notification, by publishing a new version of these Rules in the relevant VIRIE section.
+
+3.8. After adoption of the Rules by the User, all previous agreements, proposals, negotiations, and correspondence relating to their subject matter become invalid.
+
+3.9. The ownership of Tokens shall not result in any rights, express or implied; in particular, you understand and agree that Tokens are not property and/or have nothing to do with any proprietary rights, limited proprietary rights, shares, securities, or equivalent rights, rights to subsequently receive dividends, intellectual property rights, controlling or voting rights, or any other forms of participation with respect to VIRIE or other companies and legal entities. Tokens do not create any obligations for the Developers.
+
+4. DISCLAIMER
+
+4.1. The Developers take no responsibility for and give no promises regarding the proper performance of VIRIE, guarantees of access to VIRIE, accuracy of the information contained in VIRIE, timeliness of information updates, or the security accreditation of the VIRIE operation.
+
+4.2. The use of VIRIE is provided on an "as is" basis. The Developers do not guarantee that the Platform will meet Users' goals and expectations.
+
+4.3. The User accepts all the risks described in the Rules, as well as assuming all and sole responsibility for the use of VIRIE. The Developers are not liable for any damages caused as a result of the use of VIRIE by Users, as well as for any User actions, including unlawful ones, carried out using VIRIE.
+
+4.4. The Developers have no responsibility or duty to monitor the legality or illegality of information hosted by Users in the VIRIE Blockchain (any information, including but not limited to that transmitted between Users in the form of various links, texts, or files, among other things), the definition of property rights, or the legality of sending, receiving, copying, storing, publishing, or using this information.
+
+4.5. IN NO EVENT SHALL THE VIRIE DEVELOPERS BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE PLATFORM, FOR ANY LOSS OF PROFITS, INTERRUPTION OF BUSINESS , LOSS OF PROPERTY ARISING IN CONNECTION WITH ACCESS TO, USE OF, OR INABILITY TO USE VIRIE, VIRIE CONTENT, VIRIE NETWORK, OR DISABLING OF THE APPLICATION OR LOSS OF VIRIE TOKENS, ERROR, FLAW, DISRUPTION, DEFECT,
+
+OPERATIONAL DOWNTIME OR DELAY IN DATA TRANSMISSION VIA THE VIRIE NETWORK, COMPUTER VIRUS OR SYSTEM FAILURE, EVEN IF THE DEVELOPERS ARE EXPRESSLY INFORMED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+4.6. IN NO EVENT SHALL THE PLATFORM DEVELOPERS BE RESPONSIBLE FOR INFORMATION PUBLISHED BY THE USERS THROUGH THE USE OF VIRIE, INCLUDING THAT WHICH RELATES TO ANY ILLEGAL ACTIVITY, IS CONTRARY TO THE MORAL FABRIC OF SOCIETY, OR WHICH DISCRIMINATES AGAINST OR PREJUDICES THE RIGHTS OF THIRD PARTIES.
+
+5. INTELLECTUAL PROPERTY
+
+5.1. The Platform has an open source program code, published in the repository at the following reference: https://github.com/Virie/Virie
+
+5.2. The Developers retain all intellectual property rights and copyrights to VIRIE that are not related to the open source code of VIRIE, including but not limited to intellectual property rights to all trademarks, patents, inventions, discoveries, processes, texts, graphics, logos, and images.
+
+5.3. The User agrees that he/she has the right to use any intellectual property belonging to the Developers only upon prior written consent of the Developers.
+
+5.4. The User is obligated to use VIRIE exclusively in accordance with the provisions of these Rules. It is forbidden to use VIRIE in any way that may damage, disable, overload, or disrupt the VIRIE operation or prevent its use by other Users or the Developers.
+
+5.5. The User agrees to use VIRIE only for lawful purposes, undertakes and guarantees not to use VIRIE for any purpose that is illegal or prohibited by the provisions of these Rules or by the User's local laws.
+
+6. LEGISLATION
+
+6.1. The User agrees that the use of the Platform is subject to all applicable international, national, and local laws.
+
+6.2. The User agrees to comply with the laws and bears full civil, legal, administrative, and criminal responsibility for non-compliance with them.
+
+6.3. The User undertakes:
+6.3.1. Not to use VIRIE for illegal purposes.
+6.3.2. To comply with these Rules.
+6.3.3. Not to violate the rights of other Users, among other things, not to prevent other Users from using VIRIE.
+6.3.4. Not to collect information about Users without their express consent.
+
+6.4. The User agrees not to place information in VIRIE Blockchain about materials prohibited or restricted in accordance with the legislation of the country of residence of the User.
+
+6.4.1. Below is an incomplete list of materials about which it is prohibited to place information in the VIRIE Blockchain:
+- Loose bulk and/or white label or fake reproduction foodstuffs or cosmetics
+- False, misleading, deceptive, or fraudulent content
+- Offensive, obscene, defamatory, threatening, or derogatory messages and materials
+- Personal, identification, or confidential information, commercial secrets
+- Hacking tools, including those for electronic computing systems
+- Child pornography; offers of or requests for illegal prostitution
+- Information on extremism and terrorism
+- Information about violent takeovers
+- Any other prohibited and/or restricted goods, services, or information
+
+7. SETTLEMENT OF DISPUTES
+
+7.1. The Developers are not participants in any actions undertaken by the Users among themselves using VIRIE and/or VIRIE Tokens. Any disputes, claims, suits, or actions arising between Users during their use of VIRIE and/or otherwise associated with VIRIE and/or VIRIE Tokens shall be resolved between the Users themselves.
+
+7.2. The Users guarantee that all disputes related to the use of VIRIE and/or VIRIE Tokens will be resolved directly among themselves, without involving the Developers as parties to such disputes.

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html ng-app="app" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Virie</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css"/>
+    <link rel="stylesheet" href="assets/css/datepicker.min.css"/>
+
+    <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/js.js"></script>
+
+    <script src="assets/js/angular/angular.min.js"></script>
+    <script src="assets/js/angular/angular-animate.min.js"></script>
+    <script src="assets/js/angular/angular-touch.min.js"></script>
+    <script src="assets/js/angular/angular-route.min.js"></script>
+    <script src="assets/js/angular/angular-sanitize.min.js"></script>
+    <script src="assets/js/angular/angular-idle.min.js"></script>
+    <script src="assets/js/angular/angular-translate.min.js"></script>
+    <script src="assets/js/angular/angular-translate-loader-static-files.min.js"></script>
+
+    <script src="assets/js/jquery-ui.min.js"></script>
+    <script src="assets/js/slider.min.js"></script>
+
+    <script src="assets/js/angucomplete-alt.min.js"></script>
+    <script src="assets/js/ui-bootstrap-custom-tpls-2.5.0.min.js"></script>
+</head>
+<body class="base-scroll light-scroll" ng-controller="AppController">
+    <header>
+        <div class="header-top-wrapper">
+            <div class="header-options-wrapper">
+                <i data-icon="g" class="base-icon header-lock-btn" ng-click="lockApp();"
+                   uib-tooltip="{{'SETTINGS.LOCKING' | translate}}" data-tooltip-class="general-tooltip" data-tooltip-placement="top" data-tooltip-append-to-body="true">
+                </i>
+                <div class="header-test-network label-hint" ng-if="daemonState.test_net === 'Virie_testnet'">
+                    <span>{{'TEST_NETWORK' | translate}}</span>
+                    <i data-icon="P" class="base-icon label-hint-icon"
+                       uib-tooltip="{{'TEST_NETWORK.DESCRIPTION' | translate}}" data-tooltip-class="general-tooltip test-network-tooltip" data-tooltip-placement="right" data-tooltip-append-to-body="true">
+                    </i>
+                </div>
+                <span ng-if="daemonState.daemon_network_state == 0" class="header-status offline" ng-bind="topMenu.statusOffline"></span>
+                <span ng-if="daemonState.daemon_network_state == 2" class="header-status online" ng-bind="topMenu.statusOnline"></span>
+                <span ng-if="daemonState.daemon_network_state == 3" class="header-status loading" ng-bind="topMenu.statusLoadCore"></span>
+                <span ng-if="daemonState.daemon_network_state == 4" class="header-status offline" ng-bind="topMenu.statusError"></span>
+                <span ng-if="daemonState.daemon_network_state == 5" class="header-status loading" ng-bind="topMenu.statusSyncNet"></span>
+                <div ng-if="daemonState.daemon_network_state == 1" class="header-status sync-wrapper">
+                    <span class="sync" ng-bind="topMenu.statusSyncing"></span>
+                    <progress max="100" data-ng-value="progressValue" ng-cloak></progress>
+                    <span class="sync-percent" ng-if="progressValue >= 0 && progressValue <= 100" ng-bind="progressValueText + '%'"></span>
+                    <span class="sync-percent" ng-if="progressValue >= 0 && progressValue <= 100 && remaining >= 0" ng-bind="remaining | blocksRemaining"></span>
+                </div>
+            </div>
+            <div class="header-logo-wrapper">
+                <span class="header-logo"></span>
+            </div>
+        </div>
+        <nav class="header-nav-wrapper">
+            <ul class="nav sidebar-nav">
+                <li class="nav-item" ng-class="{'active': menuItem.route == currentMenuItem}" ng-repeat="menuItem in mainMenu track by $index">
+                    <button type="button" class="nav-item-link" ng-click="goToPage(menuItem.route); menuPopupUpdate(menuItem.route);"
+                            data-ng-disabled="daemonState.daemon_network_state != 2 && mainMenuEnable.indexOf(menuItem.route) == -1">
+                        <span ng-bind="menuItem.name" uib-tooltip-template="'nav-item.html'" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"
+                              data-tooltip-enable="daemonState.daemon_network_state != 2 && mainMenuEnable.indexOf(menuItem.route) == -1"></span>
+                        <span class="indicator-number" ng-if="menuItem.route == 'deals' && newContractsCount > 0 && daemonState.daemon_network_state == 2" ng-bind="newContractsCount" ng-cloak></span>
+                        <span class="indicator-number attention" ng-if="menuItem.route == 'settings' && (updateShowed || wrongTimeShowed)" ng-cloak><i data-icon="=" class="base-icon"></i></span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <script type="text/ng-template" id="nav-item.html">
+            <div>{{'SIDEBAR.TOOLTIP1' | translate}}</div>
+            <div>{{'SIDEBAR.TOOLTIP2' | translate}}</div>
+        </script>
+    </header>
+
+    <div id="scrolled-content" class="content-wrapper base-scroll light-scroll">
+        <section ng-view></section>
+    </div>
+
+    <button class="bug-report-btn" ng-click="showBugForm();">
+        <i data-icon="&#xe011;" class="base-icon"></i>
+    </button>
+
+    <context-menu></context-menu>
+
+    <svg xmlns="http://www.w3.org/2000/svg" style="width:0; height:0;">
+        <defs>
+            <linearGradient id="g27" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop stop-color="#f6f7f5" offset="0"/>
+                <stop stop-color="#dae0d3" offset="1"/>
+            </linearGradient>
+        </defs>
+
+        <filter id="dropShadow">
+            <feOffset dx="1" dy="1" result="offOut"/>
+            <feFlood />
+            <feComposite operator="in" in2="offOut"/>
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </svg>
+
+    <script src="assets/js/xml2json.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootstrap-select.min.js"></script>
+    <script src="assets/js/highstock.js"></script>
+    <script src="assets/js/air-datepicker.js"></script>
+    <script src="assets/js/ngDraggable.js"></script>
+
+    <script src="app.js"></script>
+
+    <script src="controllers/AppController.js"></script>
+    <script src="controllers/ContactsController.js"></script>
+    <script src="controllers/DashboardController.js"></script>
+    <script src="controllers/DealsController.js"></script>
+    <script src="controllers/MoneyController.js"></script>
+    <script src="controllers/MarketController.js"></script>
+    <script src="controllers/MiningController.js"></script>
+    <script src="controllers/SafesController.js"></script>
+    <script src="controllers/SettingsController.js"></script>
+
+    <script src="services/filters.js"></script>
+    <script src="services/backend.js"></script>
+    <script src="services/main.js"></script>
+    <script src="services/directives.js"></script>
+</body>
+</html>

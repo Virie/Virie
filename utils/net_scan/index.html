@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+body
+{
+  height: 94vh;
+}
+
+.upper_box
+{
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  border: 1px solid #eee;
+}
+
+.svg
+{
+  width: 100%;
+  height: 99%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.info_box
+{
+  width: 100%;
+  height: 100%;
+  font: 12px/12px Courier, monospace;
+  margin: 0px;
+  padding: 0.3em 0em 0em 0.3em;
+  color: #555;
+}
+
+.info_box > pre
+{
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: auto;
+}
+
+
+.log
+{
+  width: 100%;
+  overflow: scroll;
+  margin: 0px;
+  padding: 2px 0px 0px 0px;
+  border: 1px solid #eee;
+}
+
+.log > pre
+{
+  font: 12px/12px Courier, monospace;
+  margin: 0px;
+  padding: 0em 0em 0em 0.3em;
+  color: darkgray;
+}
+
+.error
+{
+  color: #711;
+  font-weight: normal;
+}
+
+.inp_ip
+{
+  font: 16px/20px Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;
+  width: 200px;
+  height: 1.5em;
+  background-color: darkgray;
+  color: white;
+}
+
+.inp_btn
+{
+  font: 16px/20px Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;
+  height: 1.9em;
+}
+
+.txt_info, .txt_info_title
+{
+  font: 16px/20px Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;
+  height: 1.9em;
+}
+
+.split, .split-flex {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.gutter {
+  background-color: #eee;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  cursor: ew-resize;
+}
+
+.gutter.gutter-vertical {
+  cursor: ns-resize;
+}
+
+.split.split-horizontal, .gutter.gutter-horizontal {
+  height: 100%;
+  float: left;
+}
+
+</style>
+
+<body>
+  <input type="text" id="start_node_ip" class="inp_ip" value="213.239.213.235" />
+  <input type="button" value="Go!" onclick="button_go_click()" class="inp_btn" />
+  <input type="button" value="Stop" onclick="button_stop_click()" class="inp_btn" />
+  <input type="button" value="Clear" onclick="button_clear_click()" class="inp_btn" />
+  <input type="button" value="Clear log" onclick="button_clear_log_click()" class="inp_btn" />
+  <input type="button" value="Export" onclick="button_export_click()" class="inp_btn"/>
+  <!--input type="button" value="Test" onclick="test()" class="inp_btn" />  <!- -   <-uncomment to use debug button -->
+  <span class="padding-left: 4pt">&nbsp;</span>
+  <span class="txt_info_title">Scan&nbsp;queue:</span>&nbsp;<span class="txt_info" id="scan_queue">0</span>&nbsp;&nbsp;
+  <span class="txt_info_title">Peer&nbsp;reqs&nbsp;awaiting:</span>&nbsp;<span class="txt_info" id="peers_req_counter">0</span>&nbsp;&nbsp;
+  <span class="txt_info_title">Peers:</span>&nbsp;<span class="txt_info" id="peers_counter">0</span>&nbsp;&nbsp;
+  <span class="txt_info_title">Known&nbsp;IPs:</span>&nbsp;<span class="txt_info" id="known_ips_counter">0/0</span>&nbsp;&nbsp;
+  <span style="white-space: nowrap;"><input type="checkbox" id="simulation_checkbox" onclick="simulation_checkbox_click()" checked /><span class="txt_info_title">simulation</span></span>
+  <span style="white-space: nowrap; padding-right: 3pt"><input type="checkbox" id="verbose_log_checkbox" onclick="verbose_log_checkbox_click()" /><span class="txt_info_title">verbose log</span></span>
+  <span style="white-space: nowrap;">Select:&nbsp;<input type="text" id="search_node" class="inp_ip" placeholder="IPs, hostnames, pow/pos" onkeyup="select_node_by_ip_or_hostname_press(event)" /></span>
+  <br>
+  <span class="txt_info_title">Colorize by:
+    <input type="radio" name="colorize" id="colorize_default_radio" onclick="colorize_radio_click()" checked />default&nbsp;
+    <input type="radio" name="colorize" id="colorize_top_radio" onclick="colorize_radio_click()" />top block&nbsp;
+    <input type="radio" name="colorize" id="colorize_mining_radio" onclick="colorize_radio_click()" />mining&nbsp;
+    <input type="radio" name="colorize" id="colorize_version_radio" onclick="colorize_radio_click()" />version&nbsp;
+    <input type="radio" name="colorize" id="colorize_tx_pool_size_radio" onclick="colorize_radio_click()" />tx pool size&nbsp;
+    <input type="radio" name="colorize" id="colorize_log_errors_radio" onclick="colorize_radio_click()" />log errors&nbsp;
+  </span>
+  <div id="upper_box" class="upper_box split split-vertical">
+    <div id="svg_box" class="svg_box split split-horizontal" onmousedown="clear_node_selection()">
+      <svg id="svg" class="svg"></svg>
+    </div>
+    <div id="info_box" class="info_box split split-horizontal">Click a node for detailed info</div>
+  </div>
+  <div class="log split split-vertical" id="log"></div>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-request.v1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.2.0/split.min.js"></script>
+<script src="known_ips.js"></script>
+<script>
+
+// constants section
+//const SCAN_BACKEND_ADDRESS = "scan_peer";
+const SCAN_BACKEND_ADDRESS = "http://213.239.213.235:8080/scan_peer"; // TODO: remove fixed IP
+const NODE_PORT_DEFAULT = 12599;
+const NODE_SCAN_TIMEOUT = 20000; // ms
+const NODE_SCAN_LOG_LEN_TO_RETRIVE = 10; // lines of log to retreive from node
+const SCAN_PARALLEL_REQUESTS_MAX = 8; // max number of simultaneously requested peers, set to 1 to make debugging a little easier
+
+const GRAPH_NODE_START_COLOR = 4; // index in color sheme
+const GRAPH_NODE_NORMAL_COLOR = 0; // index in color sheme
+const GRAPH_NODE_OUT_CONN_ONLY_COLOR = 15; // index in color sheme
+const GRAPH_LINE_DEFAULT_COLOR = "#999";
+const GRAPH_LINE_DIMMED_COLOR = "#ddd";
+
+var g_peers = {}; // global dict of detected peers indexed by peer_id
+var g_peer_answer_awaits_count = 0; // how many peers were requested but not yet answered
+var g_scan_queue = []; // global queue of peers (ip:port) to be scanned
+var g_scan_enabled = false; // global flag enabling/disabling asyc scan process (used to stop it)
+var g_simulation_enabled = true;
+var g_colorize_top_block = false;
+var g_verbose_log = false;
+
+
+// graph data
+var g_links = [];
+var g_nodes = [];
+
+
+// setup slippers
+var split_sizes_1 = localStorage.getItem('split-sizes-1')
+split_sizes_1 = split_sizes_1 ? JSON.parse(split_sizes_1) : [67, 33];
+var split_sizes_2 = localStorage.getItem('split-sizes-2')
+split_sizes_2 = split_sizes_2 ? JSON.parse(split_sizes_2) : [67, 33];
+var split_1 = Split(['#upper_box', '#log'], { direction: 'vertical', sizes: split_sizes_1, gutterSize: 5, onDragEnd: function () { localStorage.setItem('split-sizes-1', JSON.stringify(split_1.getSizes())); } });
+var split_2 = Split(['#svg_box', "#info_box"], { sizes: split_sizes_2, gutterSize: 7, onDragEnd: function () { localStorage.setItem('split-sizes-2', JSON.stringify(split_2.getSizes())); }  });
+
+
+
+function sleep_promise(ms)
+{
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function log(x)
+{
+  var el = document.getElementById("log");
+  el.innerHTML += "<pre>" + x + "</pre>\n";
+  //el.scrollTop = el.scrollHeight;  // triggers reflow, so it's quite sloooow
+}
+
+function log_scroll_down()
+{
+  var el = document.getElementById("log");
+  el.scrollTop = el.scrollHeight;
+}
+
+function log_error(x)
+{
+  var el = document.getElementById("log");
+  el.innerHTML += "<pre><span class=\"error\">" + x + "</span></pre>\n";
+  el.scrollTop = el.scrollHeight;
+}
+
+function log_clear()
+{
+  document.getElementById("log").innerHTML = "";
+}
+
+function infobox_fill(text, html = "")
+{
+  document.getElementById("info_box").innerHTML = "<pre>" + text + "</pre>\n" + html;
+}
+
+function infobox_clear()
+{
+  document.getElementById("info_box").innerHTML = "";
+}
+
+function stop_scan_process()
+{
+  log("stopping scan process...");
+  g_scan_enabled = false;
+}
+
+function clear_scan_results()
+{
+  g_peers = {};
+  g_scan_queue = [];
+  update_scan_queue(0);
+  g_scan_enabled = true;
+  g_peer_answer_awaits_count = 0;
+  update_peers_req_counter(0);
+  clear_known_ips();
+  update_known_ips_counter(0);
+  infobox_clear();
+  log("scan results cleared");
+}
+
+function scan_peer(address, port, peer_id = 0)
+{
+  if (!g_scan_enabled)
+    return;
+  var scan_peer_params =
+  {
+    "ip_address": address,
+    "port": port,
+    "timeout": NODE_SCAN_TIMEOUT,
+    "peer_id": peer_id,
+    "log_journal_len" : NODE_SCAN_LOG_LEN_TO_RETRIVE,
+  };
+
+  ++g_peer_answer_awaits_count; // each time the request is sent -- increment the counter
+  update_peers_req_counter(g_peer_answer_awaits_count);
+
+  d3.request(SCAN_BACKEND_ADDRESS).post(JSON.stringify(scan_peer_params), function(error, response)
+  {
+    --g_peer_answer_awaits_count; // each time the response is received -- decrement the counter
+    update_peers_req_counter(g_peer_answer_awaits_count);
+
+    if (!g_scan_enabled)
+      return;
+
+    if(error)
+    {
+      log_error('Error response from server:' + error);
+    }
+    else
+    {
+      //log('Response from server:' + response.responseText);
+      var j_resp = JSON.parse(response.responseText);
+
+      var source_peer_id = "";
+      var conn_list = [];
+      if (j_resp && j_resp.ns_rsp && j_resp.ns_rsp.connections_list && (typeof j_resp.ns_rsp.my_id !== undefined))
+      {
+        conn_list = j_resp.ns_rsp.connections_list;
+        source_peer_id = j_resp.ns_rsp.my_id;
+        if (g_verbose_log)
+          log("Received conn list from " + address + ": " + conn_list.length + " peers");
+
+        if (g_nodes.length == 0)
+        {
+          // add the very first node
+          graph_add_node(source_peer_id, GRAPH_NODE_START_COLOR);
+          g_peers[source_peer_id] = {address: scan_peer_params.ip_address, port: scan_peer_params.port, has_incoming_connections: false};
+        }
+      }
+
+      if (conn_list.length == 0)
+        log_error("<br>Can't obtain connection list: " + response.responseText + "<br>");
+
+      if (j_resp && j_resp.si_rsp && source_peer_id && (source_peer_id in g_peers))
+      {
+        var p = g_peers[source_peer_id];
+        p.json_response               = response.responseText;
+        p.connections_count           = j_resp.si_rsp.connections_count;
+        p.incoming_connections_count  = j_resp.si_rsp.incoming_connections_count;
+        p.alternative_blocks          = j_resp.si_rsp.payload_info.alternative_blocks;
+        p.blockchain_height           = j_resp.si_rsp.payload_info.blockchain_height;
+        p.mining_speed                = j_resp.si_rsp.payload_info.mining_speed;
+        p.top_block_id_str            = j_resp.si_rsp.payload_info.top_block_id_str;
+        p.tx_pool_size                = j_resp.si_rsp.payload_info.tx_pool_size;
+        p.epic_failure_happend        = j_resp.si_rsp.payload_info.epic_failure_happend;
+        p.version                     = j_resp.si_rsp.version;
+        p.errors_journal              = j_resp.si_rsp.payload_info.errors_journal;
+        p.log_errors_core             = 0;
+        p.log_errors_total            = 0;
+
+        if (j_resp.si_rsp.payload_info.errors_stat && j_resp.si_rsp.payload_info.errors_stat.constructor === Array)
+        {
+          p.log_errors_stats = j_resp.si_rsp.payload_info.errors_stat.sort(function(a, b) {
+            return a.err_count < b.err_count ? 1 : (a.err_count > b.err_count ? -1 : 0);
+          });
+          for(var el in p.log_errors_stats)
+          {
+            p.log_errors_total += p.log_errors_stats[el].err_count;
+            if (p.log_errors_stats[el].channel == "core")
+              p.log_errors_core = p.log_errors_stats[el].err_count;
+          }
+        }
+
+        graph_update_node(source_peer_id);
+      }
+
+      for(var i = 0; i < conn_list.length; ++i)
+      {
+        var c = conn_list[i];
+        var c_ip = c.ip;
+        var c_port = c.port;
+        var c_is_income = c.is_income == "1";
+        var c_peer_id = c.peer_id;
+        if (c_peer_id == 0)
+          continue;
+        var c_age = undefined;
+        if (c.time_started)
+          c_age = Math.floor(Date.now() / 1000) - c.time_started;
+        if (c_peer_id in g_peers)
+        {
+          // have already seen this peer - check conn direction
+          if (!c_is_income && !g_peers[c_peer_id].has_incoming_connections)
+          {
+            if (g_verbose_log)
+              log("   updating status and port for peer " + c_peer_id + ", old port: " + g_peers[c_peer_id].port + ", new: " + c_port);
+            g_peers[c_peer_id].has_incoming_connections = true;
+            g_peers[c_peer_id].port = c_port; // update port for incoming connections
+            graph_update_node_color(c_peer_id, GRAPH_NODE_NORMAL_COLOR);
+          }
+
+          if (g_verbose_log)
+            log("#" + i + ": " + c_ip + ":" + c_port + " id:" + c_peer_id + " conn_age:" + c_age + " " + (c_is_income ? "IN" : "OUT") + "   seen");
+        }
+        else
+        {
+          // new peer - add it to the peer list
+          g_peers[c_peer_id] = {
+            address: c_ip,
+            port: c_port,
+            has_incoming_connections: !c_is_income
+          };
+
+          graph_add_node(c_peer_id, c_is_income ? GRAPH_NODE_OUT_CONN_ONLY_COLOR : GRAPH_NODE_NORMAL_COLOR);
+
+          if (c_is_income)
+          {
+            // it's unclear whether this new peer accepts incoming connections -- add it to the end of the queue with the default port (we don't know the actual port for sure)
+            g_scan_queue.push({
+              address: c_ip,
+              port: NODE_PORT_DEFAULT,
+              peer_id: c_peer_id
+            });
+          }
+          else
+          {
+            // seems this new peer accepts incoming connections -- add it to the beginning of the queue
+            g_scan_queue.unshift({
+              address: c_ip,
+              port: c_port,
+              peer_id: c_peer_id
+            });
+          }
+
+          if (g_verbose_log)
+            log("#" + i + ": " + c_ip + ":" + c_port + " id:" + c_peer_id + " conn_age:" + c_age + " " + (c_is_income ? "IN" : "OUT") + "   NEW!");
+        }
+
+        update_known_ips(c_ip, g_peers[c_peer_id]);
+
+        if (c_is_income)
+          graph_add_link(c_peer_id, source_peer_id, c_age);
+        else
+          graph_add_link(source_peer_id, c_peer_id, c_age);
+      }
+
+      if (conn_list.length != 0)
+        graph_restart();
+    }
+
+    if (g_verbose_log)
+    {
+      log("<br>Scan queue:");
+      for(var i = 0; i < g_scan_queue.length; ++i)
+      {
+        log("#" + i + ": " + g_scan_queue[i].address + ":" + g_scan_queue[i].port + " id:" + g_scan_queue[i].peer_id);
+      }
+      log_scroll_down();
+    }
+
+    update_scan_queue(g_scan_queue.length);
+
+    if (g_scan_queue.length == 0)
+    {
+      log("<br>scan process finished! Peers:");
+      var peers_count = 0;
+      for(var peer_id in g_peers)
+      {
+        if (g_peers.hasOwnProperty(peer_id))
+        {
+          var p = g_peers[peer_id];
+          log("peer id: " + peer_id + ", address: " + p.address + ":" + p.port + " has_incoming_connections: " + p.has_incoming_connections);
+          ++peers_count;
+        }
+      }
+      update_peers_counter(peers_count);
+      log("total peers found: " + peers_count);
+      log_not_presented_known_ips();
+      log_scroll_down();
+    }
+    else
+    {
+      var peers_count = 0;
+      for(var peer_id in g_peers)
+        if (g_peers.hasOwnProperty(peer_id))
+          ++peers_count;
+      update_peers_counter(peers_count);
+
+      while(g_scan_queue.length != 0 && g_peer_answer_awaits_count < SCAN_PARALLEL_REQUESTS_MAX)
+      {
+        var next_peer = g_scan_queue.shift();
+        log("\nNext peer: " + next_peer.peer_id + " at " + next_peer.address + ":" + next_peer.port);
+        scan_peer(next_peer.address, next_peer.port, next_peer.peer_id);
+      }
+      log_scroll_down();
+    }
+
+
+  });
+
+}
+
+
+function button_export_click()
+{
+  var list = {};
+  for (var i=0; i<g_nodes.length; i++){
+    list[ g_peers[g_nodes[i].id].address+":"+g_peers[g_nodes[i].id].port ] = [];
+  }
+  for (var j=0; j<g_links.length; j++){
+    list[ g_peers[g_links[j].source.id].address+":"+g_peers[g_links[j].source.id].port ].push( g_peers[g_links[j].target.id].address+":"+g_peers[g_links[j].target.id].port );
+  }
+
+  var list2 = [];
+  for (var ip in list){
+    var obj = {
+      ip: ip,
+      connections: list[ip].sort(function (a, b) {
+        var a_local = a.split(".");
+        var b_local = b.split(".");
+        for (var i=0; i<a_local.length; i++){
+          if (parseInt(a_local[i]) < parseInt(b_local[i])) return -1;
+          if (parseInt(a_local[i]) > parseInt(b_local[i])) return 1;
+        }
+        return 0;
+      })
+    };
+    list2.push( obj );
+  }
+
+  list2.sort(function (a, b) {
+    var a_local = a.ip.split(".");
+    var b_local = b.ip.split(".");
+    for (var i=0; i<a_local.length; i++){
+      if (parseInt(a_local[i]) < parseInt(b_local[i])) return -1;
+      if (parseInt(a_local[i]) > parseInt(b_local[i])) return 1;
+    }
+    return 0;
+  });
+
+  var downloadLink = document.createElement("a");
+  downloadLink.href = 'data:application/json;charset=utf-8,' + encodeURIComponent( JSON.stringify(list2,null,4) );
+  downloadLink.download = "data_frontend.json";
+
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
+
+function button_go_click()
+{
+  var v = document.getElementById("start_node_ip").value;
+  var varr = v.split(":");
+  var address = varr[0];
+  var port = varr[1];
+  if (!port)
+    port = NODE_PORT_DEFAULT;
+  log("Start scan from node: " + address + ":" + port);
+
+  stop_scan_process();
+  // TODO: wait for scan process finish
+  clear_scan_results();
+  scan_peer(address, port);
+}
+
+function button_stop_click()
+{
+  stop_scan_process();
+}
+
+function button_clear_click()
+{
+  clear_scan_results();
+
+  g_links = [];
+  g_nodes = [];
+  d3.selectAll("circle").remove();
+  d3.selectAll("line").remove();
+  graph_restart();
+  g_clicks_count = 0;
+  document.getElementById("colorize_default_radio").checked = true;
+}
+
+function button_clear_log_click()
+{
+  log_clear();
+}
+
+function clear_node_selection(redraw = true)
+{
+  for(var peer_id in g_peers)
+  {
+    if (g_peers.hasOwnProperty(peer_id))
+    {
+      var p = g_peers[peer_id];
+      p.selected = false;
+    }
+  }
+
+  if (redraw)
+    redraw_node_selection();
+}
+
+function select_node_by_ip_or_hostname_press(event)
+{
+  if (event.keyCode != 13)
+    return;
+
+  clear_node_selection(false);
+
+  var needle_text = document.getElementById("search_node").value;
+  var needles = needle_text.split(/[, ;]/);
+  var selected_peers = 0;
+  for(var i = 0; i < needles.length; ++i)
+  {
+    var el = needles[i];
+    for(var peer_id in g_peers)
+    {
+      if (g_peers.hasOwnProperty(peer_id))
+      {
+        var p = g_peers[peer_id];
+        if (p.address == el || (p.net_info && (p.net_info.hostname == el || p.net_info.mining_group == el)))
+        {
+          g_peers[peer_id].selected = true;
+          log("Peer selected: " + p.address + (p.net_info ? " " + p.net_info.hostname + "/" + p.net_info.mining_group : ""));
+          ++selected_peers;
+          if (selected_peers == 1)
+            infobox_show_peer_info(peer_id); // show the first one
+        }
+      }
+    }
+  }
+
+  if (selected_peers == 0)
+  {
+    log("No peers selected for request '" + needle_text + "'");
+  }
+  else
+  {
+    log(selected_peers + " peers selected");
+    redraw_node_selection();
+  }
+
+  log_scroll_down();
+}
+
+function update_scan_queue(x)
+{
+  document.getElementById("scan_queue").innerHTML = x;
+}
+
+function update_peers_counter(x)
+{
+  document.getElementById("peers_counter").innerHTML = x;
+}
+
+function update_peers_req_counter(x)
+{
+  document.getElementById("peers_req_counter").innerHTML = x;
+}
+
+function update_known_ips_counter(x)
+{
+  document.getElementById("known_ips_counter").innerHTML = x + "/" + g_known_ips.length;
+}
+
+function simulation_checkbox_click()
+{
+  var new_state = document.getElementById("simulation_checkbox").checked;
+  if (g_simulation_enabled != new_state)
+  {
+    g_simulation_enabled = new_state;
+    if (g_simulation_enabled)
+      simulation.alphaTarget(0).restart();
+    else
+      simulation.stop();
+  }
+}
+
+function verbose_log_checkbox_click()
+{
+  g_verbose_log = document.getElementById("verbose_log_checkbox").checked;
+}
+
+function colorize_radio_click()
+{
+  const NODE_DIMMED_COLOR = "#ddd";
+  if (document.getElementById("colorize_top_radio").checked)
+  {
+    node.attr("fill", function(d) {
+      if (!(d.id in g_peers) || (typeof g_peers[d.id].top_block_id_str) === undefined || g_peers[d.id].top_block_id_str == undefined)
+        return NODE_DIMMED_COLOR;
+
+      return g_color_ord_top_block(g_peers[d.id].top_block_id_str);
+    });
+  }
+  else if (document.getElementById("colorize_mining_radio").checked)
+  {
+    node.attr("fill", function(d) {
+      if (!(d.id in g_peers))
+        return NODE_DIMMED_COLOR;
+
+      var v = g_peers[d.id];
+      if (!v.mining_speed && (!v.net_info || !v.net_info.mining_group))
+        return NODE_DIMMED_COLOR;
+
+      if (v.net_info && v.net_info.mining_group == "pos")
+        return "#A0D639";
+
+      if (v.net_info && v.net_info.mining_group == "pow" && !v.mining_speed)
+        return "#d88";
+
+      return "#b22";
+    });
+  }
+  else if (document.getElementById("colorize_version_radio").checked)
+  {
+    node.attr("fill", function(d) {
+      if (!(d.id in g_peers) || g_peers[d.id].version == undefined)
+        return NODE_DIMMED_COLOR;
+
+      return g_color_ord_top_block(g_peers[d.id].version);
+    });
+  }
+  else if (document.getElementById("colorize_tx_pool_size_radio").checked)
+  {
+    node.attr("fill", function(d) {
+      if (!(d.id in g_peers) || g_peers[d.id].tx_pool_size == undefined)
+        return NODE_DIMMED_COLOR;
+
+      return g_color_ord_top_block(g_peers[d.id].tx_pool_size);
+    });
+  }
+  else if (document.getElementById("colorize_log_errors_radio").checked)
+  {
+    node.attr("fill", function(d) {
+      if (!(d.id in g_peers) || !g_peers[d.id].log_errors_total)
+        return NODE_DIMMED_COLOR;
+
+      if (g_peers[d.id].log_errors_core > 0)
+        return "#b22";
+
+      return "#d88";
+    });
+  }
+  else // default
+  {
+    node.attr("fill", function(d) { return color_scheme[d.color]; });
+  }
+}
+
+function clear_known_ips()
+{
+  for(var i = 0; i < g_known_ips.length; ++i)
+    g_known_ips[i].present = false;
+}
+
+function update_known_ips(c_ip, peer_obj)
+{
+  // TODO: consider optimization if known ips list becomes huge
+  var presented_known_ips_counter = 0;
+
+  for(var i = 0; i < g_known_ips.length; ++i)
+  {
+    var v = g_known_ips[i];
+    if (v.ip == c_ip)
+    {
+      v.present = true;
+      peer_obj.net_info = v;
+    }
+
+    if (v.present === true)
+      ++presented_known_ips_counter;
+  }
+
+  update_known_ips_counter(presented_known_ips_counter);
+}
+
+function log_not_presented_known_ips()
+{
+  log("These known IPs were not found during the scan:");
+  log("IP/hostname/mining_group");
+  for(var i = 0; i < g_known_ips.length; ++i)
+  {
+    var v = g_known_ips[i];
+    if (!v.present)
+      log(v.ip + "/" + (v.hostname ? v.hostname : "?") + "/" + (v.mining_group ? v.mining_group : "?"));
+  }
+}
+
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var g_clicks_count = 0;
+function test()
+{
+  log("s p a c e : 2  3   4    5     tab\ttab\t<br>2<br>\n3\n4\n\n5");
+  log_error("1<br>2<br>\n3\n4\n\n5");
+
+  g_clicks_count++;
+  if (g_clicks_count < 100)
+  {
+    if (g_nodes.length == 0)
+    {
+      graph_add_node("0", GRAPH_NODE_START_COLOR);
+      graph_add_node("1", GRAPH_NODE_START_COLOR);
+      graph_add_node("2", GRAPH_NODE_START_COLOR);
+      graph_add_link("0", "1");
+      graph_add_link("0", "2");
+      graph_add_link("1", "2");
+      graph_add_link("1", "2");
+    }
+    else
+    {
+      if (g_clicks_count % 3 == 0)
+        graph_update_node_color("x" + getRandomIntInclusive(1, g_nodes.length - 1), GRAPH_NODE_OUT_CONN_ONLY_COLOR);
+
+      var node_name = "x" + g_nodes.length;
+      graph_add_node(node_name, GRAPH_NODE_NORMAL_COLOR);
+      graph_add_link("0", node_name);
+      //graph_add_link(node_name, "0");
+    }
+    graph_restart();
+  }
+  else
+  {
+    log("Yep!");
+    /*if (g_nodes.length > 0)
+    {
+      var n = g_nodes.pop();
+      var new_links = [];
+      for(var i = 0; i < g_links.length; ++i)
+      {
+        if (g_links[i].source.id != n.id && g_links[i].target.id != n.id)
+          new_links.push(g_links[i]);
+      }
+      g_links = new_links;
+      graph_restart();
+    }*/
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// graph visualization and simulation
+///////////////////////////////////////////////////////////////////////////////
+var svg = d3.select("svg");
+var width = parseInt(svg.style("width"), 10);
+var height = parseInt(svg.style("height"), 10);
+var color_scheme = d3.schemeCategory20;
+var top_block_cat = d3.schemeCategory10;
+top_block_cat.splice(0, 3);
+var g_color_ord_top_block = d3.scaleOrdinal(top_block_cat);
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink()
+        .id(function(d) { return d.id; })
+        .strength(function(d) { return 0.05 /*/ Math.min(count(link.source), count(link.target))*/; })
+        .distance(function(d) { return 50; })
+      )
+    .force("charge", d3.forceManyBody().strength(function(d) { return -50; }))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+var link = svg.append("g")
+  .attr("class", "links")
+  .selectAll("line")
+  .data(g_links);
+
+var node = svg.append("g")
+  .attr("class", "nodes")
+  .selectAll("circle")
+  .data(g_nodes);
+
+simulation
+    .nodes(g_nodes)
+    .on("tick", ticked);
+
+simulation.force("link")
+    .links(g_links);
+
+function ticked() {
+  link
+      .attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+  node
+      .attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+}
+
+function graph_nodes_general_update()
+{
+  // Apply the general update pattern to the nodes.
+  node = node.data(g_nodes, function(d) { return d.id;});
+  node = node.enter()
+    .append("circle")
+      .attr("r", 5)
+      .attr("fill", function(d) { return color_scheme[typeof d.color !== 'undefined' ? d.color : 12]; })
+      .style("stroke-width", function(d) { return node_stroke_width(d); })
+      .style("stroke", function(d) { return node_stroke_color(d); })
+      .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended))
+
+    .merge(node);
+  node.exit().remove();
+  node.append("svg:title").text(function(d, i) {
+    if (!(d.id in g_peers))
+      return "n/a";
+    var p = g_peers[d.id];
+    var errors_info = "";
+    if (p.log_errors_stats)
+    {
+      for(var el in p.log_errors_stats)
+        errors_info += p.log_errors_stats[el].err_count > 0 ? (p.log_errors_stats[el].channel + ": " + p.log_errors_stats[el].err_count + "  ") : "";
+    }
+    return p.address + ":" + p.port +
+            (p.net_info !== undefined ? " " + p.net_info.hostname + "/" + p.net_info.mining_group : "") + " id" + d.id + "\n" +
+           "cons: " + (p.connections_count !== undefined ? p.connections_count : "?") + " (" + (p.incoming_connections_count !== undefined ? p.incoming_connections_count : "?") + " in)\n" +
+           "top: " + (p.blockchain_height !== undefined ? p.blockchain_height : "?") + " " + (p.top_block_id_str ? p.top_block_id_str.substr(0, 6) + "..." + p.top_block_id_str.substr(-6, 6) : "") + "\n" +
+           "alt blks: " + (p.alternative_blocks !== undefined ? p.alternative_blocks : "?") + ", mines @ " + (p.mining_speed !== undefined ? p.mining_speed : "?") + " H/s\n" +
+           "txs in pool: " + (p.tx_pool_size !== undefined ? p.tx_pool_size : "?") + ", ver: " + (p.version ? p.version : "?") +
+           (errors_info != "" ? "\nERRORS: " + errors_info : "");
+  });
+}
+
+function line_width_by_link(l)
+{
+  if (l.age)
+  {
+    if (l.age > 12*60*60)
+      return 2;
+    if (l.age > 1*60*60)
+      return 1.5;
+    if (l.age >    20*60)
+      return 1;
+  }
+  return 0.5;
+}
+
+function line_color_by_link(l)
+{
+
+  if (l.age)
+  {
+    if (l.age > 12*60*60)
+      return "#0052cc";
+    if (l.age > 1*60*60)
+      return "#3385ff";
+    if (l.age >    20*60)
+      return "#80b3ff";
+  }
+  return "#ff3333";
+}
+
+function node_stroke_width(d)
+{
+  var p = g_peers[d.id];
+  return (p && (p.epic_failure_happend || p.selected)) ? 1.8 : 1.5;
+}
+
+function node_stroke_color(d)
+{
+  var p = g_peers[d.id];
+  if (!p)
+    return "#fff";
+  return p.epic_failure_happend ? "#d00" : (p.selected ? "#e22" : "#fff");
+}
+
+function redraw_node_selection()
+{
+  node.style("stroke-width", function(d) { return node_stroke_width(d); })
+      .style("stroke", function(d) { return node_stroke_color(d); });
+}
+
+function graph_links_general_update()
+{
+  // Apply the general update pattern to the links.
+  link = link.data(g_links, function(d) { return d.source.id + "-" + d.target.id; });
+  link = link.enter()
+    .append("line")
+      .style("stroke", line_color_by_link)
+      .attr("stroke-width", line_width_by_link)
+    .merge(link);
+  link.exit().remove();
+}
+
+function graph_restart()
+{
+  // Update and restart the simulation.
+  simulation.nodes(g_nodes);
+  graph_nodes_general_update();
+
+  simulation.force("link").links(g_links); // this function converts links array of {"source" : string, "target" : string} into array of {"source" : Object, "target" : Object}
+  graph_links_general_update();
+  if (g_simulation_enabled)
+    simulation.alpha(0.1).restart();
+}
+
+function graph_add_node(id, color)
+{
+  g_nodes.push({"id" : id, "color" : color, "x" : width / 2, "y" : height / 2});
+}
+
+function graph_update_node_color(id, new_color)
+{
+  for(var i = 0; i < g_nodes.length; ++i)
+  {
+    if (g_nodes[i].id == id)
+    {
+      if (g_nodes[i].color == GRAPH_NODE_START_COLOR)
+        return; // don't change color of start node
+      g_nodes[i].color = new_color;
+      break;
+    }
+  }
+
+  node.attr("fill", function(d) { return color_scheme[d.color]; });
+}
+
+function graph_update_node(id)
+{
+  // TODO: consider optimization
+  // remove a node from svg so it will be re-added with updated values in graph_nodes_general_update()
+  node.filter(function (d) { return d.id == id; } ).remove();
+  node = node.filter(function (d) { return d.id != id; } );
+}
+
+function graph_add_link(source_id, target_id, age = undefined)
+{
+  for(var i = 0; i < g_links.length; ++i)
+  {
+    var l = g_links[i];
+    if (((l.source.id == source_id) || l.source == source_id) && ((l.target.id == target_id) || l.target == target_id))
+    {
+      g_links[i].age = age; // update age
+      return; // such a link already exists
+    }
+  }
+
+  g_links.push({"source" : source_id, "target" : target_id, "age" : age});
+}
+
+d3.selection.prototype.moveToFront = function() {
+      return this.each(function(){
+        this.parentNode.appendChild(this);
+      });
+    };
+
+function dragstarted(d)
+{
+  if (!d3.event.active && g_simulation_enabled)
+    simulation.alphaTarget(0.1).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+
+  link.style("stroke", GRAPH_LINE_DIMMED_COLOR);
+  link.filter(function(l) { return d.id == l.target.id;} )
+    .style("stroke", color_scheme[8])
+    //.attr("stroke-width", 2)
+    .moveToFront();
+  link.filter(function(l) { return d.id == l.source.id;} )
+    .style("stroke", color_scheme[2])
+    //.attr("stroke-width", 2)
+    .moveToFront();
+
+  node_clicked(d);
+  //d3.event.sourceEvent.stopPropagation();
+}
+
+function dragged(d)
+{
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d)
+{
+  if (!d3.event.active && g_simulation_enabled)
+    simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+
+  link.style("stroke", line_color_by_link).attr("stroke-width", line_width_by_link);
+}
+
+function node_clicked(d)
+{
+  infobox_show_peer_info(d.id);
+  if (d.id in g_peers)
+  {
+    g_peers[d.id].selected = true;
+    redraw_node_selection();
+  }
+}
+
+function infobox_show_peer_info(peer_id)
+{
+  var text = "";
+  var html = "";
+  if (peer_id in g_peers)
+  {
+    var p = g_peers[peer_id];
+    text = "peer id: " + peer_id + ", ip: " + p.address + ":" + p.port + (p.net_info !== undefined ? " " + p.net_info.hostname + "/" + p.net_info.mining_group : "") + ", response: \n" + (p.json_response ? p.json_response : "n/a");
+
+    if (p.errors_journal !== undefined)
+      html = format_errors_journal(p.errors_journal);
+  }
+
+  if (text != "")
+  {
+    infobox_fill(text, html);
+  }
+  else
+  {
+    infobox_fill("information for peer " + peer_id + " is not available");
+    log_error("can't find peer by id " + peer_id);
+  }
+}
+
+function escape_html(unsafe)
+{
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+ }
+
+function format_errors_journal(errors_list)
+{
+  var output = "<div style=\"font: 12px/12px Courier, monospace; overflow-x: auto;\"><b>Error list</b>\n";
+  for(var i = 0; i < errors_list.length; ++i)
+    output += "\n" + i + ":\n" + escape_html(errors_list[i]);
+
+  output = output.replace(/STACK((.|\n)+?)Message:/gm, "STACK<span style='color: #bbb; white-space: nowrap;'>$1</span>Message:");
+  output = output.replace(/(Message:\n.+)/gm, "<span style='color: darkred; font-weight: bold;'>$1</span>");
+  output = output.replace(/\n/gm, "\n<br>");
+  output += "</div>";
+  return output;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// END of graph visualization and simulation
+///////////////////////////////////////////////////////////////////////////////
+
+</script>

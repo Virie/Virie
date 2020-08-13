@@ -1,0 +1,168 @@
+@import "../variables";
+@import "mixins";
+
+#escrow {
+  padding: 2.5rem 8rem;
+
+  .main-options-wrapper {
+
+    .escrow-options {
+      .flex-container-direction(row);
+      .flex-container-alignment(center, space-between);
+    }
+  }
+
+  .general-tabs {
+
+    .general-tab {
+
+      button {
+
+        .base-icon {
+          margin-top: 1rem;
+        }
+      }
+    }
+  }
+
+  .escrow-table {
+    margin-bottom: 3rem;
+
+    table {
+
+      thead {
+
+        tr {
+          font-size: 3.25rem;
+        }
+      }
+
+      tbody {
+
+        tr {
+
+          td:first-child {
+            position: relative;
+
+            &::after {
+              content: "";
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+            }
+
+            &.escrow-marker::after {
+              border-left: 1rem solid @marker-escrow;
+            }
+          }
+        }
+      }
+    }
+
+    .escrow-deal-date {
+      .flex-container-direction(column);
+      .flex-container-alignment(flex-start, center);
+
+      .time, .date {
+        align-self: flex-start;
+      }
+    }
+
+    .escrow-transaction {
+      .flex-container-direction(column);
+      .flex-container-alignment(flex-start, center);
+
+      .transaction-name {
+        align-self: flex-start;
+        font-weight: 600;
+        line-height: 6rem;
+        word-break: break-word;
+
+        &:hover {
+          color: @program-hover-color;
+          cursor: pointer;
+        }
+      }
+
+      .transaction-status {
+        align-self: flex-start;
+        line-height: 6rem;
+      }
+
+      .transaction-info {
+        font-style: italic;
+        font-size: 3rem;
+        line-height: 5.5rem;
+        margin-bottom: 0.5rem;
+        color: @escrow-transaction-status-color;
+      }
+    }
+
+    .escrow-buyer-account {
+      .flex-container-direction(column);
+
+      .safe-address {
+        font-size: 3.25rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+
+        .safe-address-wrap {
+          width: 40rem;
+        }
+
+        .safe-address-inner {
+          left: inherit;
+          right: 0;
+          width: 150%;
+        }
+      }
+
+      alias-display:not(.safe-address-inner-alias) {
+        display: inline-flex;
+
+        .safe-alias {
+          margin-top: 0.75rem;
+          margin-bottom: 0.75rem;
+        }
+      }
+    }
+
+    .reply-btn {
+      .flex-container-direction(row);
+      .flex-container-alignment(center, center);
+      background: transparent;
+      border: 1px solid @program-table-button-border-color;
+      border-radius: 16rem;
+      color: @program-main-color;
+      font-size: 3rem;
+      height: 4.5rem;
+      margin-top: 1.5rem;
+      padding: 0 2rem;
+
+      .base-icon {
+        .icon-sizing(4rem, 4rem, -4rem, -5rem);
+      }
+
+      .btn-text {
+        line-height: 4rem;
+        padding: 0 0.5rem;
+      }
+
+      &:hover {
+        border-color: @program-table-button-border-hover-color;
+        color: @program-hover-color;
+        cursor: pointer;
+
+        .base-icon {
+          color: @program-table-button-icon-hover-color;
+        }
+      }
+    }
+
+    .contact-btn {
+      margin-top: 1.5rem;
+      padding: 0 1rem;
+    }
+  }
+}

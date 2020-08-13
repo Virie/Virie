@@ -1,0 +1,75 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('DEALS.TERMS_PURCHASES' | translate)"></div>
+        <div class="modal-form-header-close">
+            <button ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form class="general-form">
+            <div class="general-form-review-wrapper">
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.CONTRACT_SHORT_DESC' | translate)"></label>
+                    <div class="field-group-description" ng-bind="depConfirm.t"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.SELLER' | translate)"></label>
+                    <div class="field-group-description">
+                        <safe-address-copy address="depConfirm.b_addr"></safe-address-copy>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.CONTRACT_FULL_PRICE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="cutLastZeros(depConfirm.to_pay) + ' ' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review active-line">
+                    <label class="field-group-label" ng-bind="::('DEALS.YOUR_PLEDGE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="cutLastZeros(depConfirm.a_pledge) + ' ' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.SELLER_PLEDGE' | translate)"></label>
+                    <div class="field-group-description" ng-bind="cutLastZeros(depConfirm.b_pledge) + ' ' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="depConfirm.c">
+                    <label class="field-group-label" ng-bind="::('DEALS.MSG_TO_SELLER' | translate)"></label>
+                    <div class="field-group-description" ng-bind="depConfirm.c"></div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.WHAT_SAFE' | translate)"></label>
+                    <div class="field-group-description" ng-repeat="s in safes | filter : {wallet_id: depConfirm.wallet_id} : true track by s.wallet_id">
+                        <span ng-bind="s.name + ' (' + moneyParse(s.unlocked_balance) + ')'"></span>
+                    </div>
+                </div>
+                <div class="general-form-field-group field-group-review">
+                    <label class="field-group-label" ng-bind="::('DEALS.COMMISSION' | translate)"></label>
+                    <div class="field-group-description" ng-bind="config.standardFee + ' ' + currencySymbol"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="depConfirm.payment_id_integrated.length > 0">
+                    <label class="field-group-label">Payment ID</label>
+                    <div class="field-group-description" ng-bind="depConfirm.payment_id_integrated"></div>
+                </div>
+                <div class="general-form-field-group field-group-review" ng-if="depConfirm.payment_id_integrated.length == 0 && depConfirm.payment_id">
+                    <label class="field-group-label">Payment ID</label>
+                    <div class="field-group-description" ng-bind="depConfirm.payment_id"></div>
+                </div>
+            </div>
+            <div class="general-form-field-group field-group-review-full">
+                <span ng-bind="('DEALS.WAITING_SENTENCE_TIME' | translate) + ' - ' + depConfirm.time + ('DEALS.TIME' | translate)"></span>
+            </div>
+            <div class="general-form-field-group need-master-password" ng-show="needPass">
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="sPassword" contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button large-button" ng-click="closeAll();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button large-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.EDIT' | translate)"></button>
+            </div>
+            <div class="general-form-control-buttons submit-button-wrapper">
+                <button type="button" class="control-button" ng-click="confirm();" ng-bind="::('DEALS.ACTIONS.SENT_PLEDGE_SENTENCE_TO_SELLER' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet">
+    <title>netScan2</title>
+</head>
+<body>
+    <input type="button" value="Refresh backend & frontend" onclick="button_refresh_click()" class="inp_btn"/>
+    <input type="button" value="Clear" onclick="button_clear_click()" class="inp_btn"/>
+    <input type="button" value="Clear log" onclick="button_clear_log_click()" class="inp_btn"/>
+    <input type="button" value="Export" onclick="button_export_click()" class="inp_btn"/>
+    <span class="txt_info_title">Peers:</span>&nbsp;<span class="txt_info" id="peers_counter">0</span>&nbsp;&nbsp;
+    <span class="txt_info_title">Known IPs:</span>&nbsp;<span class="txt_info" id="known_ips_counter">0/0</span>&nbsp;&nbsp;
+
+    Select:<input type="text" id="search_node" class="inp_ip" placeholder="IPs, hostnames, pow/pos" onkeyup="select_node_by_ip_or_hostname_press(event)"/>
+    Network Status:<span id="network_status"></span>
+    <div id="nav_settings">Settings</div>
+    <br>
+    <span class="txt_info_title">Colorize by:
+        <input type="radio" name="colorize" id="colorize_default_radio" onclick="colorize_radio_click()" checked/>default&nbsp;
+        <input type="radio" name="colorize" id="colorize_top_radio" onclick="colorize_radio_click()"/>top block&nbsp;
+        <input type="radio" name="colorize" id="colorize_mining_radio" onclick="colorize_radio_click()"/>mining&nbsp;
+        <input type="radio" name="colorize" id="colorize_version_radio" onclick="colorize_radio_click()"/>version&nbsp;
+        <input type="radio" name="colorize" id="colorize_tx_pool_size_radio" onclick="colorize_radio_click()"/>tx pool size&nbsp;
+        <input type="radio" name="colorize" id="colorize_log_errors_radio" onclick="colorize_radio_click()"/>log errors&nbsp;
+      </span>
+    <div id="upper_box" class="upper_box split split-vertical">
+        <div id="svg_box" class="svg_box split split-horizontal" onmousedown="clear_node_selection()">
+            <svg id="svg" class="svg"></svg>
+        </div>
+        <div id="info_box" class="info_box split split-horizontal">Click a node for detailed info</div>
+    </div>
+    <div class="log split split-vertical" id="log"></div>
+
+    <div id="settings">
+        <div class="top_panel">
+            <div id="back">&larr; back</div>
+        </div>
+        <form class="setting-item">
+            <label>Ip &amp; port</label>
+            <div class="input">
+                <input type="text" class="form-control" id="address" placeholder="111.222.333.444" value="">
+                <span>:</span>
+                <input type="text" class="form-control" id="port" placeholder="555" value="">
+            </div>
+            <button type="button" class="btn" onclick="save_ip_port();">Save</button>
+        </form>
+    </div>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-request.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.2.0/split.min.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+
+</body>
+</html>

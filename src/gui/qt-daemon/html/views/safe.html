@@ -1,0 +1,392 @@
+<div id="safe-details" class="content-section" style="overflow: hidden" ng-controller="safeDetailsCtrl" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+
+    <div class="main-options-wrapper">
+        <div class="safe-details-options">
+            <button class="back-btn" ng-click="goBackInSafe();">
+                <i data-icon="J" class="base-icon"></i><span ng-bind="::('COMMON.BACK' | translate)"></span>
+            </button>
+            <div class="safe-details-switch">
+                <span class="safe-details-switch-text" ng-bind="::('SAFE.SLIDER_TEXT' | translate)"></span>
+                <div class="safe-details-switch-btn-group">
+                    <button type="button" class="safe-details-switch-btn" ng-click="prevSafeShow();" data-ng-disabled="safes.length<=1">
+                        <i data-icon="J" class="base-icon"></i>
+                    </button>
+                    <button type="button" class="safe-details-switch-btn" ng-click="nextSafeShow();" data-ng-disabled="safes.length<=1">
+                        <i data-icon="J" class="base-icon rotate-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="safeItem" style="transition: 1s; float: left; width: 100%;">
+        <div class="general-panel">
+            <div class="general-panel-header safe-name">
+                <i data-icon="p" class="base-icon lock-icon" ng-if="safe.pass"
+                   uib-tooltip="{{::('DASHBOARD.SAFE.ENCRYPTED' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                </i>
+                <i data-icon="&#xe002;" class="base-icon lock-icon open" ng-if="!safe.pass"
+                   uib-tooltip="{{::('DASHBOARD.SAFE.NOT.ENCRYPTED' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                </i>
+                <h1 ng-bind="safe.name"></h1>
+                <div class="safe-menu dropdown-animation">
+                    <button type="button" class="safe-menu-btn" data-toggle="dropdown"><i data-icon="k" class="base-icon"></i></button>
+                    <ul class="dropdown-menu nav safes-menu-list" safe-menu></ul>
+                </div>
+            </div>
+            <div class="general-panel-body">
+                <div class="safe-general-info" ng-if="!(!safe.loaded && daemonState.daemon_network_state == 2)">
+                    <div class="safe-details-balance">
+                        <balance-image balance="safe.balance"></balance-image>
+                        <span class="safe-details-balance-title" ng-bind="::(('DASHBOARD.SAFE.BALANCE' | translate) + ':')"></span>
+                        <span class="safe-details-balance-text" ng-bind="moneyParse(safe.balance)"></span>
+                    </div>
+                    <div class="safe-details-balance">
+                        <div class="available-balance-graph">
+                            <circle-big percent="safe.percent_balance"></circle-big>
+                            <span class="balance-graph-inner" ng-class="{'unavailable': safe.percent_balance == '0.00'}" ng-bind="safe.percent_balance + '%'"></span>
+                        </div>
+                        <div class="safe-details-balance-title" ng-bind="::(('DASHBOARD.SAFE.AVAILABLE' | translate) + ':')"></div>
+                        <div class="safe-details-balance-text" ng-bind="moneyParse(safe.unlocked_balance)"></div>
+                    </div>
+                    <div class="safe-details-balance">
+                        <div class="expected-balance-graph">
+                            <circle-big percent="safe.percent_pending"></circle-big>
+                            <i data-icon="K" class="base-icon balance-graph-inner" ng-class="{'completed': safe.percent_pending == 100}"></i>
+                        </div>
+                        <div class="safe-details-balance-title" ng-bind="::(('SAFE.PENDING' | translate) + ':')"></div>
+                        <div class="safe-details-balance-text" ng-bind="moneyParse(safe.chart_pending)"></div>
+                    </div>
+                    <div class="safe-details-balance">
+                        <div class="transmit-balance-graph">
+                            <circle-big percent="safe.percent_sending"></circle-big>
+                            <i data-icon="K" class="base-icon balance-graph-inner" ng-class="{'completed': safe.percent_sending == 100}"></i>
+                        </div>
+                        <div class="safe-details-balance-title" ng-bind="::(('SAFE.SENDING' | translate) + ':')"></div>
+                        <div class="safe-details-balance-text" ng-bind="moneyParse(safe.chart_sending)"></div>
+                    </div>
+                    <div class="safe-details-balance">
+                        <div class="mined-balance-graph">
+                            <circle-big percent="(safe.mined > 0) ? 100 : 0"></circle-big>
+                            <i data-icon="<" class="base-icon balance-graph-inner" ng-class="{'completed': safe.mined > 0}"></i>
+                        </div>
+                        <div class="safe-details-balance-title" ng-bind="::(('SAFE.MINED' | translate) + ':')"></div>
+                        <div class="safe-details-balance-text" ng-bind="moneyParse(safe.mined)"></div>
+                    </div>
+                </div>
+                <div class="safe-sync" style="height: 53rem" ng-if="!safe.loaded && daemonState.daemon_network_state == 2">
+                    <div class="safe-sync-text" ng-bind="('SAFE_BLOCK.SYNCHRONIZATION' | translate) + ' ' + (safe.progress || 0) + '%'"></div>
+                    <progress max="100" value="{{safe.progress}}"></progress>
+                </div>
+            </div>
+        </div>
+        <!-- Safe Information -->
+        <div class="general-panel">
+            <div class="general-panel-header" ng-class="{'closed-panel': !safeShowHideTabs.info}">
+                <div ng-click="safeShowHideTabs.info = !safeShowHideTabs.info;">
+                    <span ng-bind="'SAFE.INFO' | translate"></span><i data-icon="b" class="base-icon general-panel-header-arrow"></i>
+                </div>
+            </div>
+            <div class="general-panel-body slideAnimation" ng-show="safeShowHideTabs.info">
+                <form name="safeInformationForm" class="safe-information adaptive-form">
+                    <div class="adaptive-form-column">
+                        <div class="adaptive-form-field-group no-hover">
+                            <label class="field-group-label" ng-bind="::('SAFE.FILE' | translate)"></label>
+                            <div class="general-input-wrapper no-hover">
+                                <textarea elastic class="general-textarea no-hover" rows="1" readonly>{{::safe.path}}</textarea>
+                                <i data-icon="&#xe001;" class="base-icon copy-icon option-icon" ng-click="setClipboard(safe.path);"
+                                   uib-tooltip="{{::('SAFE.SMART.RESTORE.COPY' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                </i>
+                            </div>
+                        </div>
+                        <div class="adaptive-form-field-group need-to-focus-field">
+                            <label class="field-group-label" ng-bind="::('SAFE.NAME_SAFE' | translate)"></label>
+                            <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="safe.name" placeholder="{{::('SAFE.NAME_SAFE' | translate | lowercase)}}" maxlength="25"/>
+                        </div>
+                        <div class="adaptive-form-field-group safe-password no-hover">
+                            <label class="field-group-label label-hint">
+                                <span ng-bind="::('SAFE.PASSWORD_SAFE' | translate)"></span>
+                                <i data-icon="P" class="base-icon label-hint-icon"
+                                   uib-tooltip="{{::('SAFE.PASSWORD_SAFE.HINT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                </i>
+                            </label>
+                            <div class="general-input-wrapper no-hover">
+                                <input ng-if="safe.pass" type="password" class="general-input no-hover" value="11111111" readonly/>
+                                <input ng-if="!safe.pass" type="text" class="general-input no-hover" value="{{'SAFE.NO_PASSWORD' | translate }}" readonly>
+                                <i data-icon="T" class="base-icon option-icon" ng-if="safe.loaded && daemonState.daemon_network_state == 2" ng-click="safeChangePass(safe);"
+                                   uib-tooltip="{{::('SAFE.CHANGE_PASSWORD_TOOLTIP' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="adaptive-form-column">
+                        <div class="adaptive-form-field-group no-hover">
+                            <label class="field-group-label" ng-bind="::('COMMON.ACCOUNT' | translate)"></label>
+                            <div class="general-input-wrapper no-hover contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{safe.address}}" >
+                                <textarea elastic class="general-textarea no-hover" rows="1" readonly>{{::safe.address}}</textarea>
+                                <i data-icon="&#xe001;" class="base-icon copy-icon option-icon" ng-click="setClipboard(safe.address);"
+                                   uib-tooltip="{{::('SAFE.SMART.RESTORE.COPY' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                </i>
+                            </div>
+                        </div>
+                        <div class="adaptive-form-field-group alias-actions-wrapper no-hover" ng-if="!safeAlias.name && safe.alias_available">
+                            <label class="field-group-label" ng-bind="::('SEND_MONEY.ALIAS' | translate)"></label>
+                            <button type="button" class="add-alias-btn" ng-click="safe.alias_available && safe.loaded ? registerAlias(safe) : false"
+                                    data-ng-disabled="!safe.alias_available || !safe.loaded || daemonState.daemon_network_state == 0 || daemonState.daemon_network_state == 1">
+                                <i data-icon="N" class="base-icon"></i><span class="btn-text" ng-bind="::('SAFE.ALIAS_ADD' | translate)"></span>
+                            </button>
+                        </div>
+                        <div class="adaptive-form-field-group alias-actions-wrapper no-hover" ng-if="safeAlias.name">
+                            <label class="field-group-label" ng-bind="::('SEND_MONEY.ALIAS' | translate)"></label>
+                            <div class="general-input-wrapper no-hover contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{safeAlias.name}}">
+                                <input type="text" class="general-input no-hover" ng-model="safeAlias.name" readonly/>
+                            </div>
+                            <div class="alias-actions">
+                                <div class="alias-action" ng-if="!safeAlias.comment">
+                                    <i data-icon="C" class="base-icon" ng-click="safe.alias_available && safe.loaded ? changeAliasComment(safeAlias) : false"
+                                       ng-class="{'disabled': !safe.alias_available || !safe.loaded  || daemonState.daemon_network_state == 0 || daemonState.daemon_network_state == 1}"
+                                       uib-tooltip="{{::('SAFE.ALIAS_ADD_COMMENT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                                </div>
+                                <div class="alias-action">
+                                    <i data-icon="M" class="base-icon" ng-click="safe.alias_available && safe.loaded ? transferAlias(safeAlias) : false"
+                                       ng-class="{'disabled': !safe.alias_available || !safe.loaded  || daemonState.daemon_network_state == 0 || daemonState.daemon_network_state == 1}"
+                                       uib-tooltip="{{'SAFE.ALIAS_TRANSFER' | translate}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="adaptive-form-field-group no-hover" ng-if="safeAlias.comment">
+                            <label class="field-group-label" ng-bind="::('SAFE.ALIAS_COMMENT' | translate)"></label>
+                            <div class="general-input-wrapper no-hover">
+                                <textarea elastic class="general-textarea no-hover textarea_count_rows" rows="1" readonly>{{safeAlias.comment}}</textarea>
+                                <i data-icon="T" class="base-icon option-icon" ng-click="safe.alias_available && safe.loaded ? changeAliasComment(safeAlias) : false"
+                                   ng-if="!(!safe.alias_available || !safe.loaded  || daemonState.daemon_network_state == 0 || daemonState.daemon_network_state == 1)">
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Safe Backup -->
+        <div class="general-panel">
+            <div class="general-panel-header" ng-class="{'closed-panel': !safeShowHideTabs.copy}">
+                <div ng-click="safeShowHideTabs.copy = !safeShowHideTabs.copy;">
+                    <span ng-bind="::('SAFE.BACKUP' | translate)"></span><i data-icon="b" class="base-icon general-panel-header-arrow"></i>
+                </div>
+            </div>
+            <div class="general-panel-body slideAnimation" ng-show="safeShowHideTabs.copy">
+                <div class="safe-backup">
+                    <button type="button" class="safe-backup-btn" ng-click="createSafeBackupLocal(safe);" ng-bind="::('SAFE.PHYSICAL.COPY' | translate)"></button>
+                    <button type="button" class="safe-backup-btn" ng-click="openSmartSafeForm(safe, false);" ng-bind="::('SAFE.SMART.DO' | translate)"></button>
+                </div>
+            </div>
+        </div>
+        <!--Payment history-->
+        <div class="general-panel">
+            <div class="general-panel-header" ng-class="{'closed-panel': !safeShowHideTabs.history}">
+                <div ng-click="safeShowHideTabs.history = !safeShowHideTabs.history;">
+                    <span ng-bind="::('COMMON.PAYMENT_HISTORY' | translate)"></span><i data-icon="b" class="base-icon general-panel-header-arrow"></i>
+                </div>
+            </div>
+            <div class="general-panel-body slideAnimation" ng-show="safeShowHideTabs.history">
+                <div class="safe-payment-history" ng-if="!historyEmpty">
+                    <div class="history-options filter-wrapper-parent">
+                        <div class="history-filter filter-wrapper filterBlockAnimation2 ng-hide" ng-show="safeShowHideTabs.historyFilter">
+                            <div class="filter-inner-block">
+                                <div class="filter-field-group no-hover">
+                                    <label class="filter-label" ng-bind="::('COMMON.PAYMENT' | translate)"></label>
+                                    <div class="filter-field general-switch" init-switch-option>
+                                        <span class="switch-option optionAnimate" ng-class="{'active': filter.trType == 'all'}"
+                                              ng-click="filter.trType = 'all'; filterChange(true);" ng-bind="::('COMMON.ALL' | translate)">
+                                        </span>
+                                        <span class="switch-option optionAnimate" ng-class="{'active': filter.trType == 'in'}"
+                                              ng-click="filter.trType = 'in';  filterChange(true);" ng-bind="::('HISTORY.FILTER.INCOME' | translate)">
+                                        </span>
+                                        <span class="switch-option optionAnimate" ng-class="{'active': filter.trType == 'out'}"
+                                              ng-click="filter.trType = 'out'; filterChange(true);" ng-bind="::('HISTORY.FILTER.OUTGOING' | translate)">
+                                        </span>
+                                        <span class="switch-marker"></span>
+                                    </div>
+                                </div>
+                                <div class="filter-field-group need-to-focus-field">
+                                    <label class="filter-label" ng-bind="::('COMMON.SAFE' | translate)"></label>
+                                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="filter.walletId"
+                                            data-ng-change="filterChange(true);" ng-options="safe.wallet_id as safe.name for safe in [safe]">
+                                    </select>
+                                </div>
+                                <div class="filter-field-group need-to-focus-field">
+                                    <label class="filter-label" ng-bind="::('COMMON.PERIOD' | translate)"></label>
+                                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="filter.interval"
+                                            data-ng-change="filterChange(true);" ng-options="item.key as item.value for item in intervalValues">
+                                    </select>
+                                </div>
+                                <div class="filter-field-group no-hover slideAnimation" ng-hide="hideCalendar">
+                                    <label class="filter-label" ng-bind="::('COMMON.DATE' | translate)"></label>
+                                    <div class="filter-field-wrapper">
+                                        <div class="filter-field general-input-wrapper need-to-focus-field">
+                                            <span class="input-addon pre-input" ng-bind="::('COMMON.DATE_FROM' | translate)"></span>
+                                            <input type="text" class="general-input need-to-focus" air-calendar ng-model="filter.dateStart"
+                                                   ng-change="filterChange(true);" max-date="filter.dateEnd"
+                                                   ng-if="!hideCalendar" readonly/>
+                                        </div>
+                                        <div class="filter-field general-input-wrapper need-to-focus-field">
+                                            <span class="input-addon pre-input" ng-bind="::('COMMON.DATE_TO' | translate)"></span>
+                                            <input type="text" class="general-input need-to-focus" air-calendar ng-model="filter.dateEnd"
+                                                   ng-change="filterChange(true);" min-date="filter.dateStart"
+                                                   ng-if="!hideCalendar" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-inner-block">
+                                <div class="filter-field-group need-to-focus-field">
+                                    <label class="filter-label" ng-bind="::('COMMON.TRANS_PROD' | translate)"></label>
+                                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="filter.isHideMining"
+                                            data-ng-change="filterChange(true);" ng-options="item.key as item.value | lowercaseLang for item in transProdValues">
+                                    </select>
+                                </div>
+                                <div class="filter-buttons">
+                                    <button type="button" class="filter-clear-btn" ng-click="filterClear();">
+                                        <i data-icon="&#xe004;" class="base-icon"></i><span ng-bind="::('COMMON.FILTER.CLEAR' | translate)"></span>
+                                    </button>
+                                    <button type="button" class="filter-close-btn" ng-click="safeShowHideTabs.historyFilter = false;">
+                                        <span ng-bind="::('COMMON.FILTER.CLOSE' | translate)"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="general-filter-btn filterBlockAnimation ng-hide" ng-show="!safeShowHideTabs.historyFilter" ng-click="safeShowHideTabs.historyFilter = true;" ng-bind="::('COMMON.FILTER' | translate)"></div>
+                        <div class="general-filter-clear filterBlockAnimation ng-hide" ng-show="filter.clear && !safeShowHideTabs.historyFilter" ng-click="filterClear();">
+                            <i data-icon="!" class="base-icon"></i>
+                        </div>
+                        <div class="history-search general-search-wrapper filterBlockAnimation ng-hide" animate-search data-opened="filter.keywords.length > 0" ng-show="!safeShowHideTabs.historyFilter">
+                            <i data-icon="G" class="base-icon search-icon"></i>
+                            <input type="search" class="search-input contextMenuButton" ng-model="filter.keywords" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange(true);" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+                        </div>
+                    </div>
+                    <div class="table-wrapper history-table">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>
+                                    <span ng-bind="::('COMMON.STATUS' | translate)"></span>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.TRANSACTION_DATE' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'timestamp', 'rotate-icon': (!historySortDir && historySortBy == 'timestamp')}" ng-click="order('timestamp');"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.SAFE' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'safeName', 'rotate-icon': (!historySortDir && historySortBy == 'safeName')}" ng-click="order('safeName');"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.AMOUNT' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'sortAmount', 'rotate-icon': (!historySortDir && historySortBy == 'sortAmount')}" ng-click="order('sortAmount');"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.COMMISSION' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'sortFee', 'rotate-icon': (!historySortDir && historySortBy == 'sortFee')}" ng-click="order('sortFee');"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.COUNTERPARTY' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'counterparty_translated', 'rotate-icon': (!historySortDir && historySortBy == 'counterparty_translated')}" ng-click="order('counterparty_translated');"></i>
+                                    </div>
+                                </th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-class="{'transaction-blocked': item.tx_type == 10 || isExclamation(item)}" ng-repeat="item in filteredHistory track by $index"
+                                uib-tooltip-html="'{{getAvailableTime(item)}}'" data-tooltip-enable="{{!!getAvailableTime(item)}}" data-tooltip-class="tr-blocked-tooltip" data-tooltip-placement="top" data-tooltip-append-to-body="true">
+                                <td ng-class="{'history-marker': item.is_mining && item.height != 0}">
+                                    <div class="transaction-status-indicator" ng-class="{'income': (item.tx_type == 10 || isExclamation(item)) && item.is_income, 'outgoing': (item.tx_type == 10 || isExclamation(item)) && !item.is_income}">
+                                        <circle-show item="item" height="appHeight"></circle-show>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="history-date" ng-click="trDetails(item, item.safeAddress)">
+                                        <span ng-bind="(item.timestamp | intToDate | date : 'dd.MM.yy&nbsp;&nbsp;HH:mm')"></span><i data-icon="/" class="base-icon"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="history-safe">
+                                        <i data-icon="j" class="base-icon history-anonym-icon" ng-if="!item.show_sender && !item.is_income && item.tx_type == 0"
+                                           uib-tooltip="{{::('CONTACTS.ANON' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                        </i>
+                                        <span uib-tooltip="{{::('COMMON.SAFE_NAME.HINT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true" ng-click="goToPage('/safe/' + item.wallet_id + '/false/-1')" ng-bind="item.safeName"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span ng-if="item.sortAmount" ng-bind="(item.is_income ? '+' : '') + moneyParse(item.sortAmount)"></span>
+                                </td>
+                                <td>
+                                    <span ng-if="item.tx_type == 3" ng-bind="'0.00 ' + currencySymbol"></span>
+                                    <span ng-if="item.sortFee" ng-bind="moneyParse(item.sortFee)"></span>
+                                </td>
+                                <td>
+                                    <div class="history-counterparty" ng-if="item.tx_type == 0">
+                                        <safe-address-copy address="item.remote_addresses[0]"></safe-address-copy>
+                                        <alias-display ng-if="item.alias.name" alias="item.alias"></alias-display>
+                                        <contact-display contact="item.contact"></contact-display>
+                                        <span ng-if="!item.remote_addresses[0] && !item.is_income" ng-bind="::('COMMON.NOT_DEFINED' | translate)"></span>
+                                        <div class="history-safe" ng-if="!item.remote_addresses[0] && item.is_income">
+                                            <i data-icon="j" class="base-icon history-anonym-icon"
+                                               uib-tooltip="{{::('CONTACTS.ANON' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                            </i>
+                                            <span ng-bind="::('COMMON.HIDDEN' | translate)"></span>
+                                        </div>
+                                    </div>
+                                    <div class="history-counterparty" ng-if="item.tx_type != 0">
+                                        <span ng-bind="item.counterparty_translated"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="history-comment-wrapper" ng-if="item.comment">
+                                        <i data-icon="y" class="base-icon" uib-tooltip="{{item.comment}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="!filteredHistory.length">
+                                <td colspan="7">
+                                    <div class="text-center">
+                                        <span ng-if="!loadingHistory" ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                        <span ng-if="loadingHistory" ng-bind="::('COMMON.LOADING' | translate)"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="pagination-wrapper" ng-show="!historyEmpty">
+                    <div class="display" ng-show="paginator.totalCount > 20">
+                        <span class="display-text" ng-bind="::('COMMON.SHOW_BY_PAGE_LIMIT' | translate)"></span>
+                        <ul class="display-values">
+                            <li ng-class="{'active': paginator.inPage == 20}" ng-click="paginator.changeLimit(20);"><span>20</span></li>
+                            <li ng-class="{'active': paginator.inPage == 35}" ng-click="paginator.changeLimit(35);"><span>35</span></li>
+                            <li ng-class="{'active': paginator.inPage == 50}" ng-click="paginator.changeLimit(50);"><span>50</span></li>
+                        </ul>
+                    </div>
+                    <div class="show-all" ng-click="paginator.viewAll(true);" ng-show="paginator.pagesCount > 1 && !paginator.showAll">
+                        <i data-icon="+" class="base-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.HISTORY.SHOW_ALL' | translate)"></span>
+                    </div>
+                    <div class="show-all" ng-click="paginator.viewAll();" ng-show="paginator.pagesCount > 1 && paginator.showAll">
+                        <i data-icon="+" class="base-icon rotate-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.HISTORY.SHOW_BY_PAGE' | translate)"></span>
+                    </div>
+                    <paginator model="paginator"></paginator>
+                </div>
+                <div class="safe-empty-payments" ng-if="historyEmpty" ng-bind="::('COMMON.NO_DATA' | translate)"></div>
+            </div>
+        </div>
+    </div>
+</div>

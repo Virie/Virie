@@ -1,0 +1,12 @@
+/build*
+/tags
+.DS_Store
+.*
+._.DS_Store
+Thumbs.db
+*.autosave
+node_modules/
+*.log
+/dist
+!.gitignore
+!.gitattributes

@@ -1,0 +1,91 @@
+.container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 15px;
+  margin: 0 auto 30px;
+  height: 100%;
+}
+main {
+  overflow: hidden;
+}
+.top_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 77px;
+
+  .left_box {
+    flex-basis: 50%;
+    .mobile_heading {
+      display: none;
+      color: #495865;
+      font-size: 20px;
+      @include max761 {
+        display: flex;
+      }
+      @include max575 {
+        &.hide_heading {
+          display: none;
+        }
+      }
+    }
+
+    .blockchain_info {
+      @include max761 {
+        display: none;
+      }
+    }
+  }
+  app-search {
+
+  }
+  &.aliases_top_box {
+    @include max761 {
+      height: 127px;
+    }
+    > div {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+    }
+    .row_heading_search {
+      height: 32px;
+      align-items: center;
+    }
+    .wrap_search {
+      height: 33px;
+    }
+  }
+}
+
+
+.table_market {
+  .dialog {max-width: 520px !important;}
+}
+
+.not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 130px;
+  font-size: 17px;
+  font-weight: 300;
+  color: #7190a1;
+  border-radius: 10px;
+  border: 1px solid #e1e8eb;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(#2e4e66, .6);
+  z-index: 999;
+  @include max575 {
+    background-color: #fff;
+  }
+}

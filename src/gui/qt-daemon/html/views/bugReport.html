@@ -1,0 +1,49 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('BUG.REPORT' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon=";" class="base-icon"></i></div>
+        <div class="modal-form-header-close">
+            <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form name="bugReport" class="general-form noEnterSubmit" ng-submit="sendBug();" novalidate>
+            <div class="general-form-field-group field-group-vertical">
+                <label class="field-group-label bolder-label" ng-bind="::('BUG.VERSION_OS' | translate)"></label>
+                <input type="text" name="OS" class="general-input error-report-indent contextMenuButton"
+                       ng-model="operationVersion" placeholder="{{::('BUG.ENTER_NUMBER' | translate)}}" maxlength="200" required/>
+                <span class="field-group-error" ng-if="operationVersion.length >= 200" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                <span class="field-group-error" ng-style="{'visibility': (bugReport.$submitted && (bugReport.OS.$error.required)) ? 'visible' : 'hidden'}"
+                      ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)">
+                </span>
+            </div>
+            <div class="general-form-field-group field-group-vertical error-report-indent">
+                <label class="field-group-label bolder-label" ng-bind="::('BUG.VERSION_PROGRAM' | translate)"></label>
+                <input type="text" name="programVersion" class="general-input error-report-indent contextMenuButton"
+                       ng-model="programVersion" placeholder="{{::('BUG.ENTER_NUMBER' | translate)}}" maxlength="200" required/>
+                <span class="field-group-error" ng-if="programVersion.length >= 200" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                <span class="field-group-error" ng-style="{'visibility': (bugReport.$submitted && bugReport.programVersion.$error.required)? 'visible' : 'hidden'}"
+                      ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)">
+                </span>
+            </div>
+            <div class="general-form-field-group field-group-vertical error-report-indent">
+                <label class="field-group-label bolder-label" ng-bind="::('BUG.ERROR' | translate)"></label>
+                <textarea name="describeError" elastic class="general-textarea error-report-indent textarea_count_rows contextMenuButton"
+                          data-ng-model="describe" rows="1" placeholder="{{::('BUG.ERROR_DESCRIPTION' | translate)}}"
+                          max-length-field="500" data-ng-trim="false" required>
+                </textarea>
+                <span class="field-group-error" ng-if="describe.length >= 500" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                <span class="field-group-error" ng-style="{'visibility': (bugReport.$submitted && bugReport.describeError.$error.required)? 'visible' : 'hidden'}"
+                      ng-bind="::('COMMON.ERROR.FILL_THE_FIELD' | translate)">
+                </span>
+            </div>
+            <span ng-if="bugReportResult == 'sending'" class="error-report-sending" ng-bind="::('BUG.SENDING' | translate)"></span>
+            <span ng-if="bugReportResult == 'ok'" class="error-report-success" ng-bind="::('BUG.IS_SEND' | translate)"></span>
+            <span ng-if="bugReportResult == 'error'" class="error-report-fail" ng-bind="::('BUG.IS_NOT_SEND' | translate)"></span>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button" ng-click="close();" ng-bind="::('BUG.CANCEL' | translate)"></button>
+                <button type="submit" class="control-button" ng-bind="::('BUG.SEND' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

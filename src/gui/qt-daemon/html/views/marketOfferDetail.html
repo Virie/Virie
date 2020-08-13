@@ -1,0 +1,79 @@
+<div class="market-detail-header">
+    <div class="header-title">
+        <span ng-if="offer.ot == 0" ng-bind="::('MARKET.POPOVER.GOODS.BUY' | translate)"></span>
+        <span ng-if="offer.ot == 1" ng-bind="::('MARKET.POPOVER.GOODS.SELL' | translate)"></span>
+        <span ng-if="offer.ot == 2" ng-bind="::('MARKET.POPOVER.BUY' | translate)"></span>
+        <span ng-if="offer.ot == 3" ng-bind="::('MARKET.POPOVER.SELL' | translate)"></span>
+    </div>
+    <i data-icon="{{isFavorite(offer.tx_hash) ? '&#xe017;' : '&#xe014;'}}" class="base-icon header-icon" ng-click="toggleFavorite(offer.tx_hash, (offer.ot == 0 || offer.ot == 1) ? 'goods' : 'currency')"></i>
+</div>
+<div class="market-detail-body base-scroll dark-scroll" ng-if="offer.ot == 2 || offer.ot == 3">
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></span>
+        <span class="market-detail-item-text" ng-repeat="currency in currencies | filter : {code: offer.t} : true track by $index" ng-bind="::currency.title"></span>
+    </div>
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-bind="::(('MARKET.AMOUNT_IN' | translate) + ((offer.t | isCurrencyCorrect ) ? (' ' + offer.t) : ''))"></span>
+        <span class="market-detail-item-text" ng-bind="::(coinsParse(offer.at, offer.t))"></span>
+    </div>
+    <div class="market-detail-item" ng-if="offer.b">
+        <span class="market-detail-item-title" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></span>
+        <span class="market-detail-item-text text-pre" ng-bind="::offer.b"></span>
+    </div>
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-bind="::('BUY_SELL_OFFER.SETTLEMENT_METHODS' | translate)"></span>
+        <span class="market-detail-item-text">
+            <span class="market-payment-methods" ng-if="item != 'EPS'" ng-repeat="item in str2json(offer.pt) track by $index">
+                <i data-icon="{{paymentTypes[item].classname}}" class="base-icon" ng-if="paymentTypes[item]"></i><span ng-if="paymentTypes[item]" ng-bind="::(paymentTypes[item].title | translate)"></span>
+                <i data-icon="{{paymentTypes['EPS'].classname}}" class="base-icon" ng-if="!paymentTypes[item]"></i><span ng-if="!paymentTypes[item]" ng-bind="::item"></span>
+            </span>
+        </span>
+    </div>
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-show="offer.ot == 2" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.BUY' | translate)"></span>
+        <span class="market-detail-item-title" ng-show="offer.ot == 3" ng-bind="::('BUY_SELL_OFFER.CONDITIONS.SELL' | translate)"></span>
+        <span class="market-detail-item-text">
+            <span ng-repeat="item in offer.do.split(',') track by $index" style="display: block;">
+                <span ng-repeat="deal_item in dealDetails | filter : {key: item} track by $index" ng-bind="::(deal_item.value | translate)"></span>
+            </span>
+        </span>
+    </div>
+    <div class="market-detail-item" ng-if="::offer.com">
+        <span class="market-detail-item-title" ng-bind="::('COMMON.COMMENT' | translate)"></span>
+        <span class="market-detail-item-text text-pre" ng-bind="::offer.com"></span>
+    </div>
+</div>
+<div class="market-detail-body base-scroll dark-scroll" ng-if="offer.ot == 0 || offer.ot == 1" >
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-bind="::('MARKET.NAME' | translate)"></span>
+        <span class="market-detail-item-text" ng-bind="::offer.t"></span>
+    </div>
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-bind="::('BUY_SELL_OFFER.CURRENCY' | translate)"></span>
+        <span class="market-detail-item-text" ng-repeat="currency in currenciesGoods | filter : {code: offer.p} : true track by $index" ng-bind="::currency.title"></span>
+    </div>
+    <div class="market-detail-item">
+        <span class="market-detail-item-title" ng-bind="::('MARKET.PRICE' | translate)"></span>
+        <span class="market-detail-item-text" ng-bind="::(coinsParse(offer.ap, offer.p))"></span>
+    </div>
+    <div class="market-detail-item" ng-if="offer.b">
+        <span class="market-detail-item-title" ng-bind="::('BUY_SELL_OFFER.BONUS' | translate)"></span>
+        <span class="market-detail-item-text text-pre" ng-bind="::offer.b"></span>
+    </div>
+    <div class="market-detail-item" ng-if="str2json(offer.pt).length">
+        <span class="market-detail-item-title" ng-bind="::('MARKET.FILTER.DELIVERY_METHODS' | translate)"></span>
+        <span class="market-detail-item-text">
+            <span class="market-payment-methods" ng-if="item != 'DELIVERY'" ng-repeat="item in str2json(offer.pt) track by $index">
+                <i data-icon="" class="base-icon {{deliveryWays[item].classname}}" ng-if="deliveryWays[item]"></i>
+                <span ng-if="deliveryWays[item]" ng-bind="::(deliveryWays[item].title | translate)"></span>
+                <i data-icon="" class="base-icon {{deliveryWays['DELIVERY'].classname}}" ng-if="!deliveryWays[item]"></i>
+                <span ng-if="!deliveryWays[item] && item!=''" ng-bind="::item"></span>
+                <span ng-if="!deliveryWays[item] && item==''" ng-bind="::('DELIVERY_WAYS.DELIVERY' | translate)"></span>
+            </span>
+        </span>
+    </div>
+    <div class="market-detail-item" ng-if="::offer.com">
+        <span class="market-detail-item-title" ng-bind="::('COMMON.COMMENT' | translate)"></span>
+        <span class="market-detail-item-text text-pre" ng-bind="::offer.com"></span>
+    </div>
+</div>

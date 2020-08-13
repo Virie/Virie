@@ -1,0 +1,296 @@
+@import "../variables";
+@import "mixins";
+
+#market {
+  padding: 2.5rem 8rem;
+
+  .main-options-wrapper {
+
+    .market-options {
+      .flex-container-direction(row);
+      .flex-container-alignment(center, space-between);
+    }
+  }
+
+  .general-tabs {
+
+    .general-tab {
+      font-size: 5rem;
+
+      button {
+        height: 12rem;
+      }
+    }
+  }
+
+  .market-tab-options {
+    .flex-container-direction(row);
+    position: relative;
+    margin-bottom: 5rem;
+
+    .market-switch {
+      .flex-container;
+
+      .market-switch-option {
+        .flex-container-direction(row);
+        .flex-container-alignment(center, center);
+        background: fade(white, 50%);
+        border: 1px solid @program-tab-border-color;
+        color: @program-light-color;
+        font-size: 3.5rem;
+        height: 8.25rem;
+        width: 22rem;
+        text-transform: capitalize;
+
+        &:first-child {
+          border-top-left-radius: 4rem;
+          border-bottom-left-radius: 4rem;
+        }
+
+        &:not(:last-child) {
+          border-right: none;
+        }
+
+        &:last-child {
+          border-top-right-radius: 4rem;
+          border-bottom-right-radius: 4rem;
+        }
+
+        &:hover, &:active, &.option-active {
+          background: white;
+          color: @program-dark-color;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .market-search {
+      margin-left: 3.25rem;
+    }
+
+    .market-search-checkbox {
+      .flex-container;
+      .flex-container-alignment(center, flex-start);
+      margin-left: 3.25rem;
+    }
+  }
+
+  .market-table {
+    margin-bottom: 3rem;
+
+    table {
+
+      tr {
+        font-size: 3.25rem;
+
+        .table-long-item-wrapper {
+
+          .table-long-item {
+
+            .table-long-item-text {
+              font-size: 3.25rem;
+            }
+          }
+        }
+
+        td:first-child {
+          position: relative;
+
+          &::after {
+              content: "";
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+            }
+
+          &.red-marker::after {
+            border-left: 1rem solid @marker-red;
+          }
+
+          &.yellow-marker::after {
+            border-left: 1rem solid @marker-yellow;
+          }
+
+          &.grey-marker::after {
+            border-left: 1rem solid @marker-grey;
+          }
+        }
+
+        &.deleted-offer {
+
+          td {
+            color: @marker-grey;
+            text-decoration: line-through;
+
+            .market-info-wrapper {
+
+              .market-info-icon {
+                cursor: default;
+
+                &:hover, &.focused {
+                  color: inherit;
+                }
+              }
+            }
+
+            date-age {
+
+              market-age {
+                text-decoration: line-through;
+              }
+            }
+
+            contacts-dropdown, place-dropdown, text-dropdown {
+
+              .table-long-item {
+                color: @marker-grey;
+                cursor: default;
+
+                .table-long-item-text {
+                  background: -webkit-linear-gradient(left, @marker-grey 0, @marker-grey 75%, transparent 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                }
+
+                &:hover {
+                  color: @marker-grey;
+
+                  .table-long-item-text {
+                    background: -webkit-linear-gradient(left, @marker-grey 0, @marker-grey 75%, transparent 100%);
+                    -webkit-background-clip: text;
+                  }
+                }
+              }
+
+              .table-long-item-inner {
+                display: none;
+              }
+            }
+
+            .market-application-options {
+
+              .base-icon {
+
+                &:hover {
+                  color: inherit;
+                  cursor: default;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    date-age {
+      white-space: nowrap;
+
+      span {
+        display: inline-block;
+        line-height: 8rem;
+      }
+    }
+
+    .market-info-wrapper {
+      .flex-container;
+      .flex-container-alignment(center, flex-start);
+      position: relative;
+      min-width: 15rem;
+
+      .market-info-icon {
+        .icon-sizing(4rem, 4rem, -4rem, -5rem);
+        cursor: pointer;
+
+        &:hover, &.focused {
+          color: @program-hover-color;
+          outline: none;
+        }
+      }
+      
+      .market-fav-icon {
+        .icon-sizing(3rem, 3rem, -4.5rem, -5.5rem);
+        position: absolute;
+        top: -2rem;
+        left: 4rem;
+        color: @market-favorite-color;
+      }
+    }
+
+    .market-payment-types {
+      .flex-container-direction(row);
+      .flex-container-alignment(center, flex-start);
+
+      .payment-type-icon {
+        .icon-sizing(6rem, 6rem, -3rem, -4rem);
+        margin-right: 1rem;
+      }
+    }
+
+    .market-contacts {
+      max-width: 36rem;
+    }
+
+    .market-categories {
+      max-width: 36rem;
+    }
+
+    .market-headings {
+      max-width: 36rem;
+    }
+
+    .market-location {
+      max-width: 36rem;
+    }
+
+    .market-application-options {
+      .flex-container-direction(row);
+      .flex-container-alignment(center, flex-start);
+
+      .base-icon {
+        .icon-sizing(4rem, 4rem, -4rem, -5rem);
+        margin-right: 2rem;
+      }
+
+      &.disabled {
+
+        .base-icon {
+          color: @program-light-color;
+        }
+      }
+
+      &:not(.disabled) {
+
+        .base-icon:hover {
+          color: @program-hover-color;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .pagination-wrapper {
+
+    .pagination {
+
+      .pages {
+
+        .active-page {
+          width: auto;
+        }
+      }
+    }
+  }
+}
+
+.delivery-1:before {
+  content: "\e007;";
+}
+
+.delivery-2:before {
+  content: "\e006;";
+}
+
+.delivery-3:before {
+  content: "\e005;";
+}

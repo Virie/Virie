@@ -1,0 +1,24 @@
+<div class="safe-block-wrapper" style="overflow: hidden">
+    <div style="transition: 1s; height:100%" ng-style="{'transform': (!collapsed) ? 'translateY(0)' : 'translateY(-100%)' }">
+        <div class="safe-empty safe-main-buttons">
+            <button class="safe-block-btn" ng-click="openSafeForm();">
+                <i data-icon="r" class="base-icon safe-block-btn-icon"></i>
+                <span class="safe-block-btn-text" ng-bind="::('DASHBOARD.SAFES.CREATE_FIRST' | translate)"></span>
+            </button>
+            <button class="safe-block-btn" ng-click="collapsed = true">
+                <i data-icon="s" class="base-icon safe-block-btn-icon"></i>
+                <span class="safe-block-btn-text" ng-bind="::('COMMON.ACTIONS.OPEN.SAFE' | translate)"></span>
+            </button>
+        </div>
+        <div class="safe-empty safe-additional-buttons">
+            <button class="safe-block-btn" ng-click="openFileDialog()">
+                <i data-icon=">" class="base-icon safe-block-btn-icon"></i>
+                <span class="safe-block-btn-text" ng-bind="::('DASHBOARD.SAFES.OPEN' | translate)"></span>
+            </button>
+            <button class="safe-block-btn" ng-click="$root.openSmartSafeRestoreForm()">
+                <i data-icon="?" class="base-icon safe-block-btn-icon"></i>
+                <span class="safe-block-btn-text" ng-bind="::('DASHBOARD.SAFES.OPEN_SMART' | translate)"></span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="modal-form-wrapper">
+  <div class="modal-form-header modal-form-header-transparent">
+    <div class="modal-form-header-close">
+      <button type="button" ng-click="cancelRemove();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="general-form-field-group field-group-vertical">
+        <label class="field-group-label" ng-bind="::('MARKET.CONFIRM_DELETING' | translate)"></label>
+      </div>
+      <div class="general-form-field-group need-master-password" ng-show="needPass">
+        <div class="general-input-wrapper need-to-focus-field">
+          <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="appPass" contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}">
+          <i data-icon="." class="base-icon eye-icon" form-password></i>
+        </div>
+      </div>
+      <div class="general-form-control-buttons">
+        <button type="button" class="control-button" ng-click="cancelRemove();" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+        <button type="submit" class="control-button" ng-click="removeItem();" ng-bind="::('COMMON.ACTIONS.DELETE' | translate)"></button>
+      </div>
+    </form>
+  </div>
+</div>

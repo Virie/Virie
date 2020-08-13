@@ -1,0 +1,1006 @@
+[
+    {
+        "alpha2Code": "ZD",
+        "name": "아브하즈"
+    },
+    {
+        "alpha2Code": "AF",
+        "name": "아프가니스탄"
+    },
+    {
+        "alpha2Code": "AX",
+        "name": "올란드 제도"
+    },
+    {
+        "alpha2Code": "AL",
+        "name": "알바니아"
+    },
+    {
+        "alpha2Code": "DZ",
+        "name": "알제리"
+    },
+    {
+        "alpha2Code": "AS",
+        "name": "미국령 사모아"
+    },
+    {
+        "alpha2Code": "AD",
+        "name": "안도라"
+    },
+    {
+        "alpha2Code": "AO",
+        "name": "앙골라"
+    },
+    {
+        "alpha2Code": "AI",
+        "name": "앵귈라"
+    },
+    {
+        "alpha2Code": "AG",
+        "name": "앤티가바부다"
+    },
+    {
+        "alpha2Code": "AR",
+        "name": "아르헨티나"
+    },
+    {
+        "alpha2Code": "AM",
+        "name": "아르메니아"
+    },
+    {
+        "alpha2Code": "AW",
+        "name": "아루바"
+    },
+    {
+        "alpha2Code": "AU",
+        "name": "호주"
+    },
+    {
+        "alpha2Code": "AT",
+        "name": "오스트리아"
+    },
+    {
+        "alpha2Code": "AZ",
+        "name": "아제르바이잔"
+    },
+    {
+        "alpha2Code": "BH",
+        "name": "바레인"
+    },
+    {
+        "alpha2Code": "BD",
+        "name": "방글라데시"
+    },
+    {
+        "alpha2Code": "BB",
+        "name": "바베이도스"
+    },
+    {
+        "alpha2Code": "BY",
+        "name": "벨라루스"
+    },
+    {
+        "alpha2Code": "BE",
+        "name": "벨기에"
+    },
+    {
+        "alpha2Code": "BZ",
+        "name": "벨리즈"
+    },
+    {
+        "alpha2Code": "BJ",
+        "name": "베냉"
+    },
+    {
+        "alpha2Code": "BM",
+        "name": "버뮤다"
+    },
+    {
+        "alpha2Code": "BT",
+        "name": "부탄"
+    },
+    {
+        "alpha2Code": "BO",
+        "name": "볼리비아"
+    },
+    {
+        "alpha2Code": "BQ",
+        "name": "보네르 섬"
+    },
+    {
+        "alpha2Code": "BA",
+        "name": "보스니아 헤르체고비나"
+    },
+    {
+        "alpha2Code": "BW",
+        "name": "보츠와나"
+    },
+    {
+        "alpha2Code": "BV",
+        "name": "부베 섬"
+    },
+    {
+        "alpha2Code": "BR",
+        "name": "브라질"
+    },
+    {
+        "alpha2Code": "IO",
+        "name": "영국령 인도양 지역"
+    },
+    {
+        "alpha2Code": "VG",
+        "name": "영국령 버진 아일랜드"
+    },
+    {
+        "alpha2Code": "BN",
+        "name": "브루나이"
+    },
+    {
+        "alpha2Code": "BG",
+        "name": "불가리아"
+    },
+    {
+        "alpha2Code": "BF",
+        "name": "부키나파소"
+    },
+    {
+        "alpha2Code": "BI",
+        "name": "부룬디"
+    },
+    {
+        "alpha2Code": "KH",
+        "name": "캄보디아"
+    },
+    {
+        "alpha2Code": "CM",
+        "name": "카메룬"
+    },
+    {
+        "alpha2Code": "CA",
+        "name": "캐나다"
+    },
+    {
+        "alpha2Code": "CV",
+        "name": "카보베르데"
+    },
+    {
+        "alpha2Code": "KY",
+        "name": "케이맨 군도"
+    },
+    {
+        "alpha2Code": "CF",
+        "name": "중앙아프리카공화국"
+    },
+    {
+        "alpha2Code": "TD",
+        "name": "차드"
+    },
+    {
+        "alpha2Code": "CL",
+        "name": "칠레"
+    },
+    {
+        "alpha2Code": "CN",
+        "name": "중국"
+    },
+    {
+        "alpha2Code": "CX",
+        "name": "크리스마스 섬"
+    },
+    {
+        "alpha2Code": "CC",
+        "name": "코코스(킬링) 군도"
+    },
+    {
+        "alpha2Code": "CO",
+        "name": "콜롬비아"
+    },
+    {
+        "alpha2Code": "KM",
+        "name": "코모로"
+    },
+    {
+        "alpha2Code": "CK",
+        "name": "쿡 제도"
+    },
+    {
+        "alpha2Code": "CR",
+        "name": "코스타리카"
+    },
+    {
+        "alpha2Code": "HR",
+        "name": "크로아티아"
+    },
+    {
+        "alpha2Code": "CU",
+        "name": "쿠바"
+    },
+    {
+        "alpha2Code": "CW",
+        "name": "퀴라소"
+    },
+    {
+        "alpha2Code": "CY",
+        "name": "키프로스"
+    },
+    {
+        "alpha2Code": "CZ",
+        "name": "체코공화국"
+    },
+    {
+        "alpha2Code": "CD",
+        "name": "콩고민주공화국"
+    },
+    {
+        "alpha2Code": "DK",
+        "name": "덴마크"
+    },
+    {
+        "alpha2Code": "DJ",
+        "name": "지부티"
+    },
+    {
+        "alpha2Code": "DM",
+        "name": "도미니카"
+    },
+    {
+        "alpha2Code": "DO",
+        "name": "도미니카공화국"
+    },
+    {
+        "alpha2Code": "TL",
+        "name": "동티모르"
+    },
+    {
+        "alpha2Code": "EC",
+        "name": "에콰도르"
+    },
+    {
+        "alpha2Code": "EG",
+        "name": "이집트"
+    },
+    {
+        "alpha2Code": "SV",
+        "name": "엘살바도르"
+    },
+    {
+        "alpha2Code": "GQ",
+        "name": "적도 기니"
+    },
+    {
+        "alpha2Code": "ER",
+        "name": "에리트레아"
+    },
+    {
+        "alpha2Code": "EE",
+        "name": "에스토니아"
+    },
+    {
+        "alpha2Code": "ET",
+        "name": "에티오피아"
+    },
+    {
+        "alpha2Code": "FK",
+        "name": "포클랜드 제도"
+    },
+    {
+        "alpha2Code": "FO",
+        "name": "페로 제도"
+    },
+    {
+        "alpha2Code": "FM",
+        "name": "미크로네시아 연방"
+    },
+    {
+        "alpha2Code": "FJ",
+        "name": "피지"
+    },
+    {
+        "alpha2Code": "FI",
+        "name": "핀란드"
+    },
+    {
+        "alpha2Code": "FR",
+        "name": "프랑스"
+    },
+    {
+        "alpha2Code": "GF",
+        "name": "프랑스령 기아나"
+    },
+    {
+        "alpha2Code": "PF",
+        "name": "프랑스령 폴리네시아"
+    },
+    {
+        "alpha2Code": "TF",
+        "name": "프랑스령 남부와 남극지역"
+    },
+    {
+        "alpha2Code": "GA",
+        "name": "가봉"
+    },
+    {
+        "alpha2Code": "GE",
+        "name": "조지아"
+    },
+    {
+        "alpha2Code": "DE",
+        "name": "독일"
+    },
+    {
+        "alpha2Code": "GH",
+        "name": "가나"
+    },
+    {
+        "alpha2Code": "GI",
+        "name": "지브롤터"
+    },
+    {
+        "alpha2Code": "GR",
+        "name": "그리스"
+    },
+    {
+        "alpha2Code": "GL",
+        "name": "그린란드"
+    },
+    {
+        "alpha2Code": "GD",
+        "name": "그레나다"
+    },
+    {
+        "alpha2Code": "GP",
+        "name": "과들루프"
+    },
+    {
+        "alpha2Code": "GU",
+        "name": "괌"
+    },
+    {
+        "alpha2Code": "GT",
+        "name": "과테말라"
+    },
+    {
+        "alpha2Code": "GG",
+        "name": "건지 섬"
+    },
+    {
+        "alpha2Code": "GN",
+        "name": "기니"
+    },
+    {
+        "alpha2Code": "GW",
+        "name": "기니 비사우"
+    },
+    {
+        "alpha2Code": "GY",
+        "name": "가이아나"
+    },
+    {
+        "alpha2Code": "HT",
+        "name": "아이티"
+    },
+    {
+        "alpha2Code": "HM",
+        "name": "허드 맥도널드 제도"
+    },
+    {
+        "alpha2Code": "HN",
+        "name": "온두라스"
+    },
+    {
+        "alpha2Code": "HK",
+        "name": "홍콩"
+    },
+    {
+        "alpha2Code": "HU",
+        "name": "헝가리"
+    },
+    {
+        "alpha2Code": "IS",
+        "name": "아이슬란드"
+    },
+    {
+        "alpha2Code": "IN",
+        "name": "인도"
+    },
+    {
+        "alpha2Code": "ID",
+        "name": "인도네시아"
+    },
+    {
+        "alpha2Code": "IR",
+        "name": "이란"
+    },
+    {
+        "alpha2Code": "IQ",
+        "name": "이라크"
+    },
+    {
+        "alpha2Code": "IM",
+        "name": "맨섬"
+    },
+    {
+        "alpha2Code": "IL",
+        "name": "이스라엘"
+    },
+    {
+        "alpha2Code": "IT",
+        "name": "이탈리아"
+    },
+    {
+        "alpha2Code": "CI",
+        "name": "코트디부아르"
+    },
+    {
+        "alpha2Code": "JM",
+        "name": "자메이카"
+    },
+    {
+        "alpha2Code": "JP",
+        "name": "일본"
+    },
+    {
+        "alpha2Code": "JE",
+        "name": "저지"
+    },
+    {
+        "alpha2Code": "JO",
+        "name": "요르단"
+    },
+    {
+        "alpha2Code": "KZ",
+        "name": "카자흐스탄"
+    },
+    {
+        "alpha2Code": "KE",
+        "name": "케냐"
+    },
+    {
+        "alpha2Code": "KI",
+        "name": "키리바시"
+    },
+    {
+        "alpha2Code": "KW",
+        "name": "쿠웨이트"
+    },
+    {
+        "alpha2Code": "KG",
+        "name": "키르기스스탄"
+    },
+    {
+        "alpha2Code": "LA",
+        "name": "라오스"
+    },
+    {
+        "alpha2Code": "LV",
+        "name": "라트비아"
+    },
+    {
+        "alpha2Code": "LB",
+        "name": "레바논"
+    },
+    {
+        "alpha2Code": "LS",
+        "name": "레소토"
+    },
+    {
+        "alpha2Code": "LR",
+        "name": "라이베리아"
+    },
+    {
+        "alpha2Code": "ZF",
+        "name": "리버랜드"
+    },
+    {
+        "alpha2Code": "LY",
+        "name": "리비아"
+    },
+    {
+        "alpha2Code": "LI",
+        "name": "리히텐슈타인"
+    },
+    {
+        "alpha2Code": "LT",
+        "name": "리투아니아"
+    },
+    {
+        "alpha2Code": "LU",
+        "name": "룩셈부르크"
+    },
+    {
+        "alpha2Code": "MO",
+        "name": "마카오"
+    },
+    {
+        "alpha2Code": "MG",
+        "name": "마다가스카르"
+    },
+    {
+        "alpha2Code": "MW",
+        "name": "말라위"
+    },
+    {
+        "alpha2Code": "MY",
+        "name": "말레이시아"
+    },
+    {
+        "alpha2Code": "MV",
+        "name": "몰디브"
+    },
+    {
+        "alpha2Code": "ML",
+        "name": "말리"
+    },
+    {
+        "alpha2Code": "MT",
+        "name": "몰타"
+    },
+    {
+        "alpha2Code": "MH",
+        "name": "마셜제도"
+    },
+    {
+        "alpha2Code": "MQ",
+        "name": "마르티니크"
+    },
+    {
+        "alpha2Code": "MR",
+        "name": "모리타니"
+    },
+    {
+        "alpha2Code": "MU",
+        "name": "모리셔스"
+    },
+    {
+        "alpha2Code": "YT",
+        "name": "마요트"
+    },
+    {
+        "alpha2Code": "MX",
+        "name": "멕시코"
+    },
+    {
+        "alpha2Code": "MD",
+        "name": "몰도바"
+    },
+    {
+        "alpha2Code": "MC",
+        "name": "모나코"
+    },
+    {
+        "alpha2Code": "MN",
+        "name": "몽골리아"
+    },
+    {
+        "alpha2Code": "ME",
+        "name": "몬테네그로"
+    },
+    {
+        "alpha2Code": "MS",
+        "name": "몬세라트"
+    },
+    {
+        "alpha2Code": "MA",
+        "name": "모로코"
+    },
+    {
+        "alpha2Code": "MZ",
+        "name": "모잠비크"
+    },
+    {
+        "alpha2Code": "MM",
+        "name": "미얀마"
+    },
+    {
+        "alpha2Code": "NA",
+        "name": "나미비아"
+    },
+    {
+        "alpha2Code": "NR",
+        "name": "나우루"
+    },
+    {
+        "alpha2Code": "NP",
+        "name": "네팔"
+    },
+    {
+        "alpha2Code": "NL",
+        "name": "네덜란드"
+    },
+    {
+        "alpha2Code": "NC",
+        "name": "뉴칼레도니아"
+    },
+    {
+        "alpha2Code": "NZ",
+        "name": "뉴질랜드"
+    },
+    {
+        "alpha2Code": "NI",
+        "name": "니카라과"
+    },
+    {
+        "alpha2Code": "NE",
+        "name": "니제르"
+    },
+    {
+        "alpha2Code": "NG",
+        "name": "나이지리아"
+    },
+    {
+        "alpha2Code": "NU",
+        "name": "니우에"
+    },
+    {
+        "alpha2Code": "NF",
+        "name": "노퍽 섬"
+    },
+    {
+        "alpha2Code": "KP",
+        "name": "북한"
+    },
+    {
+        "alpha2Code": "MP",
+        "name": "북마리아나 제도"
+    },
+    {
+        "alpha2Code": "NO",
+        "name": "노르웨이"
+    },
+    {
+        "alpha2Code": "OM",
+        "name": "오만"
+    },
+    {
+        "alpha2Code": "PK",
+        "name": "파키스탄"
+    },
+    {
+        "alpha2Code": "PW",
+        "name": "팔라우"
+    },
+    {
+        "alpha2Code": "PS",
+        "name": "팔레스타인"
+    },
+    {
+        "alpha2Code": "PA",
+        "name": "파나마"
+    },
+    {
+        "alpha2Code": "PG",
+        "name": "파푸아뉴기니"
+    },
+    {
+        "alpha2Code": "PY",
+        "name": "파라과이"
+    },
+    {
+        "alpha2Code": "PE",
+        "name": "페루"
+    },
+    {
+        "alpha2Code": "PH",
+        "name": "필리핀"
+    },
+    {
+        "alpha2Code": "PN",
+        "name": "핏케언 제도"
+    },
+    {
+        "alpha2Code": "PL",
+        "name": "폴란드"
+    },
+    {
+        "alpha2Code": "PT",
+        "name": "포르투갈"
+    },
+    {
+        "alpha2Code": "PR",
+        "name": "푸에르토리코"
+    },
+    {
+        "alpha2Code": "QA",
+        "name": "카타르"
+    },
+    {
+        "alpha2Code": "IE",
+        "name": "아일랜드 공화국"
+    },
+    {
+        "alpha2Code": "XK",
+        "name": "코소보 공화국"
+    },
+    {
+        "alpha2Code": "MK",
+        "name": "마케도니아 공화국"
+    },
+    {
+        "alpha2Code": "CG",
+        "name": "콩고 공화국"
+    },
+    {
+        "alpha2Code": "RE",
+        "name": "레위니옹"
+    },
+    {
+        "alpha2Code": "RO",
+        "name": "루마니아"
+    },
+    {
+        "alpha2Code": "RU",
+        "name": "러시아"
+    },
+    {
+        "alpha2Code": "RW",
+        "name": "르완다"
+    },
+    {
+        "alpha2Code": "BL",
+        "name": "생바르텔르미"
+    },
+    {
+        "alpha2Code": "SH",
+        "name": "세인트 헬레나"
+    },
+    {
+        "alpha2Code": "KN",
+        "name": "세인트키츠 네비스"
+    },
+    {
+        "alpha2Code": "LC",
+        "name": "세인트루시아"
+    },
+    {
+        "alpha2Code": "MF",
+        "name": "세인트마틴"
+    },
+    {
+        "alpha2Code": "PM",
+        "name": "생피에르 미클롱"
+    },
+    {
+        "alpha2Code": "VC",
+        "name": "세인트빈센트 그레나딘"
+    },
+    {
+        "alpha2Code": "WS",
+        "name": "사모아"
+    },
+    {
+        "alpha2Code": "SM",
+        "name": "산마리노"
+    },
+    {
+        "alpha2Code": "ST",
+        "name": "상투메 프린시페"
+    },
+    {
+        "alpha2Code": "SA",
+        "name": "사우디아라비아"
+    },
+    {
+        "alpha2Code": "SN",
+        "name": "세네갈"
+    },
+    {
+        "alpha2Code": "RS",
+        "name": "세르비아"
+    },
+    {
+        "alpha2Code": "SC",
+        "name": "세이셸"
+    },
+    {
+        "alpha2Code": "SL",
+        "name": "시에라리온"
+    },
+    {
+        "alpha2Code": "SG",
+        "name": "싱가포르"
+    },
+    {
+        "alpha2Code": "SX",
+        "name": "신트마르턴"
+    },
+    {
+        "alpha2Code": "SK",
+        "name": "슬로바키아"
+    },
+    {
+        "alpha2Code": "SI",
+        "name": "슬로베니아"
+    },
+    {
+        "alpha2Code": "SB",
+        "name": "솔로몬 제도"
+    },
+    {
+        "alpha2Code": "SO",
+        "name": "소말리아"
+    },
+    {
+        "alpha2Code": "ZA",
+        "name": "남아프리카"
+    },
+    {
+        "alpha2Code": "GS",
+        "name": "사우스조지아"
+    },
+    {
+        "alpha2Code": "KR",
+        "name": "대한민국"
+    },
+    {
+        "alpha2Code": "ZE",
+        "name": "남오세티아"
+    },
+    {
+        "alpha2Code": "SS",
+        "name": "남수단"
+    },
+    {
+        "alpha2Code": "ES",
+        "name": "스페인"
+    },
+    {
+        "alpha2Code": "LK",
+        "name": "스리랑카"
+    },
+    {
+        "alpha2Code": "SD",
+        "name": "수단"
+    },
+    {
+        "alpha2Code": "SR",
+        "name": "수리남"
+    },
+    {
+        "alpha2Code": "SJ",
+        "name": "스발바르 얀마옌 제도"
+    },
+    {
+        "alpha2Code": "SZ",
+        "name": "스와질란드"
+    },
+    {
+        "alpha2Code": "SE",
+        "name": "스웨덴"
+    },
+    {
+        "alpha2Code": "CH",
+        "name": "스위스"
+    },
+    {
+        "alpha2Code": "SY",
+        "name": "시리아"
+    },
+    {
+        "alpha2Code": "TW",
+        "name": "대만"
+    },
+    {
+        "alpha2Code": "TJ",
+        "name": "타지키스탄"
+    },
+    {
+        "alpha2Code": "TZ",
+        "name": "탄자니아"
+    },
+    {
+        "alpha2Code": "TH",
+        "name": "태국"
+    },
+    {
+        "alpha2Code": "BS",
+        "name": "바하마 제도"
+    },
+    {
+        "alpha2Code": "GM",
+        "name": "감비아"
+    },
+    {
+        "alpha2Code": "TG",
+        "name": "토고"
+    },
+    {
+        "alpha2Code": "TK",
+        "name": "토켈라우"
+    },
+    {
+        "alpha2Code": "TO",
+        "name": "통가"
+    },
+    {
+        "alpha2Code": "TT",
+        "name": "트리니다드토바고"
+    },
+    {
+        "alpha2Code": "TN",
+        "name": "튀니지"
+    },
+    {
+        "alpha2Code": "TR",
+        "name": "터키"
+    },
+    {
+        "alpha2Code": "ZC",
+        "name": "북키프로스 터키공화국"
+    },
+    {
+        "alpha2Code": "TM",
+        "name": "투르크메니스탄"
+    },
+    {
+        "alpha2Code": "TC",
+        "name": "터크스 케이커스 제도"
+    },
+    {
+        "alpha2Code": "TV",
+        "name": "투발루"
+    },
+    {
+        "alpha2Code": "UG",
+        "name": "우간다"
+    },
+    {
+        "alpha2Code": "UA",
+        "name": "우크라이나"
+    },
+    {
+        "alpha2Code": "AE",
+        "name": "아랍에미리트"
+    },
+    {
+        "alpha2Code": "GB",
+        "name": "영국"
+    },
+    {
+        "alpha2Code": "US",
+        "name": "미국"
+    },
+    {
+        "alpha2Code": "UM",
+        "name": "미국령 군소 제도"
+    },
+    {
+        "alpha2Code": "UY",
+        "name": "우루과이"
+    },
+    {
+        "alpha2Code": "UZ",
+        "name": "우즈베키스탄"
+    },
+    {
+        "alpha2Code": "VU",
+        "name": "바누아투"
+    },
+    {
+        "alpha2Code": "VE",
+        "name": "베네수엘라"
+    },
+    {
+        "alpha2Code": "VN",
+        "name": "베트남"
+    },
+    {
+        "alpha2Code": "WF",
+        "name": "월리스푸투나제도"
+    },
+    {
+        "alpha2Code": "EH",
+        "name": "서사하라"
+    },
+    {
+        "alpha2Code": "YE",
+        "name": "예멘"
+    },
+    {
+        "alpha2Code": "ZM",
+        "name": "잠비아"
+    },
+    {
+        "alpha2Code": "ZW",
+        "name": "짐바브웨"
+    }
+]

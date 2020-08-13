@@ -1,0 +1,520 @@
+<div id="market" class="content-section" ng-controller="marketListCtrl" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+    <div class="main-options-wrapper">
+        <div class="market-options">
+            <div class="page-title-wrapper">
+                <h1 class="page-title" ng-bind="::('MARKET.TITLE' | translate)"></h1>
+            </div>
+            <div class="market-buttons">
+                <button type="button" class="main-options-btn" ng-click="(tabs.currencyTab) ? openOfferCreateEdit({type: 2}) : openOfferCreateEdit({type: 0})"
+                        ng-if="!(daemonState.daemon_network_state != 2 || safes.length == 0)" ng-bind="::('MARKET.NEW_OFFER' | translate)">
+                </button>
+                <button type="button" class="main-options-btn disabled" uib-tooltip-html="'{{::('MARKET.NEW_OFFER.RECOMMENDATION' | translate)}}'"
+                        data-tooltip-class="general-tooltip market-tooltip" data-tooltip-append-to-body="true"
+                        ng-if="daemonState.daemon_network_state != 2 || safes.length == 0" ng-bind="::('MARKET.NEW_OFFER' | translate)">
+                </button>
+            </div>
+        </div>
+    </div>
+    <ul class="general-tabs">
+        <li class="general-tab" ng-class="{'tab-active': tabs.currencyTab}">
+            <button type="button" ng-click="!tabs.currencyTab && changeSelectedTab('currency')">
+                <i data-icon="&#xe013;" class="base-icon bigger-indent"></i><span ng-bind="::('MARKET.CURRENCY' | translate)"></span>
+            </button>
+        </li>
+        <li class="general-tab" ng-class="{'tab-active': tabs.goodsTab}">
+            <button type="button" ng-click="!tabs.goodsTab && changeSelectedTab('goods')">
+                <i data-icon="&#xe00e;" class="base-icon bigger-indent"></i><span ng-bind="::('MARKET.GOODS' | translate)"></span>
+            </button>
+        </li>
+        <li class="general-tab" ng-class="{'tab-active': tabs.myOffersTab}">
+            <button type="button" ng-click="!tabs.myOffersTab && changeSelectedTab('myOffers')">
+                <i data-icon="&#xe00f;" class="base-icon"></i><span ng-bind="::('MARKET.MY_APP' | translate)"></span><span class="indicator-number" ng-show="offersCount > 0" ng-bind="offersCount"></span>
+            </button>
+        </li>
+        <li class="general-tab" ng-class="{'tab-active': tabs.favoritesTab}">
+            <button type="button" ng-click="!tabs.favoritesTab && changeSelectedTab('favorites')">
+                <i data-icon="&#xe014;" class="base-icon"></i><span ng-bind="::('MARKET.FAVORITES' | translate)"></span>
+                <span class="indicator-number" ng-show="settings.system.fav_offers_hash.length > 0" ng-bind="settings.system.fav_offers_hash.length"></span>
+            </button>
+        </li>
+    </ul>
+    <div class="market-tab-options filter-wrapper-parent" ng-if="tabs.currencyTab">
+        <div class="market-filter filter-wrapper filterBlockAnimation2 ng-hide" ng-show="marketShowHideTabs.currencyFilter">
+            <div class="filter-inner-block">
+                <div class="filter-field-group no-hover">
+                    <label class="filter-label" ng-bind="::('COMMON.ACTIONS.SHOW' | translate)"></label>
+                    <div class="filter-field general-switch" init-switch-option>
+                        <span class="switch-option optionAnimate" ng-class="{'active': (currencyFilter.offer_type_mask == 12)}"
+                              ng-click="currencyFilter.offer_type_mask = 12; filterChange();" ng-bind="::('COMMON.ALL' | translate)"></span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': (currencyFilter.offer_type_mask == 4)}"
+                              ng-click="currencyFilter.offer_type_mask = 4; filterChange();" ng-bind="::('MARKET.FILTER.BUY' | translate)"></span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': (currencyFilter.offer_type_mask == 8)}"
+                              ng-click="currencyFilter.offer_type_mask = 8; filterChange();" ng-bind="::('MARKET.FILTER.SELL' | translate)"></span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.CURRENCY' | translate)"></label>
+                    <select selectpicker class="filter-field general-select show-tick need-to-focus dropdown-animation" data-ng-model="currencyFilter.currency"
+                            data-ng-change="filterChange();" ng-options="item.code as item.title for item in currencies" data-dropup-auto="false">
+                    </select>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.CALC_METHOD' | translate)"></label>
+                    <select selectpicker class="filter-field general-select show-tick need-to-focus dropdown-animation" data-ng-model="currencyFilter.payment_types"
+                            data-ng-change="filterChange();" title="{{::('COMMON.NOT_CARE' | translate)}}" multiple>
+                        <option data-ng-value="key" ng-repeat="(key, item) in paymentTypes track by $index" ng-selected="currencyFilter.payment_types.indexOf(key) > -1">
+                            {{::(item.title | translate)}}
+                        </option>
+                    </select>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.APP_AGE' | translate)"></label>
+                    <select selectpicker class="filter-field general-select show-tick need-to-focus dropdown-animation" data-ng-model="currencyFilter.interval"
+                            data-ng-change="dateChange(currencyFilter.interval);" ng-options="item.key as item.value for item in timeIntervals">
+                    </select>
+                </div>
+                <div class="filter-field-group no-hover slideAnimation" ng-show="currencyFilter.interval == -2">
+                    <label class="filter-label" ng-bind="::('COMMON.DATE' | translate)"></label>
+                    <div class="filter-field-wrapper">
+                        <div class="filter-field general-input-wrapper need-to-focus-field">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.DATE_FROM' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus" air-calendar ng-model="currencyFilter.date_from"
+                                   ng-change="filterChange();" max-date="currencyFilter.date_to"
+                                   ng-if="currencyFilter.interval == -2" readonly/>
+                        </div>
+                        <div class="filter-field general-input-wrapper need-to-focus-field">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.DATE_TO' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus" air-calendar ng-model="currencyFilter.date_to"
+                                   ng-change="filterChange();" min-date="currencyFilter.date_from"
+                                   ng-if="currencyFilter.interval == -2" readonly/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-inner-block">
+                <div class="filter-field-group no-hover">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.GEOGRAPHY' | translate)"></label>
+                    <div class="filter-field general-switch" init-switch-option>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !currencyFilter.countryAll}"
+                              ng-click="currencyFilter.countryAll = false; countryAllChange(); filterChange();" ng-bind="::('MARKET.FILTER.SELECT_PLACE' | translate)"></span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': currencyFilter.countryAll}"
+                              ng-click="currencyFilter.countryAll = true; countryAllChange(); filterChange();" ng-bind="::('MARKET.FILTER.ALL_WORLD' | translate)"></span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field slideAnimation" ng-show="!currencyFilter.countryAll">
+                    <label class="filter-label" ng-bind="::('BUY_SELL_OFFER.PLACE.COUNTRY' | translate | firstUpper)"></label>
+                    <div class="general-input-wrapper filter-field-wrapper autocomplete-wrapper">
+                        <angucomplete-alt id="countryInputCurrency"
+                                          placeholder="{{::('MARKET.FILTER.COUNTRIES' | translate)}}"
+                                          pause="100" selected-object="selectedCountry"
+                                          local-data="countryList" search-fields="name" title-field="name"
+                                          minlength="0"
+                                          input-class="filter-field general-input need-to-focus contextMenuButton"
+                                          input-changed="changeCountryInput"
+                                          initial-value="currencyFilter.country_name"
+                                          focus-out="focusOutCountry()" text-no-results="false">
+                        </angucomplete-alt>
+                        <i data-icon="a" class="base-icon autocomplete-caret"></i>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field slideAnimation" ng-show="!currencyFilter.countryAll">
+                    <label class="filter-label" ng-bind="::('BUY_SELL_OFFER.PLACE.CITY' | translate | firstUpper)"></label>
+                    <input type="text" class="filter-field general-input need-to-focus contextMenuButton" ng-model-options="{debounce: 300}"
+                           ng-change="filterChange();" ng-model="currencyFilter.location_city" placeholder="{{::( 'MARKET.FILTER.CITIES' | translate)}}"/>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label">
+                        {{(currencyFilter.offer_type_mask == 12) ? 'MARKET.AMOUNT' : '' | translate}}
+                        {{(currencyFilter.offer_type_mask == 4) ? 'BUY_SELL_OFFER.AMOUNT.TITLE.BUY' : '' | translate}}
+                        {{(currencyFilter.offer_type_mask == 8) ? 'BUY_SELL_OFFER.AMOUNT.TITLE.SELL' : '' | translate}}
+                    </label>
+                    <div class="filter-field-wrapper">
+                        <div class="filter-field general-input-wrapper">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.FROM' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" ng-model="currencyFilter.amount_from" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange();" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}} {{currencySymbol}}"/>
+                        </div>
+                        <div class="filter-field general-input-wrapper">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.TO' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" ng-model="currencyFilter.amount_to" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange();" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}} {{currencySymbol}}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.RATE' | translate)"></label>
+                    <div class="filter-field-wrapper">
+                        <div class="filter-field general-input-wrapper">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.FROM' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" ng-model="currencyFilter.rate_from" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange();" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}} {{(currencyFilter.currency == 'all_cur') == false ? currencyFilter.currency : ''}}">
+                        </div>
+                        <div class="filter-field general-input-wrapper">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.TO' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" ng-model="currencyFilter.rate_to" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange();" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}} {{(currencyFilter.currency == 'all_cur') == false ? currencyFilter.currency : ''}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button type="button" class="filter-clear-btn" ng-click="filterClear();">
+                        <i data-icon="&#xe004;" class="base-icon"></i><span ng-bind="::('COMMON.FILTER.CLEAR' | translate)"></span>
+                    </button>
+                    <button type="button" class="filter-close-btn" ng-click="marketShowHideTabs.currencyFilter = false;">
+                        <span ng-bind="::('COMMON.FILTER.CLOSE' | translate)"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="general-filter-btn filterBlockAnimation ng-hide" ng-show="!marketShowHideTabs.currencyFilter" ng-click="marketShowHideTabs.currencyFilter = true;" ng-bind="::('COMMON.FILTER' | translate)"></div>
+        <div class="general-filter-clear filterBlockAnimation ng-hide" ng-show="currencyFilter.clear && !marketShowHideTabs.currencyFilter" ng-click="filterClear();">
+            <i data-icon="!" class="base-icon"></i>
+        </div>
+        <div class="market-search general-search-wrapper filterBlockAnimation ng-hide" ng-show="!marketShowHideTabs.currencyFilter" animate-search data-opened="currencyFilter.keywords.length > 0">
+            <i data-icon="G" class="base-icon search-icon"></i>
+            <input type="text" class="search-input contextMenuButton" ng-model="currencyFilter.keywords" ng-model-options="{debounce: 1000}"
+                   ng-change="filterChange();" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+        </div>
+    </div>
+    <div class="market-tab-options filter-wrapper-parent" ng-if="tabs.goodsTab">
+        <div class="market-filter filter-wrapper filterBlockAnimation2 ng-hide" ng-show="marketShowHideTabs.goodsFilter">
+            <div class="filter-inner-block">
+                <div class="filter-field-group no-hover">
+                    <label class="filter-label" ng-bind="::('COMMON.ACTIONS.SHOW' | translate)"></label>
+                    <div class="filter-field general-switch" init-switch-option>
+                        <span class="switch-option optionAnimate" ng-class="{'active':(goodsFilter.offer_type_mask == 3)}"
+                              ng-click="goodsFilter.offer_type_mask = 3; filterChange();" ng-bind="::('COMMON.ALL' | translate)">
+                        </span>
+                        <span class="switch-option optionAnimate" ng-class="{'active':(goodsFilter.offer_type_mask == 1)}"
+                              ng-click="goodsFilter.offer_type_mask = 1; filterChange();" ng-bind="::('MARKET.FILTER.BUY' | translate)">
+                        </span>
+                        <span class="switch-option optionAnimate" ng-class="{'active':(goodsFilter.offer_type_mask == 2)}"
+                              ng-click="goodsFilter.offer_type_mask = 2; filterChange();" ng-bind="::('MARKET.FILTER.SELL' | translate)">
+                        </span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.CATEGORY' | translate)"></label>
+                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="goodsFilter.category" data-ng-change="filterChange();" data-dropup-auto="false">
+                        <option class="selectLevel1" value="ALL" ng-selected="goodsFilter.category == 'ALL'">{{::('COMMON.ALL' | translate | firstUpper)}}</option>
+                        <option class="selectLevel1" value="{{category.id}}" ng-repeat-start="category in categories" ng-selected="category.id == goodsFilter.category">
+                            {{category.title}}
+                        </option>
+                        <option class="selectLevel2" value="{{subcategory.id}}" ng-repeat-start="subcategory in category.subcategories" ng-selected="subcategory.id == goodsFilter.category">
+                            {{subcategory.title}}
+                        </option>
+                        <option class="selectLevel3" ng-repeat-end ng-repeat="subsubcategories in subcategory.subcategories" value="{{subsubcategories.id}}" ng-selected="subsubcategories.id == goodsFilter.category">
+                            {{subsubcategories.title}}
+                        </option>
+                        <option value="" ng-repeat-end ng-hide="true"></option>
+                    </select>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.APP_AGE' | translate)"></label>
+                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="goodsFilter.interval"
+                            data-ng-change="dateChange(goodsFilter.interval);" ng-options="item.key as item.value for item in timeIntervals">
+                    </select>
+                </div>
+                <div class="filter-field-group no-hover slideAnimation" ng-show="goodsFilter.interval == -2">
+                    <label class="filter-label" ng-bind="::('COMMON.DATE' | translate)"></label>
+                    <div class="filter-field-wrapper">
+                        <div class="filter-field general-input-wrapper need-to-focus-field">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.DATE_FROM' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus" air-calendar ng-model="goodsFilter.date_from"
+                                   ng-change="filterChange();" max-date="goodsFilter.date_to"
+                                   ng-if="goodsFilter.interval == -2" readonly/>
+                        </div>
+                        <div class="filter-field general-input-wrapper need-to-focus-field">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.DATE_TO' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus" air-calendar ng-model="goodsFilter.date_to"
+                                   ng-change="filterChange();" min-date="goodsFilter.date_from"
+                                   ng-if="goodsFilter.interval == -2" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.CURRENCY' | translate)"></label>
+                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="goodsFilter.currency"
+                            data-ng-change="filterChange();" ng-options="item.code as item.title for item in currenciesGoods" data-dropup-auto="false">
+                    </select>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('BUY_SELL_OFFER.TRANSFER' | translate)"></label>
+                    <select selectpicker class="filter-field general-select need-to-focus show-tick dropdown-animation" data-ng-model="goodsFilter.delivery"
+                            data-ng-change="filterChange();" title="{{::('COMMON.ALL' | translate)}}" multiple>
+                        <option data-ng-value="key" ng-repeat="(key, item) in deliveryWays track by $index" ng-selected="goodsFilter.delivery.indexOf(key) > -1">{{::(item.title | translate)}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-inner-block">
+                <div class="filter-field-group no-hover">
+                    <label class="filter-label" ng-bind="::('MARKET.FILTER.GEOGRAPHY' | translate)"></label>
+                    <div class="filter-field general-switch" init-switch-option>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !goodsFilter.countryAll}"
+                              ng-click="goodsFilter.countryAll=false; countryAllChange(); filterChange();" ng-bind="::('MARKET.FILTER.SELECT_PLACE' | translate)"></span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': goodsFilter.countryAll}"
+                              ng-click="goodsFilter.countryAll=true; countryAllChange(); filterChange();" ng-bind="::('MARKET.FILTER.ALL_WORLD' | translate)"></span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field slideAnimation" ng-show="!goodsFilter.countryAll">
+                    <label class="filter-label" ng-bind="::('BUY_SELL_OFFER.PLACE.COUNTRY' | translate | firstUpper)"></label>
+                    <div class="general-input-wrapper filter-field-wrapper autocomplete-wrapper">
+                        <angucomplete-alt id="countryInputGoods" placeholder="{{::('MARKET.FILTER.COUNTRIES' | translate )}}" pause="100" selected-object="selectedCountry"
+                                          local-data="countryList" search-fields="name" title-field="name" minlength="0"
+                                          input-class="filter-field general-input need-to-focus contextMenuButton"
+                                          input-changed="changeCountryInput" initial-value="goodsFilter.country_name"
+                                          focus-out="focusOutCountry()" text-no-results="false">
+                        </angucomplete-alt>
+                        <i data-icon="a" class="base-icon autocomplete-caret"></i>
+                    </div>
+                </div>
+                <div class="filter-field-group need-to-focus-field slideAnimation" ng-show="!goodsFilter.countryAll">
+                    <label class="filter-label" ng-bind="::('BUY_SELL_OFFER.PLACE.CITY' | translate | firstUpper)"></label>
+                    <input type="text" class="filter-field general-input need-to-focus contextMenuButton" ng-model-options="{debounce: 300}"
+                           ng-change="filterChange();" ng-model="goodsFilter.location_city" placeholder="{{::('MARKET.FILTER.CITIES' | translate)}}"/>
+                </div>
+                <div class="filter-field-group need-to-focus-field">
+                    <label class="filter-label" ng-bind="::('MARKET.PRICE' | translate)"></label>
+                    <div class="filter-field-wrapper">
+                        <div class="filter-field general-input-wrapper">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.FROM' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" ng-model="goodsFilter.price_from" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange();" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}} {{(goodsFilter.currency == 'all_cur') == false ? goodsFilter.currency : ''}}">
+                        </div>
+                        <div class="filter-field general-input-wrapper">
+                            <span class="input-addon pre-input" ng-bind="::('COMMON.TO' | translate)"></span>
+                            <input type="text" class="general-input need-to-focus input_replace contextMenuButton" ng-model="goodsFilter.price_to" ng-model-options="{debounce: 300}"
+                                   ng-change="filterChange()" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}} {{(goodsFilter.currency == 'all_cur') == false ? goodsFilter.currency : ''}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button type="button" class="filter-clear-btn" ng-click="filterClear();">
+                        <i data-icon="&#xe004;" class="base-icon"></i><span ng-bind="::('COMMON.FILTER.CLEAR' | translate)"></span>
+                    </button>
+                    <button type="button" class="filter-close-btn" ng-click="marketShowHideTabs.goodsFilter = false;">
+                        <span ng-bind="::('COMMON.FILTER.CLOSE' | translate)"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="general-filter-btn filterBlockAnimation ng-hide" ng-show="!marketShowHideTabs.goodsFilter" ng-click="marketShowHideTabs.goodsFilter = true;" ng-bind="::('COMMON.FILTER' | translate)"></div>
+        <div class="general-filter-clear filterBlockAnimation ng-hide" ng-show="goodsFilter.clear && !marketShowHideTabs.goodsFilter" ng-click="filterClear();">
+            <i data-icon="!" class="base-icon"></i>
+        </div>
+        <div class="general-search-wrapper-parent filterBlockAnimation ng-hide" animate-search data-opened="goodsFilter.keywords.length>0" data-check="'.market-search-checkbox'" ng-show="!marketShowHideTabs.goodsFilter">
+            <div class="market-search general-search-wrapper">
+                <i data-icon="G" class="base-icon search-icon"></i>
+                <input type="text" class="search-input contextMenuButton" ng-model="goodsFilter.keywords" ng-model-options="{debounce: 1000}"
+                       ng-change="filterChange();" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+                <input type="hidden" class="search-input-hidden"/>
+            </div>
+            <div class="market-search-checkbox" ng-style="::({'display':(goodsFilter.keywords.length>0)?'flex':'none'})">
+                <div class="general-checkbox" ng-class="{'active': goodsFilter.find_in_names}" ng-click="goodsFilter.find_in_names = !goodsFilter.find_in_names; findChange()">
+                    <div class="check-border"><i data-icon="v" class="base-icon"></i></div>
+                    <span class="general-checkbox-text" ng-bind="::('COMMON.FILTER.FIND_ONLY_NAME' | translate)"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="market-tab-options" ng-if="tabs.myOffersTab">
+        <div class="market-switch">
+            <button class="market-switch-option" ng-class="{'option-active': (myOffersFilter.offer_type == 'ALL')}"
+                    ng-click="myOffersFilter.offer_type = 'ALL'; filterChange();" ng-bind="::('COMMON.ALL' | translate)">
+            </button>
+            <button class="market-switch-option" ng-class="{'option-active': (myOffersFilter.offer_type == 'BUY')}"
+                    ng-click="myOffersFilter.offer_type = 'BUY'; filterChange();" ng-bind="::('MARKET.FILTER.BUYING' | translate)">
+            </button>
+            <button class="market-switch-option" ng-class="{'option-active': (myOffersFilter.offer_type == 'SELL')}"
+                    ng-click="myOffersFilter.offer_type = 'SELL'; filterChange();" ng-bind="::('MARKET.FILTER.SELLING' | translate)">
+            </button>
+        </div>
+        <div class="market-switch" style="margin-left: 3rem">
+            <button class="market-switch-option" ng-class="{'option-active': (myOffersFilter.view == 'CURRENCY')}"
+                    ng-click="myOffersFilter.view = 'CURRENCY'; filterChange();" ng-bind="::('MARKET.CURRENCY' | translate)">
+            </button>
+            <button class="market-switch-option" ng-class="{'option-active': (myOffersFilter.view == 'BARTER')}"
+                    ng-click="myOffersFilter.view = 'BARTER'; filterChange();" ng-bind="::('MARKET.GOODS' | translate)">
+            </button>
+        </div>
+        <div class="market-search general-search-wrapper" animate-search data-opened="myOffersFilter.keywords.length > 0">
+            <i data-icon="G" class="base-icon search-icon"></i>
+            <input type="text" class="search-input contextMenuButton" ng-model="myOffersFilter.keywords" ng-model-options="{debounce: 1000}"
+                   ng-change="filterChange();" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+        </div>
+    </div>
+    <div class="market-tab-options" ng-if="tabs.favoritesTab">
+        <div class="market-switch">
+            <button class="market-switch-option" ng-class="{'option-active': (favOffersFilter.offer_type == 'ALL')}"
+                    ng-click="favOffersFilter.offer_type = 'ALL'; filterChange();" ng-bind="::('COMMON.ALL' | translate)">
+            </button>
+            <button class="market-switch-option" ng-class="{'option-active': (favOffersFilter.offer_type == 'BUY')}"
+                    ng-click="favOffersFilter.offer_type = 'BUY'; filterChange();" ng-bind="::('MARKET.FILTER.BUYING' | translate)">
+            </button>
+            <button class="market-switch-option" ng-class="{'option-active': (favOffersFilter.offer_type == 'SELL')}"
+                    ng-click="favOffersFilter.offer_type = 'SELL'; filterChange();" ng-bind="::('MARKET.FILTER.SELLING' | translate)">
+            </button>
+        </div>
+        <div class="market-switch" style="margin-left: 3rem">
+            <button class="market-switch-option" ng-class="{'option-active': (favOffersFilter.view == 'CURRENCY')}"
+                    ng-click="favOffersFilter.view = 'CURRENCY'; filterChange();" ng-bind="::('MARKET.CURRENCY' | translate)">
+            </button>
+            <button class="market-switch-option" ng-class="{'option-active': (favOffersFilter.view == 'BARTER')}"
+                    ng-click="favOffersFilter.view = 'BARTER'; filterChange();" ng-bind="::('MARKET.GOODS' | translate)">
+            </button>
+        </div>
+        <div class="market-search general-search-wrapper" animate-search data-opened="favOffersFilter.keywords.length > 0">
+            <i data-icon="G" class="base-icon search-icon"></i>
+            <input type="text" class="search-input contextMenuButton" ng-model="favOffersFilter.keywords" ng-model-options="{debounce: 1000}"
+                   ng-change="filterChange();" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+        </div>
+    </div>
+    <div class="table-wrapper market-table">
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <div class="ordered-cell">
+                        <span ng-bind="::('MARKET.AGE' | translate)"></span>
+                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': currentOrder == 0, 'rotate-icon': !(!currentOrderReverse && currentOrder == 0)}" ng-click="orderChange(0);"></i>
+                    </div>
+                </th>
+                <th ng-if="isCurrencyTable">
+                    <div class="ordered-cell">
+                        <span ng-bind="::('MARKET.RATE' | translate)"></span>
+                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': currentOrder == 3, 'rotate-icon': !(!currentOrderReverse && currentOrder == 3)}" ng-click="orderChange(3);"></i>
+                    </div>
+                </th>
+                <th ng-if="isCurrencyTable">
+                    <div class="ordered-cell">
+                        <span ng-bind="::( ('MARKET.AMOUNT' | translate) + ' ' + currencySymbol )"></span>
+                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': currentOrder == 1, 'rotate-icon': !(!currentOrderReverse && currentOrder == 1)}" ng-click="orderChange(1);"></i>
+                    </div>
+                </th>
+                <th ng-if="isGoodsTable">
+                    <span ng-bind="::('MARKET.CATEGORY' | translate)"></span>
+                </th>
+                <th ng-if="isGoodsTable">
+                    <div class="ordered-cell">
+                        <span ng-bind="::('MARKET.NAME' | translate)"></span>
+                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': currentOrder == 7, 'rotate-icon': !(!currentOrderReverse && currentOrder == 7)}" ng-click="orderChange(7);"></i>
+                    </div>
+                </th>
+                <th>
+                    <span ng-bind="::('MARKET.DESCRIPTION' | translate)"></span>
+                </th>
+                <th ng-if="isCurrencyTable">
+                    <span ng-bind="::('MARKET.CALC' | translate)"></span>
+                </th>
+                <th ng-if="isGoodsTable">
+                    <div class="ordered-cell">
+                        <span ng-bind="::('MARKET.PRICE' | translate)"></span>
+                        <i data-icon="b" class="base-icon order-icon"  ng-class="{'active': currentOrder == 1, 'rotate-icon': !(!currentOrderReverse && currentOrder == 1)}" ng-click="orderChange(1);"></i>
+                    </div>
+                </th>
+                <th>
+                    <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                </th>
+                <th>
+                    <div class="ordered-cell">
+                        <span ng-bind="::('COMMON.PLACE' | translate)"></span>
+                        <i data-icon="b" class="base-icon order-icon" ng-class="{'active': currentOrder == 6, 'rotate-icon': !(!currentOrderReverse && currentOrder == 6)}" ng-click="orderChange(6);"></i>
+                    </div>
+                </th>
+                <th ng-if="tabs.myOffersTab"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="offer in filteredOffers track by offer.tx_hash" before-remove-offer timestamp="::(offer.timestamp)" expiration="::(offer.et)"
+                ng-class="{'deleted-offer': isDeletedOffer(offer.tx_hash)}">
+                <td ng-class="{'grey-marker': isDeletedOffer(offer.tx_hash), 'yellow-marker': isNewOffer(offer.timestamp), 'red-marker': isPremiumFee(offer.fee)}">
+                    <date-age from-time="{{::(offer.timestamp)}}"></date-age>
+                </td>
+                <td ng-if="isCurrencyTable">
+                    <span ng-bind="::(offer | offerRate : offer.t)"></span>
+                </td>
+                <td ng-if="isCurrencyTable">
+                    <span ng-bind="::(coinsParse(offer.ap))"></span>
+                </td>
+                <td ng-if="isGoodsTable">
+                    <text-dropdown text="::(offer.cat | categoryTitle)" blockclass="'market-categories'"></text-dropdown>
+                </td>
+                <td ng-if="isGoodsTable">
+                    <text-dropdown text="::offer.t" blockclass="'market-headings'"></text-dropdown>
+                </td>
+                <td>
+                    <div class="market-info-wrapper">
+                        <i data-icon="y" class="base-icon market-info-icon" uib-tooltip-template="'views/marketOfferDetail.html'" data-tooltip-class="market-detail-window"
+                           data-tooltip-placement="top-right" data-tooltip-trigger="'outsideClick'" data-tooltip-append-to-body="true" data-tooltip-enable="!isDeletedOffer(offer.tx_hash)" market-info-blur tabindex="-1">
+                        </i>
+                        <i data-icon="9" class="base-icon market-fav-icon" ng-if="isFavorite(offer.tx_hash)"></i>
+                    </div>
+                </td>
+                <td ng-if="isCurrencyTable">
+                    <div class="market-payment-types">
+                        <payment-display payment-types="::(offer.pt)"></payment-display>
+                    </div>
+                </td>
+                <td ng-if="isGoodsTable">
+                    <span ng-bind="::(coinsParse(offer.ap, offer.p))"></span>
+                </td>
+                <td>
+                    <contacts-dropdown ng-if="offer.normal_contacts.length" contacts="::(offer.normal_contacts)" blockclass="'market-contacts'"></contacts-dropdown>
+                </td>
+                <td>
+                    <place-dropdown clipboard="true" country="::(offer.lco | countryName)" city="::offer.lci"  blockclass="'market-location'"></place-dropdown>
+                </td>
+                <td ng-if="tabs.myOffersTab">
+                    <div class="market-application-options" ng-class="{'disabled': isEditedOffer(offer.tx_hash)}">
+                        <i data-icon="T" class="base-icon edit-application" ng-click="(isDeletedOffer(offer.tx_hash) || isEditedOffer(offer.tx_hash) || checkTimeBeforeDelete(offer.timestamp, offer.et)) ? false : openOfferCreateEdit({offer: offer})"
+                           uib-tooltip="{{::('MARKET.MY_APP.EDIT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                        <i data-icon="u" class="base-icon delete-application" ng-click="(isDeletedOffer(offer.tx_hash) || isEditedOffer(offer.tx_hash) || checkTimeBeforeDelete(offer.timestamp, offer.et)) ? false: removeConfirm(offer)"
+                           uib-tooltip-html="'{{::('MARKET.MY_APP.DELETE' | translate)}}'" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-if="!filteredOffers.length">
+                <td class="text-center" colspan="{{(tabs.myOffersTab) ? 8 : 7}}">
+                    <span ng-if="!loadingMarket" ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                    <span ng-if="loadingMarket" ng-bind="::('COMMON.LOADING' | translate)"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-wrapper" ng-hide="(!filteredOffers.length || filteredOffers.length < 20) && paginator.currentPage == 1">
+        <div class="display">
+            <span class="display-text" ng-bind="::('COMMON.SHOW_BY_PAGE_LIMIT' | translate)"></span>
+            <ul class="display-values">
+                <li ng-class="{'active': paginator.inPage == 20}" ng-click="paginator.changeLimit(20);"><span>20</span></li>
+                <li ng-class="{'active': paginator.inPage == 35}" ng-click="paginator.changeLimit(35);"><span>35</span></li>
+                <li ng-class="{'active': paginator.inPage == 50}" ng-click="paginator.changeLimit(50);"><span>50</span></li>
+            </ul>
+        </div>
+        <div class="pagination">
+            <div class="prev-page" ng-click="paginator.setPrev();" ng-style="{'visibility': (paginator.currentPage < 2) ? 'hidden' : 'visible'}">
+                <i data-icon="f" class="base-icon pagination-arrow"></i>
+            </div>
+            <div class="pages" ng-style="{'visibility': (paginator.blockNext && paginator.currentPage < 2) ? 'hidden' : 'visible'}">
+                <span class="active-page">
+                    <input type="text" ng-model="paginator.currentPage" ng-keyup="paginator.enter(false, $event)"
+                           ng-blur="paginator.enter(true)" class="general-input no-hover" maxlength="9" minlength="1" size="{{paginator.currentPage.toString().length + 1}}">
+                </span>
+            </div>
+            <div class="next-page" ng-click="paginator.setNext();" ng-style="{'visibility': paginator.blockNext ? 'hidden' : 'visible'}">
+                <i data-icon="f" class="base-icon pagination-arrow"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<div id="market" class="content-section" ng-controller="marketListCtrl">
+    <div class="page-empty">
+        <div class="one-block">
+            <h1 ng-bind="::('COMMON.SOON' | translate)"></h1>
+        </div>
+    </div>
+</div>-->

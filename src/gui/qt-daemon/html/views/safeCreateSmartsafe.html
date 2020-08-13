@@ -1,0 +1,39 @@
+<div class="modal-form-wrapper">
+  <div class="modal-form-header">
+    <div class="modal-form-header-title" ng-bind="::('SAFE.SMART.TITLE' | translate)"></div>
+    <div class="modal-form-header-close">
+      <button type="button" ng-click="closeSmartSafeForm();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="smartsafe-header" ng-bind="::('SAFE.PHRASE' | translate)"></div>
+      <div class="smartsafe-description" ng-bind="::('SAFE.SMART.RESTORE.PHRASE.HINT' | translate)"></div>
+      <div class="smartsafe-phrase contextMenuButton" contextMenuEnabledItems='copy' contextMenuCopyText="{{restoreKey}}">
+        <span class="key" ng-repeat="rkey in restoreKey | splitKey track by $index" ng-bind="rkey"></span>
+      </div>
+      <div class="smartsafe-buttons">
+        <button type="button" class="smartsafe-button" ng-click="copyPhrase(restoreKey);">
+          <i data-icon="&#xe001;" class="base-icon" ng-class="{'copied-icon': copied}"></i><span ng-bind="::('SAFE.SMART.RESTORE.COPY' | translate)"></span>
+        </button>
+        <button type="button" class="smartsafe-button" ng-click="saveKey(restoreKey);">
+          <i data-icon="(" class="base-icon"></i><span ng-bind="::('SAFE.SMART.RESTORE.SAVE' | translate)"></span>
+        </button>
+        <button type="button" class="smartsafe-button" ng-click="printPhrase(restoreKey);" data-ng-disabled="!restoreKey.length">
+          <i data-icon="," class="base-icon"></i><span ng-bind="::('SAFE.SMART.RESTORE.PRINT' | translate)"></span>
+        </button>
+      </div>
+      <div class="smartsafe-checkbox" ng-click="is_printed = !is_printed">
+        <div class="general-checkbox" ng-class="{'active': is_printed}">
+          <div class="check-border" ><i data-icon="v" class="base-icon"></i></div>
+          <span class="general-checkbox-text" ng-bind="::('SAFE.SMART.RESTORE.PRINT.PRINTED' | translate)"></span>
+        </div>
+      </div>
+      <div class="general-form-control-buttons">
+        <button type="button" class="control-button" ng-click="closeSmartSafeFormOK()" data-ng-disabled="!is_printed" ng-bind="::('COMMON.ACTIONS.CONTINUE' | translate)"></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+

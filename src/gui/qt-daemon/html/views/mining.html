@@ -1,0 +1,173 @@
+<div id="mining" class="content-section" ng-controller="miningCtrl" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+
+    <div class="main-options-wrapper">
+        <div class="mining-options">
+            <div class="page-title-wrapper">
+                <h1 class="page-title" ng-bind="::('MINING.TITLE' | translate)"></h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="general-panel">
+        <div class="general-panel-header" ng-class="{'closed-panel': !miningShowHideTabs.calc}" ng-click="miningShowHideTabs.calc = !miningShowHideTabs.calc;">
+            <div><span ng-bind="::('MINING.CALC_PROFIT' | translate)"></span><i data-icon="b" class="base-icon general-panel-header-arrow"></i></div>
+        </div>
+        <div class="general-panel-body slideAnimation" ng-show="miningShowHideTabs.calc">
+            <form class="calculate-options">
+                <div class="calculate-tile need-to-focus-field">
+                    <label for="input-period" ng-bind="::(('MINING.PERIOD_NO_MOVEMENT' | translate) + ':')"></label>
+                    <div class="general-input-wrapper">
+                        <input type="text" id="input-period" class="general-input need-to-focus input_replace_int input_min_value" ng-model="calc.days" maxlength="5" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER'| translate)}}"/>
+                        <span class="input-addon post-input" ng-bind="::('MINING.DAYS' | translate)"></span>
+                    </div>
+                    <span class="field-group-error" ng-show="calc.days < 0" ng-bind="::('MINING.ERROR_AMOUNT' | translate)"></span>
+                </div>
+                <div class="calculate-tile need-to-focus-field">
+                    <label for="amount-account" ng-bind="::(('MINING.AMOUNT_ON_ACCOUNT' | translate) + ':')"></label>
+                    <div class="general-input-wrapper">
+                        <input type="text" id="amount-account" class="general-input need-to-focus input_replace" ng-model="calc.amount" placeholder="{{::('COMMON.NUMBER.PLACEHOLDER' | translate)}}"/>
+                        <span class="input-addon post-input" ng-bind="currencySymbol"></span>
+                    </div>
+                    <span class="field-group-error" ng-show="calc.amount < 0" ng-bind="::('MINING.ERROR_AMOUNT' | translate)"></span>
+                </div>
+                <div class="calculate-tile">
+                    <button type="button" class="general-button calculate-mining-btn" ng-click="calculate();" data-ng-disabled="calc.days < 0 || calc.amount < 0" ng-bind="::('COMMON.ACTIONS.CALCULATE' | translate)"></button>
+                </div>
+            </form>
+            <div class="chart-wrapper" ng-style="(!calcDiagramShow) && {'height':'0'} || (calcDiagramShow && totalFutureMining === 0) && {'height':'22rem'} || (calcDiagramShow && totalFutureMining !== 0) && {'height':'89rem'}">
+                <div class="chart-label">
+                    <span ng-bind="('MINING.SAFE_FUTURE_TOTAL_MINED' | translate) + ': ' + moneyParse(totalFutureMining)"></span>
+                    <i data-icon="P" class="base-icon" uib-tooltip-html="'{{::('MINING.SAFE_FUTURE_TOTAL_MINED_DESCRIPTION' | translate)}}'"
+                       data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                    </i>
+                </div>
+                <div id="chart-calculate" ng-show="totalFutureMining" ui-chart="calcDiagram" chart-options="diagramOptionsFuture"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="general-panel">
+        <div class="general-panel-header">
+            <span ng-bind="::('MINING.STATISTIC_INCOME' | translate)"></span>
+            <div class="mining-select-wrapper">
+                <div class="mining-select mining-safe" ng-show="safes.length">
+                    <select selectpicker class="general-select show-tick dropdown-animation" data-ng-model="selectedSafe" data-ng-change="selectSafe();"
+                            data-dropup-auto="false" ng-options="safe.wallet_id as safe.name for safe in safes">
+                    </select>
+                </div>
+                <div class="mining-select mining-view">
+                    <select selectpicker class="general-select dropdown-animation" ng-change="refreshGraph()" data-ng-model="miningShowHideTabs.activeTab">
+                        <option value="graph" ng-bind="::('MINING.GRAPH' | translate)"></option>
+                        <option value="table" ng-bind="::('MINING.TABLE_INCOME' | translate)"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="content-block">
+            <div class="mined-empty" ng-if="totalMined == 0" ng-bind="('MINING.SAFE_TOTAL_MINED' | translate) + ': ' + moneyParse(totalMined)"></div>
+            <div class="mined-statistics" ng-show="totalMined > 0">
+                <div ng-show="miningShowHideTabs.activeTab == 'graph'">
+                    <div class="mined-statistics-options">
+                        <div class="chart-range-wrapper">
+                            <div class="chart-range-group">
+                                <span ng-bind="::('MINING.PERIOD' | translate)"></span>
+                                <ul class="chart-range-selector">
+                                    <li role="button" ng-class="{'active': safesPeriod == '1week'}" ng-click="setPeriod('1week');" ng-bind="::('1 ' + ('COMMON.WEEK_SHORT' | translate))"></li>
+                                    <li role="button" ng-class="{'active': safesPeriod == '2week'}" ng-click="setPeriod('2week');" ng-bind="::('2 ' + ('COMMON.WEEK_SHORT' | translate))"></li>
+                                    <li role="button" ng-class="{'active': safesPeriod == '1month'}" ng-click="setPeriod('1month');" ng-bind="::('1 ' + ('COMMON.MONTH_SHORT' | translate))"></li>
+                                    <li role="button" ng-class="{'active': safesPeriod == '3month'}" ng-click="setPeriod('3month');" ng-bind="::('3 ' + ('COMMON.MONTH_SHORT' | translate))"></li>
+                                    <li role="button" ng-class="{'active': safesPeriod == '6month'}" ng-click="setPeriod('6month');" ng-bind="::('6 ' + ('COMMON.MONTH_SHORT' | translate))"></li>
+                                    <li role="button" ng-class="{'active': safesPeriod == '1year'}" ng-click="setPeriod('1year');" ng-bind="::('1 ' + ('COMMON.YEAR' | translate))"></li>
+                                    <li role="button" ng-class="{'active': safesPeriod == 'all'}" ng-click="setPeriod('all');" ng-bind="::('COMMON.ALL' | translate)"></li>
+                                </ul>
+                            </div>
+                            <div class="chart-range-group">
+                                <span ng-bind="::('MINING.GROUP' | translate)"></span>
+                                <ul class="chart-range-selector">
+                                    <li role="button" ng-class="{'active': safesGroup == 'day'}" ng-click="setGroup('day');" ng-bind="::('COMMON.DAY' | translate)"></li>
+                                    <li role="button" ng-class="{'active': safesGroup == 'week'}" ng-click="setGroup('week');" ng-bind="::('COMMON.WEEK' | translate)"></li>
+                                    <li role="button" ng-class="{'active': safesGroup == 'month'}" ng-click="setGroup('month');" ng-bind="::('COMMON.MONTH' | translate)"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="total-mined-chart">
+                            <div ng-bind="::('MINING.SAFE_TOTAL_MINED' | translate) + ':'"></div>
+                            <div ng-bind="moneyParse(totalMined)"></div>
+                        </div>
+                    </div>
+                    <div id="chart-statistics" ui-chart="safesDiagram" chart-options="diagramOptions"></div>
+                </div>
+                <div ng-show="miningShowHideTabs.activeTab == 'table'">
+                    <div class="mined-statistics-options">
+                        <span class="total-mined-table" ng-bind="('MINING.SAFE_TOTAL_MINED' | translate) + ': ' + moneyParse(totalMined)"></span>
+                    </div>
+                    <div class="table-wrapper statistics-table">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.SAFE' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-click="order('h')" ng-class="{'active': miningSortBy == 'h', 'rotate-icon': (!miningSortDir && miningSortBy == 'h')}"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('NEW_CONTACT.RELATED_PAYMENTS.TRANSACTION_DATE' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-click="order('t')" ng-class="{'active': miningSortBy == 't', 'rotate-icon': (!miningSortDir && miningSortBy == 't')}"></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="ordered-cell">
+                                        <span ng-bind="::('COMMON.AMOUNT' | translate)"></span>
+                                        <i data-icon="b" class="base-icon order-icon" ng-click="order('a')" ng-class="{'active': miningSortBy == 'a', 'rotate-icon': (!miningSortDir && miningSortBy == 'a')}"></i>
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="item in miningList track by $index">
+                                <td>
+                                    <div class="transaction-status-indicator">
+                                        <circle-show item="{is_mining: true, is_income: true, height: item.h}" height="appHeight"></circle-show>
+                                    </div>
+                                </td>
+                                <td>
+                                    <time>{{item.t*1000 | date: 'dd.MM.yy&nbsp;&nbsp;HH:mm'}}</time>
+                                </td>
+                                <td>
+                                    <span ng-bind="'+' + moneyParse(item.a)"></span>
+                                </td>
+                            </tr>
+                            <tr ng-if="!miningList.length">
+                                <td colspan="3">
+                                    <div class="text-center">
+                                        <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="mining-pagination" class="pagination-wrapper">
+                        <div class="display" ng-show="paginator.totalCount > 20">
+                            <span class="display-text" ng-bind="::('COMMON.SHOW_BY_PAGE_LIMIT' | translate)"></span>
+                            <ul class="display-values">
+                                <li ng-class="{'active': paginator.inPage == 20}" ng-click="paginator.changeLimit(20);"><span>20</span></li>
+                                <li ng-class="{'active': paginator.inPage == 35}" ng-click="paginator.changeLimit(35);"><span>35</span></li>
+                                <li ng-class="{'active': paginator.inPage == 50}" ng-click="paginator.changeLimit(50);"><span>50</span></li>
+                            </ul>
+                        </div>
+                        <div class="show-all" ng-click="paginator.viewAll(true);" ng-show="paginator.pagesCount > 1 && !paginator.showAll">
+                            <i data-icon="+" class="base-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.HISTORY.SHOW_ALL' | translate)"></span>
+                        </div>
+                        <div class="show-all" ng-click="paginator.viewAll();" ng-show="paginator.pagesCount > 1 && paginator.showAll">
+                            <i data-icon="+" class="base-icon rotate-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.HISTORY.SHOW_BY_PAGE' | translate)"></span>
+                        </div>
+                        <paginator model="paginator"></paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

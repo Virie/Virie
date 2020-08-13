@@ -1,0 +1,44 @@
+<div class="modal-form-wrapper contacts-modal-width">
+  <div class="modal-form-header">
+    <div class="modal-form-header-title" ng-bind="::('GROUP.EDIT_TITLE' | translate)"></div>
+    <div class="modal-form-header-close">
+      <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="general-form-field-group field-group-horizontal need-to-focus-field">
+        <label class="field-group-label bolder-label" ng-bind="::('GROUP.TITLE_TEXT' | translate)"></label>
+        <div class="field-group-error-wrapper">
+          <input type="text" id="groupName" class="general-input need-to-focus contextMenuButton" ng-model="group.name"
+                 maxlength="30" placeholder="{{::('COMMON.ACTIONS.ENTER.NAME' | translate)}}" autofocus/>
+          <span class="field-group-error" ng-show="addGroupError || group.name.length == 0">
+            {{addGroupError ? 'CONTACTS.ERROR.NAME_EXISTS' : 'COMMON.ERROR.FILL_THE_FIELD' | translate}}
+          </span>
+        </div>
+      </div>
+      <div class="editing-group-search" ng-show="filteredContactsToGroup.length > 3">
+        <i data-icon="G" class="base-icon"></i>
+        <input type="search" class="search-input contextMenuButton" ng-model="keywords" ng-model-options="{debounce: 300}" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+      </div>
+      <div ng-if="filteredContactsToGroup.length" class="editing-group-contacts-list base-scroll dark-scroll">
+        <div ng-if="contact.group_ids.indexOf(group.id) > -1" class="editing-group-contact-item" ng-repeat="contact in res = (filteredContactsToGroup | filter:keywords)">
+          <div class="editing-group-contact-name">
+            <i data-icon="3" class="base-icon editing-group-contact-icon"></i>
+            <span ng-bind="contact.name"></span>
+          </div>
+          <i data-icon="B" class="base-icon delete-group-contact-icon" ng-click="removeContactFromGroup(contact);"></i>
+        </div>
+        <div ng-if="res.length == 0" class="text-center" ng-bind="::('COMMON.NO_DATA' | translate)"></div>
+      </div>
+      <div ng-if="!filteredContactsToGroup.length" class="editing-group-empty-contacts">
+        <i data-icon="0" class="base-icon editing-group-empty-contacts-icon"></i>
+        <span class="editing-group-empty-contacts-text" ng-bind="::('GROUP.CONTACTS_EMPTY' | translate)"></span>
+      </div>
+      <div class="general-form-control-buttons">
+        <button type="button" class="control-button" ng-click="close();" ng-bind="::('COMMON.ACTIONS.CLOSE' | translate)"></button>
+        <button type="button" class="control-button" ng-click="onSaveBtn();" ng-bind="::('COMMON.ACTIONS.SAVE' | translate)"></button>
+      </div>
+    </form>
+  </div>
+</div>

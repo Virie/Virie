@@ -1,0 +1,58 @@
+<div class="top_box" *ngIf="navIsOpen === false">
+  <div class="left_box">
+    <a [routerLink]="['/charts']" class="back_btn" [ngClass]="{'hide_back_btn': searchIsOpen === true}">Back</a>
+  </div>
+  <app-search (isVisible)='onIsVisible($event)'></app-search>
+</div>
+
+<div class="wrap_charts">
+  <div *ngIf="loader === true" class="wrap_loader">
+    <div class="loader"></div>
+  </div>
+
+  <div class="heading_chart">
+    <h2 class="title_chart">Hash Rate</h2>
+    <div class="row_range">
+      <div class="period_buttons">
+        <button type="button" (click)="setPeriod('day')" [ngClass]="{'active':btnActive==='day'}">day</button>
+        <button type="button" (click)="setPeriod('week')" [ngClass]="{'active':btnActive==='week'}">week</button>
+        <button type="button" (click)="setPeriod('month')" [ngClass]="{'active':btnActive==='month'}">month</button>
+        <button type="button" (click)="setPeriod('quarter')" [ngClass]="{'active':btnActive==='quarter'}">quarter
+        </button>
+        <button type="button" (click)="setPeriod('year')" [ngClass]="{'active':btnActive==='year'}">year</button>
+        <button type="button" (click)="setPeriod('all')" [ngClass]="{'active':btnActive==='all'}">all</button>
+      </div>
+      <div class="inputs">
+        <fieldset>
+          <label>From</label>
+          <input readonly type="text"
+                 class="style air-input" placeholder="Date"
+                 (click)="datepickerTo=!datepickerTo"
+                 [value]="endDate * 1000 | amUtc | amDateFormat: 'YYYY-MM-DD'">
+          <air-datepicker *ngIf="datepickerTo"
+                          class="from-air-datepicker"
+                          [airOptions]="options"
+                          [airDate]="date"
+                          (airChange)="endDate = dateChanged($event); initialChart();">
+          </air-datepicker>
+        </fieldset>
+
+        <fieldset>
+          <label>To</label>
+          <input readonly type="text"
+                 class="style air-input" placeholder="Date"
+                 (click)="datepickerFrom=!datepickerFrom"
+                 [value]="startDate * 1000 | amUtc | amDateFormat: 'YYYY-MM-DD'">
+          <air-datepicker *ngIf="datepickerFrom"
+                          class="to-air-datepicker"
+                          [airOptions]="options"
+                          [airDate]="date"
+                          (airChange)="startDate = dateChanged($event); initialChart();">
+          </air-datepicker>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <div [chart]="hashRateChart"></div>
+</div>

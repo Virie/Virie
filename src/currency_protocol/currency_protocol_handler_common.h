@@ -1,0 +1,59 @@
+// Copyright (c) 2014-2020 The Virie Project
+// Copyright (c) 2012-2013 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#pragma once
+
+#include "p2p/net_node_common.h"
+#include "currency_protocol/currency_protocol_defs.h"
+#include "currency_core/connection_context.h"
+namespace currency
+{
+  /************************************************************************/
+  /*                                                                      */
+  /************************************************************************/
+  struct i_currency_protocol
+  {
+    virtual bool relay_block(NOTIFY_NEW_BLOCK::request& arg, currency_connection_context& exclude_context)=0;
+    virtual bool relay_transactions(NOTIFY_NEW_TRANSACTIONS::request& arg, currency_connection_context& exclude_context)=0;
+    //virtual bool request_objects(NOTIFY_REQUEST_GET_OBJECTS::request& arg, currency_connection_context& context)=0;
+  };
+
+  /************************************************************************/
+  /*                                                                      */
+  /************************************************************************/
+  struct currency_protocol_stub: public i_currency_protocol
+  {
+    virtual bool relay_block(NOTIFY_NEW_BLOCK::request& /*arg*/, currency_connection_context& /*exclude_context*/)
+    {
+      return false;
+    }
+    virtual bool relay_transactions(NOTIFY_NEW_TRANSACTIONS::request& /*arg*/, currency_connection_context& /*exclude_context*/)
+    {
+      return false;
+    }
+  };
+
+  /************************************************************************/
+  /*                                                                      */
+  /************************************************************************/
+  struct i_stop_handler
+  {
+    virtual void stop_handling() = 0;
+  };
+  /************************************************************************/
+  /*                                                                      */
+  /************************************************************************/
+  struct i_stop_senders
+  {
+    virtual bool from_time_sync(const std::string & message) = 0; // returned true when translated signal
+    virtual bool from_free_space(const std::string & message) = 0;
+    virtual void set_ignore_free_space(bool ignore) = 0;
+    virtual void set_ignore_time_sync(bool ignore) = 0;
+    virtual bool was_event_free_space() = 0;
+    virtual bool was_event_time_sync() = 0;
+    virtual ~i_stop_senders() = default;
+  };
+
+}

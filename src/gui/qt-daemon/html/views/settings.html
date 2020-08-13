@@ -1,0 +1,177 @@
+<div id="settings" class="content-section" ng-controller="settingsCtrl" ng-style="{'visibility': (!isProgramBlocked) ? 'visible' : 'hidden'}">
+
+    <div class="main-options-wrapper">
+        <div class="settings-options">
+            <div class="page-title-wrapper">
+                <h1 class="page-title" ng-bind="('SETTINGS.TITLE' | translate)"></h1>
+            </div>
+        </div>
+    </div>
+
+    <ul class="general-tabs">
+        <li class="general-tab" ng-class="{'tab-active': settingsTab == 'security-table'}">
+            <button type="button" ng-click="settingsTab = 'security-table'; reInitSwitch();">
+                <i data-icon=")" class="base-icon"></i><span ng-bind="('SETTINGS.SECURITY' | translate)"></span>
+            </button>
+        </li>
+        <li class="general-tab" ng-class="{'tab-active': settingsTab == 'mining-table'}">
+            <button type="button" ng-click="settingsTab = 'mining-table'; reInitSwitch();">
+                <i data-icon="&" class="base-icon"></i><span ng-bind="('SETTINGS.MINING' | translate)"></span>
+            </button>
+        </li>
+        <li class="general-tab" ng-class="{'tab-active': settingsTab == 'interface-table'}">
+            <button type="button" ng-click="settingsTab = 'interface-table';">
+                <i data-icon="-" class="base-icon bigger-indent"></i><span ng-bind="('SETTINGS.INTERFACE' | translate)"></span>
+            </button>
+        </li>
+        <li class="general-tab" ng-class="{'tab-active': settingsTab == 'system-table'}">
+            <button type="button" ng-click="settingsTab = 'system-table'; reInitSwitch();">
+                <i data-icon="*" class="base-icon"></i><span ng-bind="('SETTINGS.SYSTEM' | translate)"></span>
+            </button>
+        </li>
+    </ul>
+
+    <div ng-switch="settingsTab">
+        <div ng-switch-when="security-table" class="settings-panel">
+            <div class="settings-panel-header">
+                <h3 ng-bind="('SETTINGS.SECURITY.MASTER_PASSWORD' | translate)"></h3>
+            </div>
+            <div class="settings-panel-body">
+                <div class="settings-panel-body-item">
+                    <span ng-bind="('SETTINGS.SECURITY.MASTER_PASSWORD.USE' | translate)"></span>
+                    <div class="general-switch">
+                        <span class="switch-option optionAnimate" ng-class="{'active': settings.security.is_use_app_pass}"
+                              ng-click="checkPass(true);" ng-bind="('COMMON.YES' | translate)">
+                        </span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !settings.security.is_use_app_pass}"
+                              ng-click="checkPass(false);" ng-bind="('COMMON.NO' | translate)">
+                        </span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="settings-panel-body-item" ng-if="settings.security.is_use_app_pass">
+                    <span ng-bind="('SETTINGS.SECURITY.MASTER_PASSWORD.ENTER_FOR_PAYMENT' | translate)"></span>
+                    <div class="general-switch">
+                        <span class="switch-option optionAnimate" ng-class="{'active': settings.security.is_pass_required_on_transfer}"
+                              ng-click="settings.security.is_pass_required_on_transfer = true;" ng-bind="('COMMON.YES' | translate)">
+                        </span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !settings.security.is_pass_required_on_transfer}"
+                              ng-click="settings.security.is_pass_required_on_transfer = false; requestPass()" ng-bind="('COMMON.NO' | translate)">
+                        </span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="settings-panel-body-item" ng-show="settings.security.is_use_app_pass">
+                    <span ng-bind="('SETTINGS.SECURITY.MASTER_PASSWORD.AUTO_LOCKING' | translate)"></span>
+                    <div class="general-range-wrapper ui-slider-wrapper" style="margin-right: -3rem;">
+                        <datalist class="general-range-list ui-slider-tip-list">
+                            <option ng-style="{'visibility': (passReqIntervalIndex == 0 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="('COMMON.NEVER' | translate)"></option>
+                            <option ng-style="{'visibility': (passReqIntervalIndex == 1 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="'1 ' + ('COMMON.MINUTE' | translate)"></option>
+                            <option ng-style="{'visibility': (passReqIntervalIndex == 2 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="'2 ' + ('COMMON.MINUTE' | translate)"></option>
+                            <option ng-style="{'visibility': (passReqIntervalIndex == 3 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="'15 ' + ('COMMON.MINUTE' | translate)"></option>
+                            <option ng-style="{'visibility': (passReqIntervalIndex == 4 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="'30 ' + ('COMMON.MINUTE' | translate)"></option>
+                        </datalist>
+                        <div class="ui-slider-time" ui-slider="{range:'min'}" data-min="0" data-max="4" data-step="1" ng-model="passReqIntervalIndex" ng-change="changePassReqInterval(passReqIntervalIndex)"></div>
+                        <datalist class="general-range-list" style="margin: 0;">
+                            <option ng-bind="('COMMON.NEVER' | translate)"></option>
+                            <option ng-bind="'1 ' + ('COMMON.MINUTE' | translate)"></option>
+                            <option ng-bind="'2 ' + ('COMMON.MINUTE' | translate)"></option>
+                            <option ng-bind="'15 ' + ('COMMON.MINUTE' | translate)"></option>
+                            <option ng-bind="'30 ' + ('COMMON.MINUTE' | translate)"></option>
+                        </datalist>
+                    </div>
+                </div>
+                <div class="settings-panel-body-item" ng-if="settings.security.is_use_app_pass">
+                    <span ng-bind="('SETTINGS.SECURITY.MASTER_PASSWORD.CHANGE' | translate)"></span>
+                    <button type="button" class="settings-btn general-button" ng-click="changePass(true)" ng-bind="('COMMON.ACTIONS.CHANGE' | translate)"></button>
+                </div>
+            </div>
+        </div>
+        <div ng-switch-when="mining-table" class="settings-panel">
+            <div class="settings-panel-header">
+                <h3 ng-bind="('SETTINGS.MINING' | translate)"></h3>
+            </div>
+            <div class="settings-panel-body">
+                <div class="settings-panel-body-item">
+                    <span ng-bind="('SETTINGS.MINING.AUTO_START' | translate)"></span>
+                    <div class="general-switch">
+                        <span class="switch-option optionAnimate" ng-class="{'active': settings.mining.auto_mining}"
+                              ng-click="settings.mining.auto_mining = true;" ng-bind="('COMMON.YES' | translate)">
+                        </span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !settings.mining.auto_mining}"
+                              ng-click="settings.mining.auto_mining = false;" ng-bind="('COMMON.NO' | translate)">
+                        </span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-switch-when="interface-table" class="settings-panel">
+            <div class="settings-panel-header">
+                <h3 ng-bind="('SETTINGS.INTERFACE.COMMON' | translate)"></h3>
+            </div>
+            <div class="settings-panel-body">
+                <div class="settings-panel-body-item">
+                    <span ng-bind="('SETTINGS.INTERFACE.COMMON.LANGUAGE' | translate)"></span>
+                    <select class="general-select dropdown-animation" selectpicker
+                            data-ng-model="settings.app_interface.general.language"
+                            data-ng-change="changeLang(settings.app_interface.general.language);"
+                            ng-options="lang.key as lang.title for lang in languages">
+                    </select>
+                </div>
+                <div class="settings-panel-body-item">
+                    <span ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE' | translate)"></span>
+                    <div class="general-range-wrapper ui-slider-wrapper " ng-style="{'margin-right': (settings.app_interface.general.language=='en')? '-6.5rem' : '-3.5rem' }">
+                        <datalist class="general-range-list ui-slider-tip-list">
+                            <option ng-style="{'visibility': (settings.app_interface.general.font_size == 3 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.SMALL' | translate | firstUpper)"></option>
+                            <option ng-style="{'visibility': (settings.app_interface.general.font_size == 4 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.STANDARD' | translate | firstUpper)"></option>
+                            <option ng-style="{'visibility': (settings.app_interface.general.font_size == 5 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.BIG' | translate | firstUpper)"></option>
+                            <option ng-style="{'visibility': (settings.app_interface.general.font_size == 6 && !isProgramBlocked) ? 'visible' : 'hidden'}" ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.HUGE' | translate | firstUpper)"></option>
+                        </datalist>
+                        <div class="ui-slider-font-size" ui-slider="{range:'min'}" data-min="3" data-max="6" data-step="1" ng-model="settings.app_interface.general.font_size" ng-change="changeScale()"></div>
+                        <datalist class="general-range-list" style="margin: 0;">
+                            <option ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.SMALL' | translate)"></option>
+                            <option ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.STANDARD' | translate)"></option>
+                            <option ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.BIG' | translate)"></option>
+                            <option ng-bind="('SETTINGS.INTERFACE.COMMON.FONT_SIZE.HUGE' | translate)"></option>
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-switch-when="system-table" class="settings-panel">
+            <div class="settings-panel-header">
+                <h3 ng-bind="('SETTINGS.SYSTEM.APPLICATION' | translate)"></h3>
+            </div>
+            <div class="settings-panel-body">
+                <div class="settings-panel-body-item">
+                    <span ng-bind="('SETTINGS.SYSTEM.APPLICATION.AUTO_START' | translate)"></span>
+                    <div class="general-switch">
+                        <span class="switch-option optionAnimate" ng-class="{'active': settings.system.app_autoload}"
+                              ng-click="settings.system.app_autoload = true; toggleAutoStart(true);" ng-bind="('COMMON.YES' | translate)">
+                        </span>
+                        <span class="switch-option optionAnimate" ng-class="{'active': !settings.system.app_autoload}"
+                              ng-click="settings.system.app_autoload = false; toggleAutoStart(false);" ng-bind="('COMMON.NO' | translate)">
+                        </span>
+                        <span class="switch-marker"></span>
+                    </div>
+                </div>
+                <div class="settings-panel-body-item">
+                    <span ng-bind="('SETTINGS.CORE_LOGGING_LEVEL' | translate)"></span>
+                    <div class="general-range-wrapper ui-slider-wrapper" style="margin-right: -6rem;">
+                        <div class="ui-slider-log" ui-slider="{range:'min'}" data-min="-1" data-max="4" data-step="1" data-tip ng-model="settings.system.log_level" ng-change="changeLogLevel();"></div>
+                        <datalist class="general-range-list" style="margin: 0;">
+                            <option>-1</option>
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

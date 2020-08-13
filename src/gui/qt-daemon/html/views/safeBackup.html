@@ -1,0 +1,32 @@
+<div class="modal-form-wrapper">
+  <div class="modal-form-header">
+    <div class="modal-form-header-title" ng-bind="::('SAFE.CREATE_BACKUP' | translate)"></div>
+    <div class="modal-form-header-icon"><i data-icon="R" class="base-icon"></i></div>
+    <div class="modal-form-header-close">
+      <button type="button" ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+    </div>
+  </div>
+  <div class="modal-form-body">
+    <form class="general-form">
+      <div class="general-form-safe-backup">
+        <div class="general-form-safe-description">
+          <span class="first-description" ng-bind="::('SAFE.PHYSICAL' | translate)"></span>
+          <span class="second-description" ng-bind="::('SAFE.PHYSICAL.HINT' | translate)"></span>
+        </div>
+        <div class="general-form-control-buttons">
+          <button class="control-button" type="button" ng-click="createSafeBackup(newSafe);" data-ng-disabled="backupAlreadySaved" >
+            <span ng-bind="(!backupAlreadySaved) ? 'SAFE.PHYSICAL.COPY' : 'SAFE.PHYSICAL.COPY.SAVED' | translate"></span><i data-icon="%" class="base-icon" ng-if="backupAlreadySaved"></i>
+          </button>
+        </div>
+        <div class="general-form-safe-description">
+          <span class="third-description" ng-bind="::('SAFE.SMART' | translate)"></span>
+        </div>
+        <div class="general-form-control-buttons">
+          <button class="control-button" type="button" ng-click="openSmartSafeForm(safe, true);" data-ng-disabled="smartSafeAlreadySaved">
+            <span ng-bind="(!smartSafeAlreadySaved) ? 'SAFE.SMART.DO' : 'SAFE.SMART.DO.SAVED' | translate"></span><i data-icon="%" class="base-icon" ng-if="smartSafeAlreadySaved"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,296 @@
+<div ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)" id="contact-details" class="content-section" ng-controller="contactDetailsCtrl">
+
+    <div class="main-options-wrapper">
+        <div class="contact-details-options">
+            <button type="button" class="back-btn backInHistory">
+                <i data-icon="J" class="base-icon"></i><span ng-bind="::('COMMON.BACK' | translate)"></span>
+            </button>
+        </div>
+        <div class="contact-details-options">
+            <h1 class="contact-name" ng-bind="contact.name"></h1>
+        </div>
+    </div>
+
+    <div class="general-panel">
+        <div class="general-panel-header" ng-class="{'closed-panel': !contactShowHideTabs.info}">
+            <div ng-click="contactShowHideTabs.info = !contactShowHideTabs.info;">
+                <span ng-bind="::('CONTACTS.DATA' | translate)"></span><i data-icon="b" class="base-icon general-panel-header-arrow"></i>
+            </div>
+        </div>
+        <div class="general-panel-body slideAnimation" ng-show="contactShowHideTabs.info">
+            <form name="contactsDataForm" class="contacts-data adaptive-form">
+                <div class="adaptive-form-column">
+                    <div class="adaptive-form-field-group need-to-focus-field">
+                        <label class="field-group-label" ng-bind="::('COMMON.GROUPS' | translate)"></label>
+                        <select selectpicker class="filter-field general-select show-tick need-to-focus dropdown-animation" data-ng-model="contact.group_ids" data-ng-change="groupsChange($event);"
+                                data-nameoptions="settings.contact_groups" title="{{::('NEW_CONTACT.CHOOSE_GROUP' | translate)}}" multiple>
+                            <option ng-repeat="group in settings.contact_groups | orderBy : 'name' track by $index" data-ng-value="group.id" data-select-watcher data-last="{{$last}}">{{group.name}}</option>
+                            <option data-divider="true"></option>
+                            <option class="edit-groups-field" data-ng-value="-1" data-icon="base-icon edit-groups-icon">{{::('COMMON.EDITING_GROUPS' | translate)}}</option>
+                        </select>
+                    </div>
+                    <div class="adaptive-form-field-group need-to-focus-field">
+                        <label class="field-group-label" ng-bind="::('NEW_CONTACT.NAME' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="contact.name"
+                                   ng-change="checkDuplicate(contact.name);" maxlength="50" data-ng-trim="false" placeholder="{{::('NEW_CONTACT.NAME.PLACEHOLDER' | translate)}}"/>
+                            <span class="field-group-error" ng-if="contact.name.length >= 50" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                            <span class="field-group-error" ng-if="addContactError" ng-bind="::('CONTACTS.ERROR.NAME_EXISTS' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="adaptive-form-field-group need-to-focus-field" ng-class="{'no-hover': !connection.is_edit}" ng-repeat="(index, connection) in contact.connections track by $index">
+                        <label class="field-group-label" ng-if="$index == 0" ng-bind="::('NEW_CONTACT.COMMUNICATION_METHOD' | translate)"></label>
+                        <label class="field-group-label" ng-if="$index > 0" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('NEW_CONTACT.COMMUNICATION_METHOD' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                        <div class="field-group-error-wrapper" ng-if="connection.type != 'IMS' && connection.is_edit">
+                            <div class="general-input-wrapper">
+                                <input type="text" class="general-input need-to-focus contextMenuButton" ng-class="{'input_phone': connection.type == 'PHONE'}" ng-model="connection.name"
+                                       maxlength="{{connection.type == 'EMAIL' ? 40 : 30}}" data-ng-blur="connection.is_edit = blurInputByName(connection)"
+                                       data-ng-trim="false" placeholder="{{contacts[connection.type].placeholder | translate}}"/>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removeConnection(connection.id);"></i>
+                            </div>
+                            <span class="field-group-error" ng-if="connection.type == 'EMAIL' && connection.valid === false" ng-bind="::('CONTACTS.ERROR.WRONG_EMAIL' | translate)"></span>
+                            <span class="field-group-error" ng-if="connection.name.length >= (connection.type == 'EMAIL' ? 40 : 30)" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                        <div class="general-input-wrapper no-hover" ng-if="connection.type != 'IMS' && !connection.is_edit">
+                            <input type="text" class="general-input no-hover" ng-model="connection.name" readonly>
+                            <i data-icon="T" class="base-icon option-icon" ng-click="connection.is_edit = true"></i>
+                            <i data-icon="u" class="base-icon option-icon" ng-click="removeConnection(connection.id);"></i>
+                        </div>
+                        <div class="field-group-error-wrapper" ng-if="connection.type == 'IMS' && connection.is_edit">
+                            <div class="contact-connection-wrapper">
+                                <angucomplete-alt pause="100" placeholder="{{::('NEW_CONTACT.COMMUNICATION_METHOD.MESSENGER.PLACEHOLDER' | translate)}}" maxlength="30"
+                                                  local-data="messengerList" search-fields="name" title-field="name" minlength="0" input-class="general-input need-to-focus"
+                                                  selected-object="selectedMessenger" input-changed="changeMessengerInput" initial-value="connection.name"
+                                                  focus-out="connection.is_edit = blurIMS(connection)" field-required="true"
+                                                  text-no-results="false">
+                                </angucomplete-alt>
+                                <div class="general-input-wrapper">
+                                    <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="connection.username" maxlength="30"
+                                           data-ng-blur="connection.is_edit = blurIMS(connection)" data-ng-trim="false" placeholder="{{::('NEW_CONTACT.COMMUNICATION_METHOD.MESSENGER.NAME' | translate)}}"/>
+                                    <i data-icon="u" class="base-icon option-icon" ng-click="removeConnection(connection.id);"></i>
+                                </div>
+                            </div>
+                            <span class="field-group-error" ng-if="connection.name.length >= 30 || connection.username.length >= 30" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                        <div class="contact-connection-wrapper" ng-if="connection.type == 'IMS' && !connection.is_edit">
+                            <input type="text" class="general-input no-hover messenger-type" placeholder="{{::('NEW_CONTACT.COMMUNICATION_METHOD.MESSENGER.PLACEHOLDER' | translate)}}" ng-model="connection.name" readonly/>
+                            <div class="general-input-wrapper no-hover">
+                                <input type="text" class="general-input no-hover" placeholder="{{::('NEW_CONTACT.COMMUNICATION_METHOD.MESSENGER.NAME' | translate)}}" ng-model="connection.username" readonly/>
+                                <i data-icon="T" class="base-icon option-icon" ng-click="connection.is_edit = true"></i>
+                                <i data-icon="u" class="base-icon option-icon" ng-click="removeConnection(connection.id);"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="adaptive-form-field-group need-to-focus-field" ng-class="{'no-hover': !contact.show_contact_selector}">
+                        <label class="field-group-label" ng-if="!contact.connections.length" ng-bind="::('NEW_CONTACT.COMMUNICATION_METHOD' | translate)"></label>
+                        <label class="field-group-label" ng-if="contact.connections.length"></label>
+                        <div ng-show="contact.show_contact_selector" style="width: 100%;">
+                            <select selectpicker id="SelectPickerConnections" class="filter-field general-select show-tick need-to-focus dropdown-animation" data-ng-model="page.contact"
+                                    data-ng-change="pushConnection(page.contact);" title="{{::('NEW_CONTACT.COMMUNICATION_METHOD.CHOOSE' | translate)}}">
+                                <option data-ng-value="" value="" ng-show="false"></option>
+                                <option data-ng-value="key" ng-repeat="(key, item) in contacts track by $index" data-ng-disabled="disabledConnections[key]">{{::(item.title | translate)}}</option>
+                            </select>
+                        </div>
+                        <button type="button" class="add-contact-btn" ng-show="!contact.show_contact_selector" ng-click="contact.show_contact_selector = true">
+                            <i data-icon="U" class="base-icon"></i><span ng-bind="::('NEW_CONTACT.COMMUNICATION_METHOD.ADD' | translate)"></span>
+                        </button>
+                    </div>
+                    <div class="adaptive-form-field-group need-to-focus-field">
+                        <label class="field-group-label" ng-bind="::('NEW_CONTACT.PLACE' | translate)"></label>
+                        <div class="field-group-error-wrapper" style="margin-right: 2.5rem">
+                            <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="contact.location.country"
+                                   maxlength="50" data-ng-trim="false" placeholder="{{::('NEW_CONTACT.PLACE.COUNTRY' | translate)}}"/>
+                            <span class="field-group-error" ng-if="contact.location.country.length >= 50" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                        <div class="field-group-error-wrapper" style="margin-left: 2.5rem">
+                            <input type="text" class="general-input need-to-focus contextMenuButton" ng-model="contact.location.city"
+                                   maxlength="50" data-ng-trim="false" placeholder="{{::('NEW_CONTACT.PLACE.CITY' | translate)}}"/>
+                            <span class="field-group-error" ng-if="contact.location.city.length >= 50" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="adaptive-form-field-group">
+                        <label class="field-group-label"></label>
+                        <div class="field-group-error-wrapper">
+                            <input type="text" class="general-input contextMenuButton" ng-model="contact.location.address"
+                                   maxlength="50" data-ng-trim="false" placeholder="{{::('NEW_CONTACT.PLACE.ADDRESS' | translate)}}"/>
+                            <span class="field-group-error" ng-if="contact.location.address.length >= 50" ng-bind="::('COMMON.MAX_LENGTH' | translate)"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="adaptive-form-column">
+                    <div class="adaptive-form-field-group need-to-focus-field">
+                        <label class="field-group-label" ng-bind="::('NEW_CONTACT.NOTE' | translate)"></label>
+                        <div class="field-group-error-wrapper">
+                            <textarea elastic class="general-textarea need-to-focus textarea_count_rows contextMenuButton" data-ng-model="contact.comment"
+                                      rows="1" max-length-field="500" data-ng-trim="false" placeholder="{{::('NEW_CONTACT.NOTE.PLACEHOLDER' | translate)}}"></textarea>
+                            <span class="field-group-error" ng-if="contact.comment.length >= 500" ng-bind="::('COMMON.MAX_LENGTH_COMMENT' | translate)"></span>
+                        </div>
+                    </div>
+                    <div class="adaptive-form-field-group no-hover" ng-repeat="address in contact.addresses track by address" ng-init="alias = getSafeAlias(address)">
+                        <label class="field-group-label" ng-bind="( [ (($index + 1) | numberName | firstUpper), ' ', ('NEW_CONTACT.ACCOUNTS' | translate | lowercaseLang)] | joinLangReverse )"></label>
+                        <div class="safe-address-wrapper">
+                            <div class="general-input-wrapper no-hover contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{address}}">
+                                <textarea elastic class="general-textarea no-hover" ng-model="address" readonly></textarea>
+                                <i data-icon="&#xe001;" class="base-icon copy-icon contact-option-icon" ng-click="setClipboard(address);"></i>
+                            </div>
+                            <div class="safe-alias-modal" ng-class="{'safe-alias-modal-no-comment': alias.comment.length == 0}" ng-if="alias.name">
+                                <div class="safe-alias-modal-name contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{alias.name}}" ng-bind="alias.name"></div>
+                                <div class="safe-alias-modal-comment" ng-if="alias.comment.length > 0">
+                                    <span ng-bind="alias.comment"></span><i data-icon="&#xe001;" class="base-icon safe-alias-modal-copy" ng-click="setClipboard(alias.comment)"></i>
+                                </div>
+                            </div>
+                            <div class="contacts-data-btn-wrapper">
+                                <button type="button" class="contacts-data-btn" ng-click="removeAddress($index);">
+                                    <i data-icon="7" class="base-icon"></i><span ng-bind="::('CONTACT_.DEL_ADDRESS2' | translate)"></span>
+                                </button>
+                                <button type="button" class="contacts-data-btn" ng-click="showHideNewAddress(true);" ng-show="$last && !newAddressShow">
+                                    <i data-icon="U" class="base-icon"></i><span ng-bind="::('NEW_CONTACT.ACCOUNTS.ADD' | translate)"></span>
+                                </button>
+                            </div>
+                            <div class="field-group-error-wrapper" ng-if="errorDeleteAddress">
+                                <span class="field-group-error" ng-bind="::('NEW_CONTACT.ERROR.ACCOUNTS' | translate)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="adaptive-form-field-group need-to-focus-field" ng-show="newAddressShow">
+                        <label class="field-group-label" ng-bind="::('NEW_CONTACT.ACCOUNTS' | translate)"></label>
+                        <div class="safe-address-wrapper">
+                            <div class="general-input-wrapper">
+                                <angucomplete-alt id="addressInput" class="alias-autocomplete" placeholder="{{::('NEW_CONTACT.ACCOUNTS.ADD.PLACEHOLDER' | translate)}}" pause="100"
+                                                  selected-object="selectAlias" local-data="aliases" input-changed="inputChanged" search-fields="name" limit="100"
+                                                  title-field="name" description-field="comment" minlength="1" input-class="general-input need-to-focus contextMenuButton"
+                                                  text-no-results="false" focus-out="contact.is_valid_address ? addAddress(): false">
+                                </angucomplete-alt>
+                                <i data-icon="A" class="base-icon success-icon" ng-if="contact.is_valid_address === true && newAddressLength > 0"></i>
+                                <i data-icon="B" class="base-icon error-icon" ng-if="contact.is_valid_address === false && newAddressLength > 0" ng-click="clearInput();"
+                                   uib-tooltip="{{::('COMMON.WRONG_ADDRESS' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                </i>
+                            </div>
+                            <div class="contacts-data-btn-wrapper">
+                                <button type="button" class="contacts-data-btn" ng-click="showHideNewAddress(false);">
+                                    <i data-icon="U" class="base-icon"></i><span ng-bind="::('NEW_CONTACT.ACCOUNTS.ADD' | translate)"></span>
+                                </button>
+                            </div>
+                            <div class="field-group-error-wrapper" ng-if="errorDeleteAddress">
+                                <span class="field-group-error" ng-bind="::('NEW_CONTACT.ERROR.ACCOUNTS' | translate)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="general-panel">
+        <div class="general-panel-header" ng-class="{'closed-panel': !contactShowHideTabs.history}">
+            <div ng-click="contactShowHideTabs.history = !contactShowHideTabs.history">
+                <span ng-bind="::('NEW_CONTACT.RELATED_PAYMENTS' | translate)"></span><i data-icon="b" class="base-icon general-panel-header-arrow"></i>
+            </div>
+        </div>
+        <div class="general-panel-body slideAnimation" ng-show="contactShowHideTabs.history">
+            <div class="contact-payment-history" ng-if="txHistory.length">
+                <div class="table-wrapper history-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                <span ng-bind="::('COMMON.STATUS' | translate)"></span>
+                            </th>
+                            <th>
+                                <div class="ordered-cell">
+                                    <span ng-bind="::('COMMON.TRANSACTION_DATE' | translate)"></span>
+                                    <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'timestamp', 'rotate-icon': (!historySortDir && historySortBy == 'timestamp')}" ng-click="order('timestamp');"></i>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="ordered-cell">
+                                    <span ng-bind="::('COMMON.SAFE' | translate)"></span>
+                                    <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'safeName', 'rotate-icon': (!historySortDir && historySortBy == 'safeName')}" ng-click="order('safeName');"></i>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="ordered-cell">
+                                    <span ng-bind="::('COMMON.AMOUNT' | translate)"></span>
+                                    <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'sortAmount', 'rotate-icon': (!historySortDir && historySortBy == 'sortAmount')}" ng-click="order('sortAmount');"></i>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="ordered-cell">
+                                    <span ng-bind="::('COMMON.COMMISSION' | translate)"></span>
+                                    <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'sortFee', 'rotate-icon': (!historySortDir && historySortBy == 'sortFee')}" ng-click="order('sortFee');"></i>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="ordered-cell">
+                                    <span ng-bind="::('COMMON.COUNTERPARTY' | translate)"></span>
+                                    <i data-icon="b" class="base-icon order-icon" ng-class="{'active': historySortBy == 'counterparty_translated', 'rotate-icon': (!historySortDir && historySortBy == 'counterparty_translated')}" ng-click="order('counterparty_translated');"></i>
+                                </div>
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-class="{'transaction-blocked': item.tx_type == 10 || isExclamation(item)}" ng-repeat="item in txHistory track by $index"
+                            uib-tooltip-html="'{{getAvailableTime(item)}}'" data-tooltip-enable="{{!!getAvailableTime(item)}}" data-tooltip-class="tr-blocked-tooltip" data-tooltip-placement="top" data-tooltip-append-to-body="true">
+                            <td ng-class="{'history-marker': item.is_mining && item.height != 0}">
+                                <div class="transaction-status-indicator" ng-class="{'income': (item.tx_type == 10 || isExclamation(item)) && item.is_income, 'outgoing': (item.tx_type == 10 || isExclamation(item)) && !item.is_income}">
+                                    <circle-show item="item" height="appHeight"></circle-show>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="history-date" ng-click="trDetails(item, item.safeAddress)">
+                                    <span ng-bind="(item.timestamp | intToDate | date : 'dd.MM.yy&nbsp;&nbsp;HH:mm')"></span>
+                                    <i data-icon="/" class="base-icon"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="history-safe" ng-click="goToPage('/safe/'+item.wallet_id+'/false/-1')">
+                                    <i data-icon="j" class="base-icon history-anonym-icon" ng-if="!item.show_sender && !item.is_income && item.tx_type == 0"
+                                       uib-tooltip="{{::('CONTACTS.ANON' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                    </i>
+                                    <span uib-tooltip="{{::('COMMON.SAFE_NAME.HINT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true" ng-bind="item.safeName"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span ng-if="item.sortAmount" ng-bind="(item.is_income ? '+' : '') + moneyParse(item.sortAmount)"></span>
+                            </td>
+                            <td>
+                                <span ng-if="item.tx_type == 3" ng-bind="'0.00 ' + currencySymbol"></span>
+                                <span ng-if="item.sortFee" ng-bind="moneyParse(item.sortFee)"></span>
+                            </td>
+                            <td>
+                                <div class="history-counterparty" ng-if="item.tx_type == 0">
+                                    <safe-address-copy address="item.remote_addresses[0]"></safe-address-copy>
+                                    <alias-display ng-if="item.alias.name" alias="item.alias"></alias-display>
+                                    <contact-display contact="item.contact"></contact-display>
+                                    <span ng-if="!item.remote_addresses[0] && !item.is_income" ng-bind="::('COMMON.NOT_DEFINED' | translate)"></span>
+                                    <div class="history-safe" ng-if="!item.remote_addresses[0] && item.is_income">
+                                        <i data-icon="j" class="base-icon history-anonym-icon"
+                                           uib-tooltip="{{::('CONTACTS.ANON' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true">
+                                        </i>
+                                        <span ng-bind="::('COMMON.HIDDEN' | translate)"></span>
+                                    </div>
+                                </div>
+                                <div class="history-counterparty" ng-if="item.tx_type != 0">
+                                    <span ng-bind="item.counterparty_translated"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="history-comment-wrapper" ng-if="item.comment">
+                                    <i data-icon="y" class="base-icon" uib-tooltip="{{item.comment}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="contact-empty-payments" ng-if="!txHistory.length" ng-bind="::('COMMON.NO_DATA' | translate)"></div>
+        </div>
+    </div>
+
+    <button type="button" class="delete-contact-btn" ng-click="deleteContact(contact, true);">
+        <i data-icon="6" class="base-icon"></i><span ng-bind="::('NEW_CONTACT.DELETE' | translate)"></span>
+    </button>
+
+</div>

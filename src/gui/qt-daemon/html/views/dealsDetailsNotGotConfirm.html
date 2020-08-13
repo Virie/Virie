@@ -1,0 +1,22 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header modal-form-header-transparent">
+        <div class="modal-form-header-close">
+            <button ng-click="close();"><i data-icon="u" class="base-icon"></i></button>
+        </div>
+    </div>
+    <div class="modal-form-body">
+        <form class="general-form">
+            <div class="general-form-header attention" ng-bind="::('DEALS.YOU_REALLY_WANT_RETURN_PLEDGE' | translate)"></div>
+            <div class="general-form-field-group need-master-password" ng-show="needPass">
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="sPassword" contextMenuEnabledItems="paste" placeholder="{{::('MASTER_PASS.ENTER' | translate)}}">
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button" ng-click="close();" ng-bind="::('DEALS.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button" ng-click="burnProposal();" ng-bind="::('DEALS.ACTIONS.DROP' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+<h1 class="hidden">Welcome to Virie Block Explorer!</h1>
+<header>
+  <button type="button" id="mobile-nav-btn" (click)="btnToggleMenu()"
+          [ngClass]="{'show': navIsOpen === true }"></button>
+  <nav class="desktop_nav">
+    <ul>
+      <li><a [routerLink]="['/']" routerLinkActive="active" id="blockchain-li"
+             [routerLinkActiveOptions]="{exact: true}">Blockchain</a></li>
+      <li><a [routerLink]="['market']" routerLinkActive="active">Market</a></li>
+      <li><a [routerLink]="['charts']" routerLinkActive="active">Charts</a></li>
+      <li><a [routerLink]="['aliases']" routerLinkActive="active">Aliases</a></li>
+      <li><a [routerLink]="['alt-blocks']" routerLinkActive="active">Alt-blocks</a></li>
+      <li><a [routerLink]="['api']" routerLinkActive="active">Api</a></li>
+    </ul>
+  </nav>
+  <div *ngIf="testNet === true" class="test_network"
+       kendoTooltip
+       tooltipClass="tooltip_style"
+       position="right">
+    <span class="ico_info"
+          title="Attention, the test network is under way! Do not enter into sales transactions during the testing
+          period. All transactions will be canceled at the moment of launch of the working version of the network.
+          The balance of your safes will return to the original state. Your activity on the network during the
+          course of the tapping will help us debug its work. Thanks!">
+    </span>Test network
+  </div>
+  <div class="logo">VIRIE<span>tm</span></div>
+</header>
+
+<main>
+  <nav class="mobile_nav" [ngClass]="{'show': navIsOpen === true}">
+    <ul>
+      <li><a [routerLink]="['/']" routerLinkActive="active" id="blockchain-mobile-li"
+             [routerLinkActiveOptions]="{exact: true}">Blockchain</a></li>
+      <li><a [routerLink]="['market']" routerLinkActive="active">Market</a></li>
+      <li><a [routerLink]="['charts']" routerLinkActive="active">Charts</a></li>
+      <li><a [routerLink]="['aliases']" routerLinkActive="active">Aliases</a></li>
+      <li><a [routerLink]="['alt-blocks']" routerLinkActive="active">Alt-blocks</a></li>
+      <li><a [routerLink]="['api']" routerLinkActive="active">Api</a></li>
+    </ul>
+  </nav>
+  <router-outlet></router-outlet>
+</main>

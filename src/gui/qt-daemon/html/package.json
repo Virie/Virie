@@ -1,0 +1,13 @@
+{
+  "name": "Virie",
+  "version": "1.0.0",
+  "description": "Virie",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "*",
+    "gulp-header-license": "^1.0.9",
+    "gulp-less": "*",
+    "gulp-util": "^3.0.8"
+  }
+}

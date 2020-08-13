@@ -1,0 +1,33 @@
+<li class="safes-menu-item">
+    <button type="button" ng-if="!mainLinkEnabled()" disabled ng-bind="('SAFE.ACTIONS.SEND_MONEY' | translate)"></button>
+    <button type="button" ng-if="mainLinkEnabled()" ng-click="openSendMoneyModal(safe.wallet_id);" ng-bind="('SAFE.ACTIONS.SEND_MONEY' | translate)"></button>
+</li>
+
+<li class="safes-menu-item" ng-if="!safe.is_mining" >
+    <button type="button" ng-if="!mainLinkEnabled() || !checkAvailableMining(safe.wallet_id)" disabled ng-bind="('SAFE.ACTIONS.START_MINING' | translate)"></button>
+    <button type="button" ng-if="mainLinkEnabled() && checkAvailableMining(safe.wallet_id)" ng-click="startMining(safe.wallet_id);" ng-bind="('SAFE.ACTIONS.START_MINING' | translate)"></button>
+</li>
+
+<li class="safes-menu-item" ng-if="safe.is_mining" >
+    <button type="button" ng-if="!mainLinkEnabled()" disabled ng-bind="('SAFE.ACTIONS.STOP_MINING' | translate)"></button>
+    <button type="button" ng-if="mainLinkEnabled()" ng-click="stopMining(safe.wallet_id);" ng-bind="('SAFE.ACTIONS.STOP_MINING' | translate)"></button>
+</li>
+
+<li class="safes-menu-item">
+    <button type="button" ng-if="!mainLinkEnabled() || safe.alias.name || !safe.alias_available" disabled ng-bind="('SAFE.ACTIONS.ADD_ALIAS' | translate)"></button>
+    <button type="button" ng-if="mainLinkEnabled() && !safe.alias.name && safe.alias_available" ng-click="registerAlias(safe);" ng-bind="('SAFE.ACTIONS.ADD_ALIAS' | translate)"></button>
+</li>
+
+<li class="safes-menu-item">
+    <button type="button" ng-if="!mainLinkEnabled()" disabled ng-bind="('SAFE.ACTIONS.CREATE_BACKUP' | translate)"></button>
+    <button type="button" ng-if="mainLinkEnabled()" ng-click="safeBackup(safe)" ng-bind="('SAFE.ACTIONS.CREATE_BACKUP' | translate)"></button>
+</li>
+
+<li ng-if="devOptions.use_debug_mode" class="safes-menu-item">
+    <button type="button" ng-if="!mainLinkEnabled()" disabled ng-bind="('SAFE.ACTIONS.SYNC' | translate)"></button>
+    <button type="button" ng-if="mainLinkEnabled()" ng-click="syncWallet(safe.wallet_id);" ng-bind="('SAFE.ACTIONS.SYNC' | translate)"></button>
+</li>
+
+<li class="safes-menu-item">
+    <button type="button" ng-click="confirmOff(safe.wallet_id);" ng-bind="('SAFE.ACTIONS.OFF_SAFE' | translate)"></button>
+</li>

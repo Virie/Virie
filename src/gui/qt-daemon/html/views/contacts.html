@@ -1,0 +1,169 @@
+<div id="contacts" class="content-section" ng-controller="contactsCtrl" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+    <div class="main-options-wrapper">
+        <div class="contacts-options" ng-show="settings.contacts.length > 0">
+            <div class="page-title-wrapper">
+                <h1 class="page-title" ng-bind="::('CONTACTS.TITLE' | translate)"></h1>
+            </div>
+        </div>
+        <div class="contacts-options">
+            <div class="contacts-options-left">
+                <select selectpicker class="general-select contacts-groups show-tick dropdown-animation" data-ng-model="groupIds"
+                        data-ng-change="filterChange();" data-nameoptions="settings.contact_groups" multiple>
+                    <option value="0" ng-show="false">{{::('COMMON.ALL_GROUPS' | translate)}}</option>
+                    <option value="-2" class="dont-show-tick">{{::('COMMON.ALL_GROUPS' | translate)}}</option>
+                    <option value="{{group.id}}" ng-repeat="group in settings.contact_groups | orderBy : 'name' track by $index" data-select-watcher data-last="{{$last}}">{{group.name}}</option>
+                    <option data-divider="true"></option>
+                    <option value="-1" class="edit-groups-item dont-show-tick" data-icon="base-icon">{{::('COMMON.EDITING_GROUPS' | translate)}}</option>
+                </select>
+                <div ng-show="settings.contacts.length > 0" class="contacts-search general-search-wrapper" animate-search data-opened="groupFactory.filter.keywords.length > 0">
+                    <i data-icon="G" class="base-icon search-icon"></i>
+                    <input type="text" class="search-input contextMenuButton" ng-model="groupFactory.filter.keywords" ng-model-options="{debounce: 300}"
+                           ng-change="filterChange();" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+                </div>
+            </div>
+            <div class="contacts-buttons">
+                <button type="button" class="main-options-btn" ng-click="addContact();">
+                    <i data-icon="z" class="base-icon add-contact-icon"></i><span ng-bind="::('CONTACTS.ADD' | translate)"></span>
+                </button>
+                <button type="button" class="main-options-btn" onclick="$('#ImportContactsButton').click();" ng-bind="::('CONTACTS.IMPORT_BUTTON' | translate)" ng-if="settings.contacts.length == 0"></button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="settings.contacts.length == 0" class="page-empty">
+        <div class="one-block">
+            <img src="assets/img/contacts.svg">
+            <h1 ng-bind="::('CONTACTS.EMPTY.TITLE' | translate)"></h1>
+            <span ng-bind="::('CONTACTS.EMPTY.DESCRIPTION' | translate)"></span>
+        </div>
+    </div>
+    <div ng-show="settings.contacts.length > 0">
+        <div class="table-wrapper contacts-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('COMMON.CONTACT' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': contactsSortBy == 'name', 'rotate-icon': (!contactsSortDir && contactsSortBy == 'name')}" ng-click="order('name')"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('CONTACTS.LOCATION' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': contactsSortBy == 'location', 'rotate-icon': (!contactsSortDir && contactsSortBy == 'location')}" ng-click="order('location')"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('COMMON.ACCOUNT' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': contactsSortBy == 'addresses[0]', 'rotate-icon': (!contactsSortDir && contactsSortBy == 'addresses[0]')}" ng-click="order('addresses[0]')"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('CONTACTS.COMMUNICATION_METHODS' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': contactsSortBy == 'connections', 'rotate-icon': (!contactsSortDir && contactsSortBy == 'connections')}" ng-click="order('connections')"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('COMMON.GROUPS' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': contactsSortBy == 'group_ids', 'rotate-icon': (!contactsSortDir && contactsSortBy == 'group_ids')}" ng-click="order('group_ids')"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <span ng-bind="::('CONTACTS.NOTE' | translate)"></span>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="contact in filteredContacts track by contact.id">
+                    <td>
+                        <div class="contacts-name" ng-click="goToPage('/contact/' + contact.id)">
+                            <i data-icon="3" class="base-icon"></i>
+                            <span class="contextMenuButton" contextMenuEnabledItems="copy" contextMenuCopyText="{{contact.name}}" ng-bind="contact.name"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <place-dropdown clipboard="true" country="contact.location.country" city="contact.location.city" class="contextMenuButton" contextMenuEnabledItems="copy"
+                                        contextMenuCopyText="{{contact.location.country}}{{(contact.location.country && contact.location.city) ? ', '+contact.location.city : contact.location.city}}" blockclass="'contacts-location'">
+                        </place-dropdown>
+                    </td>
+                    <td>
+                        <div class="contacts-account">
+                            <safe-address-alias-copy address="contact.addresses"></safe-address-alias-copy>
+                        </div>
+                    </td>
+                    <td>
+                        <contacts-dropdown ng-if="contact.normal_connections.length" contacts="::(contact.normal_connections)" blockclass="'contacts-communication-method'"></contacts-dropdown>
+                    </td>
+                    <td>
+                        <span ng-repeat="item in getContactGroups(contact) track by $index" ng-bind="item.name + (!$last ? ', ' : '')"></span>
+                    </td>
+                    <td>
+                        <div ng-if="contact.comment" class="contacts-note">
+                            <i data-icon="y" class="base-icon" uib-tooltip="{{::contact.comment}}" data-tooltip-class="general-tooltip" data-tooltip-trigger="'outsideClick'"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="contacts-menu dropdown-animation">
+                            <button class="contacts-menu-btn" data-toggle="dropdown">
+                                <i data-icon="k" class="base-icon"></i>
+                            </button>
+                            <ul class="dropdown-menu nav contacts-menu-list">
+                                <li>
+                                    <button ng-click="goToPage('/history/' + contact.id);" ng-bind="::('CONTACTS.RELATED_PAYMENTS' | translate)"></button>
+                                </li>
+                                <li>
+                                    <button ng-click="sendMoney(contact);" data-ng-disabled="daemonState.daemon_network_state != 2 || safes.length==0" ng-bind="::('CONTACTS.SEND_MONEY' | translate)"></button>
+                                </li>
+                                <li>
+                                    <button ng-click="deleteContact(contact);" ng-bind="::('COMMON.ACTIONS.DELETE' | translate)"></button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="!filteredContacts.length">
+                    <td colspan="7">
+                        <div class="text-center">
+                            <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-wrapper">
+            <div class="display">
+                <div class="export-import-contacts-wrapper">
+                    <button class="export-import-contacts-btn left-btn" type="button" ng-click="saveContacts();">
+                        <span style="line-height: 5.25rem; margin-bottom: 0.25rem" ng-bind="::('CONTACTS.EXPORT_BUTTON' | translate)"></span>
+                    </button>
+                    <div class="dropdown-animation">
+                        <button class="export-import-contacts-btn right-btn" data-toggle="dropdown">
+                            <i data-icon="a" class="base-icon"></i>
+                        </button>
+                        <ul class="dropdown-menu export-import-contacts-menu">
+                            <li class="safes-menu-item">
+                                <button type="button" ng-click="saveContacts();" ng-bind="::('CONTACTS.EXPORT_BUTTON' | translate)"></button>
+                            </li>
+                            <li class="safes-menu-item">
+                                <button onclick="$('#ImportContactsButton').click();" ng-bind="::('CONTACTS.IMPORT_BUTTON' | translate)"></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="show-all" ng-click="paginator.viewAll(true);" ng-show="paginator.pagesCount > 1 && !paginator.showAll">
+                <i data-icon="+" class="base-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.CONTACTS.SHOW_ALL' | translate)"></span>
+            </div>
+            <div class="show-all" ng-click="paginator.viewAll();" ng-show="paginator.pagesCount > 1 && paginator.showAll">
+                <i data-icon="+" class="base-icon rotate-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.CONTACTS.SHOW_BY_PAGE' | translate)"></span>
+            </div>
+            <paginator model="paginator"></paginator>
+        </div>
+    </div>
+    <input type="file" id="ImportContactsButton" on-read-text-file="explodeAndImportContacts(ArrayContacts)" style="display: none;"/>
+</div>

@@ -1,0 +1,24 @@
+<div class="modal-form-wrapper">
+    <div class="modal-form-header">
+        <div class="modal-form-header-title" ng-bind="::('SAFE.RESTORE_FROM_FILE' | translate)"></div>
+        <div class="modal-form-header-icon"><i data-icon="R" class="base-icon"></i></div>
+    </div>
+    <div class="modal-form-body">
+        <form name="restoreSafeForm" class="general-form" novalidate>
+            <div class="restored-safe-name">{{::('SAFE.NAME_SAFE' | translate)}} "{{oneSafe.name}}"</div>
+            <div class="restored-safe-path">{{::('SAFE.FILE'| translate)}}: {{oneSafe.path}}</div>
+            <div class="general-form-field-group field-group-vertical" ng-show="!oneSafe.notFound && !oneSafe.emptyPass">
+                <label class="field-group-label" ng-bind="::('SAFE.ENTER_PASSWORD' | translate)"></label>
+                <div class="general-input-wrapper need-to-focus-field">
+                    <input type="password" class="general-input need-to-focus contextMenuButton" ng-model="oneSafe.pass" contextMenuEnabledItems="paste" required>
+                    <i data-icon="." class="base-icon eye-icon" form-password></i>
+                </div>
+            </div>
+            <div class="general-form-warning" ng-show="oneSafe.notFound" ng-bind="::('INFORMER.SAFE_FILE_NOT_FOUND3' | translate)"></div>
+            <div class="general-form-control-buttons">
+                <button type="button" class="control-button larger-button" ng-click="closeAndNextSafe(false);" ng-bind="::('COMMON.ACTIONS.CANCEL' | translate)"></button>
+                <button type="button" class="control-button larger-button" ng-click="openAndNextSafe();" data-ng-disabled="oneSafe.notFound" ng-bind="::('COMMON.ACTIONS.OPEN.SAFE' | translate)"></button>
+            </div>
+        </form>
+    </div>
+</div>

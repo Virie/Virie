@@ -1,0 +1,225 @@
+<div id="safes" class="content-section" ng-controller="safeListCtrl" ng-if="!isProgramBlocked && (daemonState.daemon_network_state == 2 || showOnSync)">
+    <div class="main-options-wrapper">
+        <div class="safes-options">
+            <div class="page-title-wrapper" ng-if="safes.length > 0">
+                <h1 class="page-title" ng-bind="::('SAFES.TITLE' | translate)"></h1>
+            </div>
+            <div class="safes-info-wrapper" ng-if="safes.length > 0">
+                <div class="safes-info">
+                    <i data-icon="&#xe000;" class="base-icon"></i>
+                    <span uib-tooltip="{{::('SAFES.TOTAL_COUNT' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true" ng-bind="safes.length"></span>
+                </div>
+                <div class="safes-info">
+                    <i data-icon="{" class="base-icon"></i>
+                    <span uib-tooltip="{{::('SAFES.TOTAL_BALANCE' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true" ng-bind="moneyParse(totalBalance)"></span>
+                </div>
+                <div class="safes-info">
+                    <i data-icon="`" class="base-icon"></i>
+                    <span uib-tooltip="{{::('SAFES.TOTAL_BALANCE_UNLOCKED' | translate)}}" data-tooltip-class="general-tooltip" data-tooltip-append-to-body="true" ng-bind="moneyParse(totalBalanceUnlocked)"></span>
+                </div>
+            </div>
+        </div>
+        <div class="safes-options" ng-style="{'justify-content': safes.length == 0 ? 'flex-end' : 'space-between'}">
+            <div ng-if="safes.length > 0" class="safes-buttons">
+                <ul class="safes-tab">
+                    <li class="safes-tab-item" ng-class="{'active': safeView != 'blocks', 'disabled': safes.length == 0}">
+                        <button type="button" ng-click="changeSafeView('list');" data-ng-disabled="safes.length == 0">
+                            <i data-icon="F" class="base-icon"></i><span ng-bind="::('SAFES.LIST' | translate)"></span>
+                        </button>
+                    </li>
+                    <li class="safes-tab-item" ng-class="{'active': safeView != 'list', 'disabled': safes.length == 0}">
+                        <button type="button" ng-click="changeSafeView('blocks');" data-ng-disabled="safes.length == 0">
+                            <i data-icon="Q" class="base-icon"></i><span ng-bind="::('SAFES.BLOCK' | translate)"></span>
+                        </button>
+                    </li>
+                </ul>
+                <div class="general-search-wrapper safes-search" animate-search data-opened="filter.name.length > 0">
+                    <i data-icon="G" class="base-icon search-icon"></i>
+                    <input type="search" class="search-input contextMenuButton" ng-model="filter.name" ng-model-options="{debounce: 300}"
+                           ng-change="filterChange(true);" placeholder="{{::('COMMON.PLACEHOLDER_TEXT' | translate)}}"/>
+                </div>
+            </div>
+            <div class="safes-buttons">
+                <div class="main-options-btn-group" ng-controller="safeModals">
+                    <button type="button" class="main-options-btn button-in-group" ng-click="openSafeForm();" ng-bind="::('DASHBOARD.SAFES.CREATE' | translate)"></button>
+                    <div class="dropdown-animation">
+                        <button type="button" class="main-options-btn button-in-dropdown" data-toggle="dropdown">
+                            <span ng-bind="::('DASHBOARD.OPEN_S' | translate)"></span><i data-icon="a" class="base-icon"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button type="button" ng-click="openFileDialog();" ng-bind="::('DASHBOARD.SAFES.OPEN' | translate)"></button>
+                            </li>
+                            <li>
+                                <button type="button" ng-click="openSmartSafeRestoreForm();" ng-bind="::('DASHBOARD.SAFES.RESTORE_SMART' | translate)"></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="safes.length == 0" class="page-empty">
+        <div class="one-block wider-block">
+            <img src="assets/img/safes.svg">
+            <h1 ng-bind="::('SAFES.EMPTY.TITLE' | translate)"></h1>
+            <span ng-bind="::('SAFES.EMPTY.DESCRIPTION' | translate)"></span>
+        </div>
+    </div>
+    <div ng-if="safes.length > 0">
+        <div class="table-wrapper safes-table" ng-if="safeView != 'blocks'">
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('COMMON.SAFE' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': safeSortBy == 'name', 'rotate-icon': (!safeSortDir && safeSortBy == 'name')}" ng-click="order('name');"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <span ng-bind="::('DASHBOARD.SAFE.ACCOUNT' | translate)"></span>
+                    </th>
+                    <th>
+                        <span ng-bind="::('DASHBOARD.SAFE.STATE' | translate)"></span>
+                    </th>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('DASHBOARD.SAFE.AVAILABLE' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': safeSortBy == 'unlocked_balance', 'rotate-icon': (!safeSortDir && safeSortBy == 'unlocked_balance')}" ng-click="order('unlocked_balance');"></i>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="ordered-cell">
+                            <span ng-bind="::('DASHBOARD.SAFE.BALANCE' | translate)"></span>
+                            <i data-icon="b" class="base-icon order-icon" ng-class="{'active': safeSortBy == 'balance', 'rotate-icon': (!safeSortDir && safeSortBy == 'balance')}" ng-click="order('balance');"></i>
+                        </div>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="safe in filteredSafes track by safe.wallet_id">
+                    <td>
+                        <div class="safes-name">
+                            <div class="safe-link" ng-click="goToPage('safe/' + safe.wallet_id + '/false/-1');">
+                                <i data-icon="p" class="base-icon lock-icon" uib-tooltip="{{::('DASHBOARD.SAFE.ENCRYPTED' | translate)}}"
+                                   data-tooltip-class="general-tooltip safes-tooltip" data-tooltip-append-to-body="true" ng-if="safe.pass">
+                                </i>
+                                <i data-icon="&#xe002;" class="base-icon lock-icon open" uib-tooltip="{{::('DASHBOARD.SAFE.NOT.ENCRYPTED' | translate)}}"
+                                   data-tooltip-class="general-tooltip safes-tooltip" data-tooltip-append-to-body="true" ng-if="!safe.pass">
+                                </i>
+                                <span uib-tooltip="{{::('COMMON.SAFE_NAME.HINT' | translate)}}"  data-tooltip-class="general-tooltip safes-tooltip" data-tooltip-append-to-body="true" ng-bind="safe.name"></span>
+                            </div>
+                            <i data-icon="&#xe008;" class="base-icon mining-icon" ng-style="{'visibility': safe.is_mining ? 'visible' : 'hidden'}"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="safe-account">
+                            <safe-address-copy address="safe.address"></safe-address-copy>
+                            <alias-display ng-if="safe.alias.name" alias="safe.alias"></alias-display>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="safe-status">
+                            <div class="safe-table-offline" ng-if="daemonState.daemon_network_state == 0">
+                                <span ng-bind="::('STATUS.OFFLINE' | translate)"></span>
+                            </div>
+                            <animate-transaction ng-if="safe.loaded && daemonState.daemon_network_state > 1" history="safe.history" mining="safe.is_mining" height="appHeight"></animate-transaction>
+                            <div class="safe-sync safe-table" ng-if="!safe.loaded && daemonState.daemon_network_state == 2">
+                                <div class="safe-sync-text" ng-bind="('SAFE_BLOCK.SYNCHRONIZATION' | translate) + ' ' + (safe.progress || 0) + '%'"></div>
+                                <progress max="100" value="{{safe.progress}}"></progress>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-bind="moneyParse(safe.unlocked_balance)"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="moneyParse(safe.balance)"></span>
+                    </td>
+                    <td>
+                        <div class="safe-menu dropdown-animation">
+                            <button class="safe-menu-btn" data-toggle="dropdown">
+                                <i data-icon="k" class="base-icon"></i>
+                            </button>
+                            <ul class="dropdown-menu nav safes-menu-list" safe-menu></ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="!filteredSafes.length">
+                    <td colspan="6">
+                        <div class="text-center">
+                            <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="safes-blocks" ng-if="safeView != 'list'">
+            <div class="safes-blocks-item" ng-repeat="safe in filteredSafes track by safe.wallet_id">
+                <div class="safe-block-wrapper">
+                    <div class="safe-block" ng-if="!(!safe.loaded && daemonState.daemon_network_state == 2)">
+                        <div class="safe-block-header">
+                            <span class="safe-block-title" ng-click="goToPage('/safe/' + safe.wallet_id + '/false/-1')" ng-bind="safe.name"></span>
+                            <alias-display ng-if="safe.alias.name" alias="safe.alias"></alias-display>
+                            <safe-address-copy ng-if="!safe.alias.name" address="safe.address"></safe-address-copy>
+                            <span class="safe-mined" ng-if="safe.is_mining"><i data-icon="&#xe008;" class="base-icon"></i></span>
+                        </div>
+                        <div class="safe-block-body">
+                            <div class="safe-block-balance" ng-style="calculateMoneyFontSize( moneyParse(safe.unlocked_balance).length + moneyParse(safe.balance).length )">
+                                <div class="unlocked-balance-value">
+                                    <span uib-tooltip="{{::('SAFE_BLOCK.AVAILABLE_PAYMENTS.HINT' | translate)}}" data-tooltip-class="general-tooltip" ng-bind="moneyParse(safe.unlocked_balance)"></span>
+                                </div>
+                                <div class="balance-value">
+                                    <span>&nbsp;/&nbsp;</span>
+                                    <span uib-tooltip="{{::('SAFE_BLOCK.BALANCE.HINT' | translate)}}" data-tooltip-class="general-tooltip" ng-bind="moneyParse(safe.balance)"></span>
+                                </div>
+                            </div>
+                            <div class="safe-block-status">
+                                <div class="safe-block-offline" ng-if="daemonState.daemon_network_state == 0">
+                                    <span ng-bind="::('STATUS.OFFLINE' | translate)"></span>
+                                </div>
+                                <animate-transaction ng-if="safe.loaded && daemonState.daemon_network_state > 1" history="safe.history" mining="safe.is_mining" height="appHeight" type="'small'"></animate-transaction>
+                            </div>
+                            <div class="safe-block-buttons">
+                                <div class="safe-block-btn-wrapper" ng-if="!(daemonState.daemon_network_state == 0 || daemonState.daemon_network_state == 1)">
+                                    <button type="button" class="safe-block-btn general-button" ng-click="openSendMoneyModal(safe.wallet_id);" ng-bind="('SAFE.ACTIONS.SEND_MONEY' | translate)"></button>
+                                </div>
+                                <div class="safe-block-btn-wrapper dropdown-animation">
+                                    <button class="safe-block-btn general-button" data-toggle="dropdown" ng-bind="::('SAFE.ACTIONS' | translate)"></button>
+                                    <ul class="dropdown-menu safe-block-menu" safe-menu></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safe-sync" ng-if="!safe.loaded && daemonState.daemon_network_state == 2">
+                        <div class="safe-sync-text" ng-bind="('SAFE_BLOCK.SYNCHRONIZATION' | translate) + ' ' + (safe.progress || 0) + '%'"></div>
+                        <progress max="100" value="{{safe.progress}}"></progress>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!filteredSafes.length" class="text-center" style="width: 100%">
+                <span ng-bind="::('COMMON.NO_DATA' | translate)"></span>
+            </div>
+        </div>
+        <div class="pagination-wrapper">
+            <div class="display" ng-show="paginator.totalCount > 20">
+                <span class="display-text" ng-bind="::('COMMON.SHOW_BY_PAGE_LIMIT' | translate)"></span>
+                <ul class="display-values">
+                    <li ng-class="{'active': paginator.inPage == 20}" ng-click="paginator.changeLimit(20);"><span>20</span></li>
+                    <li ng-class="{'active': paginator.inPage == 35}" ng-click="paginator.changeLimit(35);"><span>35</span></li>
+                    <li ng-class="{'active': paginator.inPage == 50}" ng-click="paginator.changeLimit(50);"><span>50</span></li>
+                </ul>
+            </div>
+            <div class="show-all" ng-click="paginator.viewAll(true);" ng-show="paginator.pagesCount > 1 && !paginator.showAll">
+                <i data-icon="+" class="base-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.SAFES.SHOW_ALL' | translate)"></span>
+            </div>
+            <div class="show-all" ng-click="paginator.viewAll();" ng-show="paginator.pagesCount > 1 && paginator.showAll">
+                <i data-icon="+" class="base-icon rotate-icon"></i><span class="show-all-text" ng-bind="::('PAGINATION.SAFES.SHOW_BY_PAGE' | translate)"></span>
+            </div>
+            <paginator model="paginator"></paginator>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  border-bottom: 1px solid #d7dbde;
+  #mobile-nav-btn {
+    display: none;
+    width: 22px;
+    height: 16px;
+    background-image: $mobileMenuIco;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-color: transparent;
+    border: none;
+    @include max761 {
+      display: flex;
+    }
+  }
+  nav {
+    @include max761 {
+      display: none;
+    }
+    ul {
+      display: flex;
+      > li {
+        margin-right: 25px;
+        > a {
+          font-size: 15px;
+          font-weight: 300;
+          color: #5d6c78;
+          &.active {
+            font-size: 20px;
+            font-weight: 400;
+            color: #495865;
+            position: relative;
+            top: -3px;
+          }
+        }
+      }
+    }
+  }
+  .logo {
+    color: #5D6C78;
+    font-size: 29px;
+    font-weight: 100;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    letter-spacing: 4px;
+    > span {
+      text-transform: uppercase;
+      color: #5D6C78;
+      font-size: 8px;
+      position: relative;
+      top: -7px;
+      opacity: 0.5;
+      letter-spacing: 1px;
+    }
+  }
+}
